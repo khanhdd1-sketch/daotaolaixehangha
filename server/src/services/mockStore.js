@@ -229,6 +229,7 @@ const mockStore = {
   ],
   lesson_watches: [],
   lesson_attempts: [],
+  third_party_attempts: [],
   exam_results: [],
   visits: []
 };

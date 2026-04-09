@@ -68,3 +68,4 @@ Du lieu mau chi tiet nam trong [seed-data.json](/d:/Desktop/New%20folder/course-
 - Seed hien tai da kem san password hash hop le cho `Admin@123` va `Student@123`, nen sau khi chay `seedDrivingSchoolDemoData()` ban co the dang nhap ngay.
 - Sheet `questions` can co cot `explanation` de hoc vien xem lai giai thich sau khi nop bai.
 - Hoc vien khong tu dang ky tai khoan. Admin tao tai khoan hoc vien trong dashboard sau khi nhan form tu van.
+- Tu ban nay, trang hoc vien dung luong thi ben thu 3 (thi thu ly thuyet, 600 cau, mo phong) va gui ket qua vao sheet `third_party_attempts` de admin quan ly.

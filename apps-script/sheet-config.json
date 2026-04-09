@@ -47,6 +47,10 @@
       "name": "simulation_attempts",
       "headers": ["id", "user_id", "exam_id", "attempt_no", "score", "passed", "submitted_at", "answers_json", "details_json"]
     },
+    "third_party_attempts": {
+      "name": "third_party_attempts",
+      "headers": ["id", "user_id", "course_type", "exam_type", "platform_name", "exam_url", "score", "passed", "note", "proof_url", "submitted_at"]
+    },
     "exam_results": {
       "name": "exam_results",
       "headers": ["id", "user_id", "exam_id", "attempt_no", "score", "passed", "failed_due_critical", "submitted_at", "answers_json"]

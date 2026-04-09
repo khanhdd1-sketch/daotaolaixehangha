@@ -182,6 +182,7 @@
     }
   ],
   "simulation_attempts": [],
+  "third_party_attempts": [],
   "exam_results": [
     {
       "id": "result_001",

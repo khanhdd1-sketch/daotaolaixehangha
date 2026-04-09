@@ -12,7 +12,8 @@ const SHEETS = {
   lessonWatches: 'lesson_watches',
   simulationExams: 'simulation_exams',
   simulationClips: 'simulation_clips',
-  simulationAttempts: 'simulation_attempts'
+  simulationAttempts: 'simulation_attempts',
+  thirdPartyAttempts: 'third_party_attempts'
 };
 
 function doGet(e) {
@@ -148,6 +149,13 @@ function handleRequest_(payload) {
         });
       case 'saveSimulationAttempt':
         return json_({ success: true, data: appendRow_(ss, SHEETS.simulationAttempts, payload) });
+      case 'getThirdPartyAttempts':
+        return json_({
+          success: true,
+          data: readSheet_(ss, SHEETS.thirdPartyAttempts).filter((row) => !payload.user_id || row.user_id === payload.user_id)
+        });
+      case 'saveThirdPartyAttempt':
+        return json_({ success: true, data: appendRow_(ss, SHEETS.thirdPartyAttempts, payload) });
       default:
         return json_({ success: false, message: 'Unknown action' });
     }
@@ -228,7 +236,11 @@ function buildStats_(ss, payload) {
   const registrations = readSheet_(ss, SHEETS.registrations).filter(
     (item) => (!from || String(item.created_at).slice(0, 10) >= from) && (!course || item.course_type === course)
   );
-  const results = readSheet_(ss, SHEETS.results).filter((item) => !from || String(item.submitted_at).slice(0, 10) >= from);
+  const results = readSheet_(ss, SHEETS.thirdPartyAttempts).filter(
+    (item) =>
+      (!from || String(item.submitted_at).slice(0, 10) >= from) &&
+      (!course || String(item.course_type || '').toUpperCase() === String(course || '').toUpperCase())
+  );
   const students = readSheet_(ss, SHEETS.users).filter((item) => item.role === 'student');
   const visits = readSheet_(ss, SHEETS.visits).filter((item) => !from || String(item.visited_at).slice(0, 10) >= from);
   const passedCount = results.filter((item) => String(item.passed) === 'true').length;
@@ -242,6 +254,7 @@ function buildStats_(ss, payload) {
     failedCount: failedCount,
     registrations: registrations,
     results: results,
+    third_party_results: results,
     students: students,
     chart: {
       labels: ['Visits', 'Registrations', 'Passed', 'Failed'],

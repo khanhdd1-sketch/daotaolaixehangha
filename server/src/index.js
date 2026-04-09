@@ -13,6 +13,7 @@ const resultRoutes = require("./routes/results");
 const trackingRoutes = require("./routes/tracking");
 const learningRoutes = require("./routes/learning");
 const simulationRoutes = require("./routes/simulation");
+const thirdPartyRoutes = require("./routes/thirdParty");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -47,6 +48,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/tracking", trackingRoutes);
 app.use("/api/learning", learningRoutes);
 app.use("/api/simulation", simulationRoutes);
+app.use("/api/third-party", thirdPartyRoutes);
 
 app.use((req, res) => {
   if (req.path.startsWith("/api")) {

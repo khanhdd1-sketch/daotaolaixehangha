@@ -110,6 +110,16 @@ function normalizeSimulationAttempt(attempt) {
   };
 }
 
+function normalizeThirdPartyAttempt(attempt) {
+  if (!attempt) return attempt;
+  return {
+    ...attempt,
+    course_type: normalizeCourseType(attempt.course_type || ""),
+    score: Number(attempt.score || 0),
+    passed: parseBoolean(attempt.passed)
+  };
+}
+
 async function callAppsScript(action, payload = {}, method = "POST") {
   if (!APPS_SCRIPT_URL) {
     throw new Error("APPS_SCRIPT_URL is not configured");
@@ -157,7 +167,13 @@ function buildStats(filters) {
   const registrations = mockStore.registrations.filter(
     (item) => matchFromDate(item.created_at, filters.from) && (!filters.course || item.course_type === filters.course)
   );
-  const results = mockStore.exam_results.filter((item) => matchFromDate(item.submitted_at, filters.from));
+  const results = (mockStore.third_party_attempts || [])
+    .map(normalizeThirdPartyAttempt)
+    .filter(
+      (item) =>
+        matchFromDate(item.submitted_at, filters.from) &&
+        (!filters.course || normalizeCourseType(item.course_type) === filters.course)
+    );
   const students = mockStore.users.filter((item) => item.role === "student");
   const visits = mockStore.visits.filter((item) => matchFromDate(item.visited_at, filters.from));
 
@@ -169,6 +185,7 @@ function buildStats(filters) {
     failedCount: results.filter((item) => !item.passed).length,
     registrations,
     results,
+    third_party_results: results,
     students,
     chart: {
       labels: ["Visits", "Registrations", "Passed", "Failed"],
@@ -836,6 +853,50 @@ const sheetsService = {
     }
 
     return callAppsScript("saveSimulationAttempt", payload);
+  },
+
+  async getThirdPartyAttempts(filters = {}) {
+    const userId = String(filters.user_id || "").trim();
+
+    if (this.useMock) {
+      return {
+        success: true,
+        data: (mockStore.third_party_attempts || [])
+          .map(normalizeThirdPartyAttempt)
+          .filter((item) => !userId || item.user_id === userId)
+          .sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0))
+      };
+    }
+
+    const response = await callAppsScript("getThirdPartyAttempts", { user_id: userId }, "GET");
+    return {
+      success: true,
+      data: (response.data || []).map(normalizeThirdPartyAttempt).sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0))
+    };
+  },
+
+  async saveThirdPartyAttempt(data) {
+    const payload = {
+      id: createId("tp_attempt"),
+      user_id: data.user_id,
+      course_type: normalizeCourseType(data.course_type || ""),
+      exam_type: String(data.exam_type || "").trim(),
+      platform_name: String(data.platform_name || "").trim(),
+      exam_url: String(data.exam_url || "").trim(),
+      score: Number(data.score || 0),
+      passed: parseBoolean(data.passed),
+      note: String(data.note || "").trim(),
+      proof_url: String(data.proof_url || "").trim(),
+      submitted_at: nowIso()
+    };
+
+    if (this.useMock) {
+      const normalized = normalizeThirdPartyAttempt(payload);
+      (mockStore.third_party_attempts || []).unshift(normalized);
+      return { success: true, data: normalized };
+    }
+
+    return callAppsScript("saveThirdPartyAttempt", payload);
   }
 };
 

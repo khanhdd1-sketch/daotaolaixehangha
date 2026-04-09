@@ -359,4 +359,21 @@ router.get("/simulation-attempts", async (req, res, next) => {
   }
 });
 
+router.get("/third-party-attempts", async (req, res, next) => {
+  try {
+    const [attemptsResponse, usersResponse] = await Promise.all([
+      sheetsService.getThirdPartyAttempts(),
+      sheetsService.getUsers()
+    ]);
+    const users = usersResponse.data || [];
+    const data = (attemptsResponse.data || []).map((item) => ({
+      ...item,
+      student_name: (users.find((user) => user.id === item.user_id) || {}).name || item.user_id
+    }));
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

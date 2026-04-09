@@ -10,6 +10,7 @@ const SHEET_HEADERS = {
   simulation_exams: ['id', 'course_type', 'title', 'description', 'pass_score', 'total_clips', 'active'],
   simulation_clips: ['id', 'exam_id', 'title', 'video_url', 'order_no', 'trigger_start_sec', 'trigger_end_sec', 'active'],
   simulation_attempts: ['id', 'user_id', 'exam_id', 'attempt_no', 'score', 'passed', 'submitted_at', 'answers_json', 'details_json'],
+  third_party_attempts: ['id', 'user_id', 'course_type', 'exam_type', 'platform_name', 'exam_url', 'score', 'passed', 'note', 'proof_url', 'submitted_at'],
   exam_results: ['id', 'user_id', 'exam_id', 'attempt_no', 'score', 'passed', 'failed_due_critical', 'submitted_at', 'answers_json'],
   visits: ['id', 'ip', 'page', 'lang', 'visited_at']
 };
@@ -53,6 +54,7 @@ const SEED_ROWS = {
     ['sim_clip_003', 'sim_b2_001', 'Tinh huong 3: Xe truoc phanh gap', '/assets/videos/sim-b2-03.mp4', '3', '2.8', '4.0', 'true']
   ],
   simulation_attempts: [],
+  third_party_attempts: [],
   exam_results: [
     ['result_001', 'student_001', 'exam_b2_001', '1', '27', 'true', 'false', '2026-03-24T12:30:00.000Z', '{"question_001":"B","question_002":"B"}']
   ],
