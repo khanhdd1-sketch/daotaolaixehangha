@@ -645,6 +645,7 @@ body {
 }
 
 .floating-contact {
+  text-decoration: none;
   position: fixed;
   right: 1.25rem;
   z-index: 1080;
