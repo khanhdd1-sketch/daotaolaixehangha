@@ -1,0 +1,6 @@
+node_modules/
+public/
+server/.env
+.vercel/
+.DS_Store
+Thumbs.db
