@@ -67,6 +67,14 @@ Neu tra ve JSON:
 
 thi app da len.
 
+De tranh loi luc len lan dau, nen de:
+
+```env
+USE_MOCK_DATA=true
+```
+
+Nhu vay app khong phu thuoc Google Sheets ngay trong lan build dau tien.
+
 ## 6. Dat ten de nho
 
 Trong Vercel, ban co the doi ten project thanh:
@@ -136,3 +144,32 @@ Nho vay cac link nhu `/src/js/...` va `/src/css/...` van chay binh thuong.
 6. Test `/health`
 7. Mo trang chu
 8. Test login admin demo
+
+## 11. Checklist test sau deploy
+
+Sau khi deploy xong, test theo thu tu nay:
+
+1. `https://<ten-project>.vercel.app/health`
+2. `https://<ten-project>.vercel.app/`
+3. `https://<ten-project>.vercel.app/login.html`
+4. Gui form dang ky o trang chu
+5. Dang nhap bang tai khoan demo neu dang de `USE_MOCK_DATA=true`
+
+Tai khoan demo:
+
+- Admin: `admin@drivingschool.vn` / `Admin@123`
+- Student: `student@drivingschool.vn` / `Student@123`
+
+Neu co loi, vao:
+
+1. `Project`
+2. `Deployments`
+3. Chon ban deploy moi nhat
+4. Xem `Build Logs`
+5. Xem `Runtime Logs`
+
+Loi thuong gap:
+
+- Quen set `JWT_SECRET`
+- Dat `USE_MOCK_DATA=false` nhung chua set `APPS_SCRIPT_URL`
+- Nhap sai `APPS_SCRIPT_SECRET`
