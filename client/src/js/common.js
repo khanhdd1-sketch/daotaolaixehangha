@@ -44,16 +44,34 @@ function showToast(message, variant = "success") {
   toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
 }
 
-function initZaloBubble() {
-  if (document.querySelector(".floating-zalo")) return;
+function createFloatingContactLink({ selector, href, className, ariaLabel, iconHtml = "" }) {
+  if (document.querySelector(selector)) return;
+
   const link = document.createElement("a");
-  link.href = "https://zalo.me/0900000000";
+  link.href = href;
   link.target = "_blank";
   link.rel = "noopener noreferrer";
-  link.className = "floating-zalo";
-  link.setAttribute("aria-label", "Chat Zalo");
-  link.innerHTML = '<i class="fa-solid fa-comments"></i>';
+  link.className = className;
+  link.setAttribute("aria-label", ariaLabel);
+  link.innerHTML = iconHtml;
   document.body.appendChild(link);
+}
+
+function initZaloBubble() {
+  createFloatingContactLink({
+    selector: ".floating-facebook",
+    href: "https://www.facebook.com/daotaolaixehangha",
+    className: "floating-contact floating-facebook",
+    ariaLabel: "Open Facebook page",
+    iconHtml: '<i class="fa-brands fa-facebook-f" aria-hidden="true"></i>'
+  });
+
+  createFloatingContactLink({
+    selector: ".floating-zalo",
+    href: "https://zalo.me/0986082686",
+    className: "floating-contact floating-zalo",
+    ariaLabel: "Chat Zalo"
+  });
 }
 
 function initAOS() {
