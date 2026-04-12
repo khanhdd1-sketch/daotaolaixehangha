@@ -54,6 +54,7 @@ async function loadUsers() {
             <td>${window.DriveSchoolCommon.escapeHtml(item.email)}</td>
             <td>${window.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
             <td>${window.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
+            <td>${window.DriveSchoolCommon.escapeHtml(item.note || "")}</td>
           </tr>
         `
       )

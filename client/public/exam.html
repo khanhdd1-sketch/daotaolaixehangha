@@ -14,17 +14,17 @@
     <div class="container">
       <section class="student-shell mb-4">
         <div class="student-shell-topbar">
-          <a class="navbar-brand text-decoration-none" href="/index.html">DriveMaster</a>
+          <a class="navbar-brand text-decoration-none" href="/index.html">Trung tâm dạy lái xe Hằng Hà</a>
           <div class="student-top-actions">
-            <a class="btn btn-outline-secondary" href="/index.html">Trang chu</a>
-            <button class="btn btn-primary" type="button" id="studentLogoutButton">Dang xuat</button>
+            <a class="btn btn-outline-secondary" href="/index.html">Trang chủ</a>
+            <button class="btn btn-primary" type="button" id="studentLogoutButton">Đăng xuất</button>
           </div>
         </div>
         <div class="student-hero mt-4">
           <div>
-            <span class="section-badge mb-3">Khu vuc hoc vien</span>
-            <h1 class="admin-hero-title mb-2">Xin chao, <span id="welcomeStudent"></span></h1>
-            <p class="admin-hero-copy mb-0">Thi thu ly thuyet va mo phong qua nen tang ben thu 3. Sau khi thi xong, gui ket qua ve admin.</p>
+            <span class="section-badge mb-3">Khu vực học viên</span>
+            <h1 class="admin-hero-title mb-2">Xin chào, <span id="welcomeStudent"></span></h1>
+            <p class="admin-hero-copy mb-0">Thi thử lý thuyết và mô phỏng qua nền tảng bên thứ 3. Sau khi thi xong, gửi kết quả về admin.</p>
           </div>
           <div class="student-pill-group">
             <span class="compact-badge"><i class="fa-solid fa-graduation-cap"></i><span id="studentCourseBadge">-</span></span>
@@ -36,21 +36,21 @@
         <div class="col-md-4">
           <article class="admin-stat-card accent-blue">
             <div class="admin-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
-            <div class="text-muted">Loai bang</div>
+            <div class="text-muted">Loại bằng</div>
             <div class="stat-value" id="studentCourseType">-</div>
           </article>
         </div>
         <div class="col-md-4">
           <article class="admin-stat-card accent-green">
             <div class="admin-stat-icon"><i class="fa-solid fa-list-check"></i></div>
-            <div class="text-muted">So lan da gui ket qua</div>
+            <div class="text-muted">Số lần đã gửi kết quả</div>
             <div class="stat-value" id="attemptCount">0</div>
           </article>
         </div>
         <div class="col-md-4">
           <article class="admin-stat-card accent-orange">
             <div class="admin-stat-icon"><i class="fa-solid fa-flag-checkered"></i></div>
-            <div class="text-muted">Lan gui gan nhat</div>
+            <div class="text-muted">Lần gửi gần nhất</div>
             <div class="stat-value" id="latestStatus">-</div>
           </article>
         </div>
@@ -59,71 +59,71 @@
       <section class="dashboard-card mb-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div>
-            <h2 class="h4 mb-1">Thi ben thu 3</h2>
-            <p class="text-muted mb-0">Chon loai thi theo nhu cau. Neu link khong mo duoc, hay doi trinh duyet hoac tat chan popup.</p>
+            <h2 class="h4 mb-1">Thi bên thứ 3</h2>
+            <p class="text-muted mb-0">Chọn loại thi theo nhu cầu. Nếu link không mở được, hãy đổi trình duyệt hoặc tắt chặn popup.</p>
           </div>
         </div>
         <div class="row g-3" id="thirdPartyLinks"></div>
       </section>
 
       <section class="dashboard-card mb-4">
-        <h2 class="h4 mb-3">Gui ket qua cho admin</h2>
+        <h2 class="h4 mb-3">Gửi kết quả cho admin</h2>
         <form id="thirdPartyResultForm" class="row g-3">
           <div class="col-md-4">
-            <label class="form-label">Loai thi</label>
+            <label class="form-label">Loại thi</label>
             <select class="form-select" id="examType" name="exam_type" required>
-              <option value="theory">Thi thu ly thuyet</option>
-              <option value="theory_600">Thi ly thuyet 600 cau</option>
-              <option value="simulation">Thi mo phong</option>
+              <option value="Thi thử lý thuyết">Thi thử lý thuyết</option>
+              <option value="Thi lý thuyết 600 câu">Thi lý thuyết 600 câu</option>
+              <option value="Thi mô phỏng">Thi mô phỏng</option>
             </select>
           </div>
           <div class="col-md-4">
-            <label class="form-label">Diem</label>
+            <label class="form-label">Điểm</label>
             <input class="form-control" type="number" step="0.1" min="0" name="score" required>
           </div>
           <div class="col-md-4">
-            <label class="form-label">Trang thai</label>
+            <label class="form-label">Trạng thái</label>
             <select class="form-select" name="passed" required>
-              <option value="true">Dat</option>
-              <option value="false">Chua dat</option>
+              <option value="true">Đạt</option>
+              <option value="false">Chưa đạt</option>
             </select>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Nen tang</label>
+            <label class="form-label">Nền tảng</label>
             <input class="form-control" type="text" name="platform_name" id="platformName" readonly>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Link bai thi</label>
+            <label class="form-label">Link bài thi</label>
             <input class="form-control" type="url" name="exam_url" id="examUrl" readonly>
           </div>
           <div class="col-12">
-            <label class="form-label">Link anh minh chung (neu co)</label>
+            <label class="form-label">Link ảnh minh chứng (nếu có)</label>
             <input class="form-control" type="url" name="proof_url" placeholder="https://...">
           </div>
           <div class="col-12">
-            <label class="form-label">Ghi chu</label>
-            <textarea class="form-control" name="note" rows="2" placeholder="Vi du: Dat 35/35, lan dau"></textarea>
+            <label class="form-label">Ghi chú</label>
+            <textarea class="form-control" name="note" rows="2" placeholder="Ví dụ: Đạt 35/35, lần đầu"></textarea>
           </div>
           <div class="col-12 text-end">
-            <button class="btn btn-primary" type="submit">Gui ket qua</button>
+            <button class="btn btn-primary" type="submit">Gửi kết quả</button>
           </div>
         </form>
       </section>
 
       <section class="dashboard-card">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-          <h2 class="h4 mb-0">Lich su gui ket qua</h2>
+          <h2 class="h4 mb-0">Lịch sử gửi kết quả</h2>
           <span class="compact-badge" id="historyBadge">0</span>
         </div>
         <div class="table-shell">
           <table class="table align-middle admin-table">
             <thead>
               <tr>
-                <th>Loai thi</th>
-                <th>Nen tang</th>
-                <th>Diem</th>
-                <th>Trang thai</th>
-                <th>Thoi gian</th>
+                <th>Loại thi</th>
+                <th>Nền tảng</th>
+                <th>Điểm</th>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
               </tr>
             </thead>
             <tbody id="historyTable"></tbody>
