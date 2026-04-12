@@ -113,6 +113,7 @@ async function loadThirdPartyAttempts() {
             <td>${window.DriveSchoolCommon.escapeHtml(String(item.score || 0))}</td>
             <td>${item.passed ? '<span class="badge text-bg-success">Dat</span>' : '<span class="badge text-bg-danger">Chua dat</span>'}</td>
             <td>${window.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
+            <td><a href="${window.DriveSchoolCommon.escapeHtml(item.proof_url)}" target="_blank">Xem chi tiết</a></td>
           </tr>
         `
       )
