@@ -49,7 +49,7 @@ function renderThirdPartyLinks() {
   const entries = Object.entries(workspace.links || {});
 
   if (!entries.length) {
-    container.innerHTML = '<div class="text-muted">Chua co link thi cho khoa hoc nay.</div>';
+    container.innerHTML = '<div class="text-muted">Chưa có link thi cho khoá học này.</div>';
     return;
   }
 
@@ -163,11 +163,11 @@ function renderHistory() {
   const historyTable = document.getElementById("historyTable");
 
   document.getElementById("attemptCount").textContent = String(attempts.length);
-  document.getElementById("historyBadge").textContent = `${attempts.length} lan`;
+  document.getElementById("historyBadge").textContent = `${attempts.length} lần`;
   document.getElementById("latestStatus").textContent = attempts[0]
     ? attempts[0].passed
-      ? "Dat"
-      : "Chua dat"
+      ? "Đạt"
+      : "Chưa đạt"
     : "-";
 
   historyTable.innerHTML = attempts.length
@@ -199,7 +199,7 @@ function renderProgressChart(attempts) {
   const scores = orderedAttempts.map((item) => Number(item.score || 0));
   const hasData = orderedAttempts.length > 0;
 
-  document.getElementById("studentProgressBadge").textContent = `${orderedAttempts.length} lan gui`;
+  document.getElementById("studentProgressBadge").textContent = `${orderedAttempts.length} lần gửi`;
   setStudentChartEmptyState("studentProgressChart", "studentProgressChartEmpty", hasData);
   if (!hasData) {
     destroyStudentChart("progress");
@@ -212,7 +212,7 @@ function renderProgressChart(attempts) {
       labels,
       datasets: [
         {
-          label: "Diem",
+          label: "Điểm",
           data: scores,
           borderColor: "#0d47a1",
           backgroundColor: "rgba(13, 71, 161, 0.15)",
@@ -240,8 +240,8 @@ function renderProgressChart(attempts) {
             afterLabel(context) {
               const item = orderedAttempts[context.dataIndex] || {};
               return [
-                `Loai thi: ${item.exam_type || "-"}`,
-                `Trang thai: ${item.passed ? "Dat" : "Chua dat"}`
+                `Loại thi: ${item.exam_type || "-"}`,
+                `Trạng thái: ${item.passed ? "Đạt" : "Chưa đạt"}`
               ];
             }
           }
@@ -266,7 +266,7 @@ function renderStatusChart(attempts) {
   upsertStudentChart("status", "studentStatusChart", {
     type: "doughnut",
     data: {
-      labels: ["Dat", "Chua dat"],
+      labels: ["Đạt", "Chưa đạt"],
       datasets: [
         {
           data: [passedCount, failedCount],
@@ -321,7 +321,7 @@ function clearProofPreview() {
 
 async function buildProofDataUrl(file) {
   if (!String(file.type || "").startsWith("image/")) {
-    throw new Error("Vui long chon file anh minh chung.");
+    throw new Error("Vui lòng chọn file ảnh minh chứng.");
   }
 
   const sourceDataUrl = await readFileAsDataUrl(file);
@@ -331,7 +331,7 @@ async function buildProofDataUrl(file) {
     if (sourceDataUrl.length <= MAX_PROOF_DATA_URL_LENGTH) {
       return sourceDataUrl;
     }
-    throw new Error("Anh minh chung chua duoc ho tro. Vui long doi sang PNG hoac JPG.");
+    throw new Error("Ảnh minh chứng chưa được hỗ trợ. Vui lòng đổi sang định dạng PNG hoặc JPG.");
   }
 
   const compressionSteps = [
