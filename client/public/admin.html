@@ -65,6 +65,12 @@
       </section>
 
       <section class="dashboard-card mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div>
+            <h2 class="h4 mb-1">Bộ lọc tổng quan</h2>
+            <p class="text-muted mb-0">Dùng để xem nhanh chỉ số và biểu đồ tổng hợp của dashboard.</p>
+          </div>
+        </div>
         <div class="row g-3 align-items-end">
           <div class="col-md-4">
             <label class="form-label">Từ ngày</label>
@@ -88,16 +94,67 @@
       </section>
 
       <section class="row g-4 mb-4">
+        <div class="col-xl-7">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Biểu đồ tổng quan</h2>
+                <p class="text-muted mb-0">Theo bộ lọc tổng quan ở phía trên.</p>
+              </div>
+              <span class="compact-badge" id="overviewChartBadge">Toàn bộ dữ liệu</span>
+            </div>
+            <div class="chart-shell">
+              <canvas id="adminOverviewChart"></canvas>
+            </div>
+            <p class="text-muted small mb-0 d-none" id="adminOverviewChartEmpty">Chưa có dữ liệu tổng quan để hiển thị biểu đồ.</p>
+          </div>
+        </div>
         <div class="col-xl-5">
-          <div class="dashboard-card">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Biểu đồ kết quả 3rd-party</h2>
+                <p class="text-muted mb-0">Cập nhật theo bộ lọc riêng của bảng kết quả phía dưới.</p>
+              </div>
+              <span class="compact-badge" id="thirdPartyChartBadge">0 kết quả</span>
+            </div>
+            <div class="chart-shell">
+              <canvas id="adminThirdPartyChart"></canvas>
+            </div>
+            <p class="text-muted small mb-0 d-none" id="adminThirdPartyChartEmpty">Chưa có dữ liệu kết quả để hiển thị biểu đồ.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-xl-5">
+          <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
                 <h2 class="h4 mb-1">Danh sách học viên</h2>
                 <p class="text-muted mb-0">Admin quản lý tài khoản học viên.</p>
               </div>
+              <span class="compact-badge" id="studentCountBadge">0 học viên</span>
               <button class="btn btn-outline-primary btn-sm" type="button" id="openStudentModalButton">
                 <i class="fa-solid fa-plus"></i> Thêm học viên
               </button>
+            </div>
+            <div class="table-filter-grid mb-3">
+              <div>
+                <label class="form-label">Tìm nhanh</label>
+                <input class="form-control" type="search" id="studentSearchInput" placeholder="Tên hoặc email">
+              </div>
+              <div>
+                <label class="form-label">Khóa học</label>
+                <select class="form-select" id="studentCourseFilterLocal">
+                  <option value="">Tất cả</option>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
             </div>
             <div class="table-shell">
               <table class="table align-middle admin-table">
@@ -105,7 +162,7 @@
                   <tr>
                     <th>Tên</th>
                     <th>Email</th>
-                    <th>Khoá học</th>
+                    <th>Khóa học</th>
                     <th>Ngày tạo</th>
                     <th>Ghi chú</th>
                   </tr>
@@ -116,13 +173,30 @@
           </div>
         </div>
         <div class="col-xl-7">
-          <div class="dashboard-card">
+          <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
                 <h2 class="h4 mb-1">Form Đăng ký tư vấn</h2>
                 <p class="text-muted mb-0">Lead từ landing page đổ về đây.</p>
               </div>
-              <span class="compact-badge" id="registrationCountBadge">0</span>
+              <span class="compact-badge" id="registrationCountBadge">0 lead</span>
+            </div>
+            <div class="table-filter-grid mb-3">
+              <div>
+                <label class="form-label">Tìm nhanh</label>
+                <input class="form-control" type="search" id="registrationSearchInput" placeholder="Tên, số điện thoại hoặc email">
+              </div>
+              <div>
+                <label class="form-label">Lọc Khóa học</label>
+                <select class="form-select" id="registrationCourseFilterLocal">
+                  <option value="">Tất cả</option>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
             </div>
             <div class="table-shell">
               <table class="table align-middle admin-table">
@@ -147,9 +221,34 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div>
             <h2 class="h4 mb-1">Kết quả thi 3rd-party</h2>
-            <p class="text-muted mb-0">Học viên tự gửi kết quả sau khi thi lý thuyết/mô phỏng.</p>
+            <p class="text-muted mb-0">Học viên tự gửi kết quả sau khi thi lý thuyết và mô phỏng.</p>
           </div>
-          <span class="compact-badge" id="thirdPartyCountBadge">0</span>
+          <span class="compact-badge" id="thirdPartyCountBadge">0 kết quả</span>
+        </div>
+        <div class="table-filter-grid mb-3">
+          <div>
+            <label class="form-label">Tìm nhanh</label>
+            <input class="form-control" type="search" id="thirdPartySearchInput" placeholder="Học viên, loại thi hoặc nền tảng">
+          </div>
+          <div>
+            <label class="form-label">Lọc Khóa học</label>
+            <select class="form-select" id="thirdPartyCourseFilterLocal">
+              <option value="">Tất cả</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Lọc trạng thái</label>
+            <select class="form-select" id="thirdPartyStatusFilter">
+              <option value="">Tất cả</option>
+              <option value="passed">Đạt</option>
+              <option value="failed">Chưa đạt</option>
+            </select>
+          </div>
         </div>
         <div class="table-shell">
           <table class="table align-middle admin-table">
@@ -162,7 +261,8 @@
                 <th>Điểm</th>
                 <th>Trạng thái</th>
                 <th>Thời gian</th>
-                <th>Link đã làm</th>
+                <th>Link bài thi</th>
+                <th>Minh chứng</th>
               </tr>
             </thead>
             <tbody id="thirdPartyTable"></tbody>
@@ -187,7 +287,7 @@
             <div class="col-12"><label class="form-label">Tên học viên</label><input class="form-control" type="text" name="name" required></div>
             <div class="col-12"><label class="form-label">Email</label><input class="form-control" type="email" name="email" required></div>
             <div class="col-md-6"><label class="form-label">Mật khẩu</label><input class="form-control" type="text" name="password" required></div>
-            <div class="col-md-6"><label class="form-label">Loại bằng</label><select class="form-select" name="course_type" required><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option></select></div>
+            <div class="col-md-6"><label class="form-label">Loại bằng</label><select class="form-select" name="course_type" required><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option></select></div>
             <div class="col-12 text-end">
               <button class="btn btn-primary" type="submit">Tạo tài khoản</button>
             </div>
@@ -197,9 +297,33 @@
     </div>
   </div>
 
+  <div class="modal fade" id="proofPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content admin-modal">
+        <div class="modal-header border-0 pb-0">
+          <div>
+            <h2 class="modal-title h4 mb-1">Ảnh minh chứng</h2>
+            <p class="text-muted mb-0" id="proofPreviewMeta">Xem nhanh ảnh học viên gửi cho admin.</p>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="proof-preview-shell">
+            <img id="proofPreviewImage" class="img-fluid rounded d-none" alt="Ảnh minh chứng">
+            <div class="text-center text-muted" id="proofPreviewFallback">Ảnh minh chứng sẽ hiển thị tại đây.</div>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <a class="btn btn-outline-primary d-none" id="proofPreviewExternalLink" target="_blank" rel="noopener noreferrer">Mở trong tab mới</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="/src/js/common.js"></script>
   <script src="/src/js/i18n.js"></script>
   <script src="/src/js/admin.js"></script>

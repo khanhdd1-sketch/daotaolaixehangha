@@ -709,6 +709,38 @@ body {
   overflow: auto;
 }
 
+.table-filter-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.chart-shell {
+  position: relative;
+  min-height: 320px;
+}
+
+.chart-shell canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.proof-preview-shell {
+  min-height: 320px;
+  border-radius: 22px;
+  border: 1px solid rgba(16, 37, 66, 0.08);
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.proof-preview-shell img {
+  max-height: 65vh;
+  width: auto;
+}
+
 .toolbar-shell {
   padding: 1rem;
   border: 1px solid rgba(16, 37, 66, 0.08);
