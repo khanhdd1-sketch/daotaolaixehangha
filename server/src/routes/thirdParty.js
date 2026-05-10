@@ -9,27 +9,27 @@ const THIRD_PARTY_LINKS = {
   A1: {
     theory: { label: "Thi lý thuyết", platform_name: "ThiThuLaiXe", url: "https://thithulaixe.com/" },
     theory_600: { label: "Thi 600 câu", platform_name: "ThiThuLaiXeVN", url: "https://thithulaixe.vn/" },
-    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://mophong120.com/" }
+    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://daotaolaixehd.com.vn/thi-thu-mo-phong" }
   },
   A2: {
     theory: { label: "Thi lý thuyết", platform_name: "ThiThuLaiXe", url: "https://thithulaixe.com/" },
     theory_600: { label: "Thi 600 câu", platform_name: "ThiThuLaiXeVN", url: "https://thithulaixe.vn/" },
-    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://mophong120.com/" }
+    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://daotaolaixehd.com.vn/thi-thu-mo-phong" }
   },
   B1: {
     theory: { label: "Thi lý thuyết", platform_name: "ThiThuLaiXe", url: "https://thithulaixe.com/" },
     theory_600: { label: "Thi 600 câu", platform_name: "ThiThuLaiXeVN", url: "https://thithulaixe.vn/" },
-    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://mophong120.com/" }
+    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://daotaolaixehd.com.vn/thi-thu-mo-phong" }
   },
   B2: {
     theory: { label: "Thi lý thuyết", platform_name: "ThiThuLaiXe", url: "https://thithulaixe.com/" },
     theory_600: { label: "Thi 600 câu", platform_name: "ThiThuLaiXeVN", url: "https://thithulaixe.vn/" },
-    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://mophong120.com/" }
+    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://daotaolaixehd.com.vn/thi-thu-mo-phong" }
   },
   C1: {
     theory: { label: "Thi lý thuyết", platform_name: "ThiThuLaiXe", url: "https://thithulaixe.com/" },
     theory_600: { label: "Thi 600 câu", platform_name: "ThiThuLaiXeVN", url: "https://thithulaixe.vn/" },
-    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://mophong120.com/" }
+    simulation: { label: "Thi mô phỏng", platform_name: "MoPhong120", url: "https://daotaolaixehd.com.vn/thi-thu-mo-phong" }
   }
 };
 
