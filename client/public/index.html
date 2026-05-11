@@ -3,21 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Trung tâm dạy lái xe Hằng Hà cung cấp khóa học A1, A2, B1, B2, C1, tư vấn đăng ký, thi thử online và dashboard quản lý học viên." data-i18n-meta="meta.homeDescription">
-  <meta property="og:title" content="Trung tâm dạy lái xe Hằng Hà | Khoa học bằng lái xe A1 A2 B1 B2 C1" data-i18n-meta="meta.homeTitle">
-  <meta property="og:description" content="Trung tâm dạy lái xe Hằng Hà cung cấp khóa học A1, A2, B1, B2, C1, tư vấn đăng ký, thi thử online và dashboard quản lý học viên." data-i18n-meta="meta.homeDescription">
+
+  <!-- ✅ SEO Description -->
+  <meta name="description" content="Trung tâm dạy lái xe Hằng Hà chuyên đào tạo bằng lái xe A1, A2, B1, B2, C1 uy tín. Đăng ký nhanh, thi thử online, hỗ trợ học viên toàn diện. Hotline: 0986 082 686">
+
+  <!-- ✅ Open Graph -->
+  <meta property="og:title" content="Trung tâm dạy lái xe Hằng Hà | Học bằng lái A1, A2, B1, B2, C1 uy tín">
+  <meta property="og:description" content="Đào tạo bằng lái xe A1, A2, B1, B2, C1 uy tín. Thi thử online, hỗ trợ học viên, đăng ký nhanh chóng.">
   <meta property="og:type" content="website">
-  <title>Trung tâm dạy lái xe Hằng Hà</title>
-  <link rel="canonical" href="http://localhost:5000/index.html">
-  <link rel="alternate" hreflang="vi-VN" href="http://localhost:5000/index.html?lang=vi">
-  <link rel="alternate" hreflang="en" href="http://localhost:5000/index.html?lang=en">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:url" content="https://daotaolaixehangha.com/">
+  <meta property="og:image" content="https://daotaolaixehangha.com/assets/img/cover.jpg">
+
+  <!-- ✅ Title -->
+  <title>Trung tâm dạy lái xe Hằng Hà | Học bằng lái A1, A2, B1, B2, C1 uy tín</title>
+
+  <!-- ✅ Canonical -->
+  <link rel="canonical" href="https://daotaolaixehangha.com/">
+
+  <!-- ✅ hreflang -->
+  <link rel="alternate" hreflang="vi" href="https://daotaolaixehangha.com/?lang=vi">
+  <link rel="alternate" hreflang="en" href="https://daotaolaixehangha.com/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://daotaolaixehangha.com/">
+
+  <!-- ✅ CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link href="/src/css/main.css" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%231b3a6f'/%3E%3Ccircle cx='32' cy='32' r='16' fill='none' stroke='%23ffffff' stroke-width='4'/%3E%3Cline x1='32' y1='16' x2='32' y2='24' stroke='%23ffffff' stroke-width='3'/%3E%3Cline x1='16' y1='32' x2='24' y2='32' stroke='%23ffffff' stroke-width='3'/%3E%3Cline x1='40' y1='32' x2='48' y2='32' stroke='%23ffffff' stroke-width='3'/%3E%3Ctext x='32' y='54' text-anchor='middle' font-size='12' fill='%23ffffff' font-family='Arial, Helvetica, sans-serif'%3EHH%3C/text%3E%3C/svg%3E">
+
+  <!-- ✅ Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,...">
+
+  <!-- ✅ Structured Data (FIX QUAN TRỌNG) -->
   <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"Organization","name":"DriveMaster","url":"http://localhost:5000","telephone":"0986 082 686","description":"Driving school center offering A1, A2, B1, B2, and C1 training with consultation, online theory practice, and admin management dashboard."}
+  {
+    "@context": "https://schema.org",
+    "@type": "DrivingSchool",
+    "name": "Trung tâm dạy lái xe Hằng Hà",
+    "url": "https://daotaolaixehangha.com",
+    "telephone": "0986082686",
+    "description": "Trung tâm đào tạo lái xe A1, A2, B1, B2, C1 uy tín, hỗ trợ học viên từ đăng ký đến thi sát hạch.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "B23 - 16 Cienco 5",
+      "addressLocality": "Đan Phượng",
+      "addressRegion": "Hà Nội",
+      "addressCountry": "VN"
+    }
+  }
   </script>
 </head>
 <body data-page-title="meta.homeTitle">
@@ -28,11 +62,11 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item"><a class="nav-link" href="/index.html" data-i18n="common.navHome">Trang chủ</a></li>
-            <li class="nav-item"><a class="nav-link" href="#courses" data-i18n="common.navCourses">Khoa hoc</a></li>
-            <li class="nav-item"><a class="nav-link" href="#process" data-i18n="common.navProcess">Quy trinh</a></li>
-            <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="common.navContact">Lien he</a></li>
-            <li class="nav-item"><a class="nav-link" href="/login.html" data-i18n="common.navLogin">Dang nhap</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" data-i18n="common.navHome">Trang chủ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#courses" data-i18n="common.navCourses">Khóa học</a></li>
+            <li class="nav-item"><a class="nav-link" href="#process" data-i18n="common.navProcess">Quy trình</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="common.navContact">Liên hệ</a></li>
+            <li class="nav-item"><a class="nav-link" href="/login.html" data-i18n="common.navLogin">Đăng nhập</a></li>
           </ul>
           <div class="d-flex align-items-center gap-3">
             <span class="small fw-semibold text-nowrap" data-i18n="common.hotline">Hotline: 0986 082 686</span>
@@ -51,23 +85,23 @@
       <div class="container">
         <div class="row align-items-center g-4">
           <div class="col-lg-6">
-            <span class="hero-badge mb-3" data-aos="fade-up" data-i18n="home.badge">Trung tam day lai chuan sat hach</span>
-            <h1 class="hero-title mb-3" data-aos="fade-up" data-aos-delay="100" data-i18n="home.title">Hoc bang lai nhanh, thi thu that, chot lich linh hoat</h1>
-            <p class="hero-copy mb-4" data-aos="fade-up" data-aos-delay="200" data-i18n="home.subtitle">Chuong trinh hoc A1, A2, B1, B2 voi giao vien sat sao, lich hoc toi uu cho nguoi di lam va he thong theo doi hoc vien de su dung de dang cho ca admin lan hoc vien.</p>
+            <span class="hero-badge mb-3" data-aos="fade-up" data-i18n="home.badge">Trung tâm dạy lái xe chuẩn sát hạch</span>
+            <h1 class="hero-title mb-3" data-aos="fade-up" data-aos-delay="100" data-i18n="home.title">Học bằng lái nhanh, thi thử thật, chọn lịch linh hoạt</h1>
+            <p class="hero-copy mb-4" data-aos="fade-up" data-aos-delay="200" data-i18n="home.subtitle">Chương trình học A1, A2, B1, B2 với giáo viên sát sao, lịch học tối ưu cho người đi làm và hệ thống theo dõi học viên để sử dụng dễ dàng cho cả admin lẫn học viên.</p>
             <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="300">
-              <a class="btn btn-primary" href="#registrationForm" data-i18n="home.primaryCta">Dang ky tu van</a>
-              <a class="btn btn-outline-dark" href="/login.html" data-i18n="home.secondaryCta">Dang nhap he thong</a>
+              <a class="btn btn-primary" href="#registrationForm" data-i18n="home.primaryCta">Đăng ký tư vấn</a>
+              <a class="btn btn-outline-dark" href="/login.html" data-i18n="home.secondaryCta">Đăng nhập hệ thống</a>
             </div>
             <div class="hero-note mt-4">
               <i class="fa-solid fa-circle-info"></i>
-              <span data-i18n="home.heroNote">Tai khoan hoc vien do trung tam tao san. Hoc vien chi can dang nhap de theo doi khoa hoc va ket qua thi.</span>
+              <span data-i18n="home.heroNote">Tài khoản học viên do trung tâm tạo sẵn. Học viên chỉ cần đăng nhập để theo dõi khóa học và kết quả thi.</span>
             </div>
           </div>
           <div class="col-lg-6">
             <div class="hero-visual" data-aos="zoom-in">
               <div class="hero-stat">
                 <div class="counter" data-counter-target="1280">0</div>
-                <div class="text-muted" data-i18n="home.stat">Hoc vien da dang ky</div>
+                <div class="text-muted" data-i18n="home.stat">Học viên đã đăng ký</div>
               </div>
             </div>
           </div>
@@ -81,21 +115,21 @@
           <div class="col-md-4">
             <div class="trust-card" data-aos="fade-up">
               <i class="fa-solid fa-user-shield"></i>
-              <h2 class="h5 mt-3" data-i18n="home.trustOneTitle">Admin quan ly tap trung</h2>
-              <p class="mb-0 text-muted" data-i18n="home.trustOneText">Chi admin moi duoc tao hoc vien, cap de thi va theo doi toan bo thong tin trong mot dashboard.</p>
+              <h2 class="h5 mt-3" data-i18n="home.trustOneTitle">Admin quản lý tập trung</h2>
+              <p class="mb-0 text-muted" data-i18n="home.trustOneText">Chỉ admin mới được tạo học viên, cấp đề thi và theo dõi toàn bộ thông tin trong một dashboard.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="trust-card" data-aos="fade-up" data-aos-delay="100">
               <i class="fa-solid fa-mobile-screen-button"></i>
-              <h2 class="h5 mt-3" data-i18n="home.trustTwoTitle">Hoc vien de su dung</h2>
+              <h2 class="h5 mt-3" data-i18n="home.trustTwoTitle">Học viên dễ sử dụng</h2>
               <p class="mb-0 text-muted" data-i18n="home.trustTwoText">Website học và thi bằng lái xe được thiết kế thân thiện với người dùng, giao diện dễ nhìn, nút bấm lớn, thao tác nhanh gọn, giúp học viên dễ dàng ôn luyện và làm bài thi, kể cả khi không rành công nghệ.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="trust-card" data-aos="fade-up" data-aos-delay="200">
               <i class="fa-solid fa-language"></i>
-              <h2 class="h5 mt-3" data-i18n="home.trustThreeTitle">Song ngu VI va EN</h2>
+              <h2 class="h5 mt-3" data-i18n="home.trustThreeTitle">Song ngữ VI và EN</h2>
               <p class="mb-0 text-muted" data-i18n="home.trustThreeText">Nội dung song ngữ rõ ràng, hỗ trợ tư vấn học viên nhanh chóng. </p>
             </div>
           </div>
@@ -106,23 +140,23 @@
     <section class="section-block" id="process">
       <div class="container">
         <div class="text-center mx-auto mb-5" style="max-width: 720px;">
-          <span class="section-badge mb-3" data-i18n="home.introBadge">Vi sao chon chung toi</span>
-          <h2 class="section-title" data-i18n="home.introTitle">Mot he sinh thai hoc lai xe tron ven</h2>
+          <span class="section-badge mb-3" data-i18n="home.introBadge">Vì sao chọn chúng tôi</span>
+          <h2 class="section-title" data-i18n="home.introTitle">Một hệ sinh thái học lái xe trọn vẹn</h2>
         </div>
         <div class="row g-4">
-          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up"><div class="icon-wrap mb-3"><i class="fa-solid fa-phone-volume"></i></div><h3 class="h4" data-i18n="home.processOneTitle">1. Tu van nhanh</h3><p class="mb-0 text-muted" data-i18n="home.processOneText">Hoc vien de lai thong tin, trung tam goi lai, chot khoa hoc va lich hoc phu hop.</p></article></div>
-          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up" data-aos-delay="80"><div class="icon-wrap mb-3"><i class="fa-solid fa-user-plus"></i></div><h3 class="h4" data-i18n="home.processTwoTitle">2. Tao tai khoan</h3><p class="mb-0 text-muted" data-i18n="home.processTwoText">Admin tao tai khoan hoc vien, gan khoa hoc va thong bao thong tin dang nhap.</p></article></div>
-          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up" data-aos-delay="160"><div class="icon-wrap mb-3"><i class="fa-solid fa-book-open-reader"></i></div><h3 class="h4" data-i18n="home.processThreeTitle">3. Hoc va on tap</h3><p class="mb-0 text-muted" data-i18n="home.processThreeText">Hoc vien dang nhap, xem khoa hoc cua minh, thi online va xem lai dap an sau moi lan nop.</p></article></div>
-          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up" data-aos-delay="240"><div class="icon-wrap mb-3"><i class="fa-solid fa-chart-pie"></i></div><h3 class="h4" data-i18n="home.processFourTitle">4. Theo doi ket qua</h3><p class="mb-0 text-muted" data-i18n="home.processFourText">Dashboard admin cap nhat ngay ket qua thi, luot dang ky va tien do xu ly hoc vien.</p></article></div>
+          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up"><div class="icon-wrap mb-3"><i class="fa-solid fa-phone-volume"></i></div><h3 class="h4" data-i18n="home.processOneTitle">1. Tư vấn nhanh</h3><p class="mb-0 text-muted" data-i18n="home.processOneText">Học viên để lại thông tin, trung tâm gọi lại, chốt khóa học và lịch học phù hợp.</p></article></div>
+          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up" data-aos-delay="80"><div class="icon-wrap mb-3"><i class="fa-solid fa-user-plus"></i></div><h3 class="h4" data-i18n="home.processTwoTitle">2. Tạo tài khoản</h3><p class="mb-0 text-muted" data-i18n="home.processTwoText">Admin tạo tài khoản cho học viên, gán khóa học và thông báo thông tin đăng nhập.</p></article></div>
+          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up" data-aos-delay="160"><div class="icon-wrap mb-3"><i class="fa-solid fa-book-open-reader"></i></div><h3 class="h4" data-i18n="home.processThreeTitle">3. Học và ôn tập</h3><p class="mb-0 text-muted" data-i18n="home.processThreeText">Học viên đăng nhập, xem khóa học của mình, thi online và xem lại đáp án sau mỗi lần nộp.</p></article></div>
+          <div class="col-md-6 col-lg-3"><article class="info-card process-card" data-aos="fade-up" data-aos-delay="240"><div class="icon-wrap mb-3"><i class="fa-solid fa-chart-pie"></i></div><h3 class="h4" data-i18n="home.processFourTitle">4. Theo dõi kết quả</h3><p class="mb-0 text-muted" data-i18n="home.processFourText">Dashboard admin cập nhật ngay kết quả thi, lượt đăng ký và tiến độ xử lý học viên.</p></article></div>
         </div>
       </div>
     </section>
-
+    
     <section class="section-block pt-0" id="courses">
       <div class="container">
         <div class="text-center mx-auto mb-5" style="max-width: 720px;">
-          <span class="section-badge mb-3" data-i18n="home.packagesBadge">Goi hoc</span>
-          <h2 class="section-title" data-i18n="home.packagesTitle">Chon khoa hoc phu hop muc tieu cua ban</h2>
+          <span class="section-badge mb-3" data-i18n="home.packagesBadge">Gói học</span>
+          <h2 class="section-title" data-i18n="home.packagesTitle">Chọn khóa học phù hợp mục tiêu của bạn</h2>
         </div>
         <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-5">
           <div class="col">
@@ -182,19 +216,19 @@
       <div class="container">
         <div class="campus-header mb-4">
           <div>
-            <span class="section-badge mb-3" data-i18n="home.campusBadge">Khong gian co so</span>
-            <h2 class="section-title mb-2" data-i18n="home.campusTitle">Xem truoc khong gian hoc va khu tiep nhan ho so</h2>
+            <span class="section-badge mb-3" data-i18n="home.campusBadge">Không gian cơ sở</span>
+            <h2 class="section-title mb-2" data-i18n="home.campusTitle">Xem trước không gian học và khu tiếp nhận hồ sơ</h2>
           </div>
-          <p class="campus-copy" data-i18n="home.campusCopy">Hinh anh duoc cap nhat tu cac diem hoc cua DriveMaster de hoc vien de hinh dung khu tiep nhan, phong hoc ly thuyet va khu thuc hanh truoc khi dang ky.</p>
+          <p class="campus-copy" data-i18n="home.campusCopy">Hình ảnh được cập nhật từ các điểm học của trung tâm dạy lái xe Hằng hà  để học viên dễ hình dung khu tiếp nhận, phòng học lý thuyết và khu thực hành trước khi đăng ký.</p>
         </div>
         <div class="row g-4">
           <div class="col-lg-6">
             <article class="campus-photo-card campus-photo-main" data-aos="fade-up">
               <img class="campus-photo-image" src="/assets/img/cosochinh.jpg" alt="DriveMaster main campus exterior" loading="lazy">
               <div class="campus-photo-overlay">
-                <span class="campus-photo-chip campus-photo-chip-main" data-i18n="home.campusMainChip">Co so chinh</span>
-                <h3 data-i18n="home.campusMainTitle">DriveMaster Nguyen Van Linh</h3>
-                <p data-i18n="home.campusMainText">Khu tiep nhan ho so va tu van truc tiep cho hoc vien moi tai Quan 7.</p>
+                <span class="campus-photo-chip campus-photo-chip-main" data-i18n="home.campusMainChip">Cơ sở chính</span>
+                <h3 data-i18n="home.campusMainTitle">Trung tâm đào tạo lái xe Hằng Hà</h3>
+                <p data-i18n="home.campusMainText">Khu tiếp nhận hồ sơ và tư vấn trực tiếp cho học viên mới tại Đan Phượng.</p>
               </div>
             </article>
           </div>
@@ -202,9 +236,9 @@
             <article class="campus-photo-card campus-photo-small" data-aos="fade-up" data-aos-delay="80">
               <img class="campus-photo-image" src="/assets/img/coso2.jpg" alt="DriveMaster branch consultation area" loading="lazy">
               <div class="campus-photo-overlay">
-                <span class="campus-photo-chip" data-i18n="home.campusBranchChip">Co so</span>
-                <h3 data-i18n="home.campusBranchOneTitle">DriveMaster Cong Hoa</h3>
-                <p data-i18n="home.campusBranchOneText">Diem tiep nhan ho so gan san bay, phu hop hoc vien khu vuc Tan Binh.</p>
+                <span class="campus-photo-chip" data-i18n="home.campusBranchChip">Cơ sở</span>
+                <h3 data-i18n="home.campusBranchOneTitle">Trung tâm đào tạo lái xe Hằng Hà cơ sở 2</h3>
+                <p data-i18n="home.campusBranchOneText">Điểm tiếp nhận hồ sơ gần sân bay, phù hợp với học viên khu vực Hà Nội.</p>
               </div>
             </article>
           </div>
@@ -212,9 +246,9 @@
             <article class="campus-photo-card campus-photo-small" data-aos="fade-up" data-aos-delay="160">
               <img class="campus-photo-image" src="/assets/img/coso3.jpg" alt="DriveMaster district 10 branch office" loading="lazy">
               <div class="campus-photo-overlay">
-                <span class="campus-photo-chip" data-i18n="home.campusBranchChip">Co so</span>
-                <h3 data-i18n="home.campusBranchTwoTitle">DriveMaster To Hien Thanh</h3>
-                <p data-i18n="home.campusBranchTwoText">Khu tu van gon gang, de dat lich hoc cuoi tuan cho hoc vien di lam.</p>
+                <span class="campus-photo-chip" data-i18n="home.campusBranchChip">Cơ sở</span>
+                <h3 data-i18n="home.campusBranchTwoTitle">Trung tâm đào tạo lái xe Hằng Hà cơ sở 3</h3>
+                <p data-i18n="home.campusBranchTwoText">Khu tư vấn gọn gàng, dễ đặt lịch học cuối tuần cho học viên đi làm.</p>
               </div>
             </article>
           </div>
@@ -222,9 +256,9 @@
             <article class="campus-photo-card campus-photo-wide" data-aos="fade-up">
               <img class="campus-photo-image" src="/assets/img/khuthuchanh.jpg" alt="Driving practice area with training vehicles" loading="lazy">
               <div class="campus-photo-overlay">
-                <span class="campus-photo-chip" data-i18n="home.campusPracticeChip">Khu thuc hanh</span>
-                <h3 data-i18n="home.campusPracticeTitle">Bai tap lai va lich hoc linh hoat</h3>
-                <p data-i18n="home.campusPracticeText">Khu tap lai duoc bo tri theo khung gio sang, chieu va toi de toi uu lich hoc.</p>
+                <span class="campus-photo-chip" data-i18n="home.campusPracticeChip">Khu thực hành</span>
+                <h3 data-i18n="home.campusPracticeTitle">Bài tập lái xe và lịch học linh hoạt</h3>
+                <p data-i18n="home.campusPracticeText">Khu tập lái được bố trí theo khung giờ sáng, chiều và tối để tối ưu lịch học.</p>
               </div>
             </article>
           </div>
@@ -232,9 +266,9 @@
             <article class="campus-photo-card campus-photo-wide" data-aos="fade-up" data-aos-delay="120">
               <img class="campus-photo-image" src="/assets/img/phonghoc.jpg" alt="Theory classroom and simulation support area" loading="lazy">
               <div class="campus-photo-overlay">
-                <span class="campus-photo-chip" data-i18n="home.campusClassroomChip">Phong hoc</span>
-                <h3 data-i18n="home.campusClassroomTitle">Phong hoc ly thuyet va mo phong sat hach</h3>
-                <p data-i18n="home.campusClassroomText">Hoc vien co the on tap ly thuyet, lam bai thu va duoc huong dan ngay tai lop.</p>
+                <span class="campus-photo-chip" data-i18n="home.campusClassroomChip">Phòng học</span>
+                <h3 data-i18n="home.campusClassroomTitle">Phòng học lý thuyết và mô phỏng sát hạch</h3>
+                <p data-i18n="home.campusClassroomText">Học viên có thể ôn tập lý thuyết, làm bài thu và được hướng dẫn ngay tại lớp.</p>
               </div>
             </article>
           </div>
@@ -246,12 +280,12 @@
       <div class="container">
         <div class="reviews-top mb-4">
           <div class="reviews-heading">
-            <span class="section-badge mb-3" data-i18n="home.feedbackBadge">Phan hoi hoc vien</span>
-            <h2 class="section-title mb-2" data-i18n="home.feedbackTitle">Binh luan thuc te sau khi hoc va thi sat hach</h2>
-            <p class="reviews-copy" data-i18n="home.feedbackCopy">Danh gia duoc tong hop tu hoc vien da tham gia cac khoa A1, A2, B1, B2 va doi ngu van hanh theo tung co so.</p>
+            <span class="section-badge mb-3" data-i18n="home.feedbackBadge">Phản hồi học viên</span>
+            <h2 class="section-title mb-2" data-i18n="home.feedbackTitle">Bình luận thực tế sau khi học và thi sát hạch</h2>
+            <p class="reviews-copy" data-i18n="home.feedbackCopy">Đánh giá được tổng hợp từ học viên đã tham gia các khóa A1, A2, B1, B2 và đội ngũ vận hành theo từng cơ sở.</p>
           </div>
           <aside class="review-score-card" data-aos="fade-left">
-            <p class="review-score-label" data-i18n="home.reviewScoreLabel">Diem danh gia trung binh</p>
+            <p class="review-score-label" data-i18n="home.reviewScoreLabel">Điểm đánh giá trung bình</p>
             <div class="review-score-value" data-i18n="home.reviewScoreValue">4.9/5</div>
             <div class="review-stars" aria-hidden="true">
               <i class="fa-solid fa-star"></i>
@@ -260,19 +294,19 @@
               <i class="fa-solid fa-star"></i>
               <i class="fa-solid fa-star-half-stroke"></i>
             </div>
-            <p class="review-score-copy" data-i18n="home.reviewScoreCopy">Danh gia duoc cap nhat theo phan hoi thuc te, khong loc thu cong.</p>
+            <p class="review-score-copy" data-i18n="home.reviewScoreCopy">Đánh giá được cập nhật theo phản hồi thực tế, không lọc thủ công.</p>
             <div class="review-metrics">
               <div class="review-metric-item">
                 <strong data-i18n="home.reviewMetricOneValue">1,280+</strong>
-                <span data-i18n="home.reviewMetricOneLabel">Hoc vien hoan thanh khoa hoc</span>
+                <span data-i18n="home.reviewMetricOneLabel">Học viên hoàn thành khóa học</span>
               </div>
               <div class="review-metric-item">
                 <strong data-i18n="home.reviewMetricTwoValue">96%</strong>
-                <span data-i18n="home.reviewMetricTwoLabel">Danh gia hai long dich vu</span>
+                <span data-i18n="home.reviewMetricTwoLabel">Học viên hài lòng với dịch vụ</span>
               </div>
               <div class="review-metric-item">
                 <strong data-i18n="home.reviewMetricThreeValue">24h</strong>
-                <span data-i18n="home.reviewMetricThreeLabel">Thoi gian phan hoi trung binh</span>
+                <span data-i18n="home.reviewMetricThreeLabel">Thời gian phản hồi trung bình</span>
               </div>
             </div>
           </aside>
@@ -284,11 +318,11 @@
                 <span class="testimonial-avatar avatar-red">NL</span>
                 <div>
                   <h3 class="testimonial-name">Nguyen Linh</h3>
-                  <p class="testimonial-meta" data-i18n="home.reviewOneMeta">Hoc vien B2 - Quan 7</p>
+                  <p class="testimonial-meta" data-i18n="home.reviewOneMeta">Học viên B2 - Quận 7</p>
                 </div>
               </div>
               <div class="testimonial-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <p class="testimonial-text" data-i18n="home.reviewOneText">Minh duoc xep lich hoc rat hop ly, giao vien huong dan ky va he thong online de theo doi ket qua tung lan thi.</p>
+              <p class="testimonial-text" data-i18n="home.reviewOneText">Minh được xếp lịch học rất hợp lý, giáo viên hướng dẫn kỹ và hệ thống online để theo dõi kết quả từng lần thi.</p>
             </article>
           </div>
           <div class="col-md-6 col-xl-4">
@@ -297,11 +331,11 @@
                 <span class="testimonial-avatar avatar-blue">TH</span>
                 <div>
                   <h3 class="testimonial-name">Tran Hao</h3>
-                  <p class="testimonial-meta" data-i18n="home.reviewTwoMeta">Hoc vien A2 - Tan Binh</p>
+                  <p class="testimonial-meta" data-i18n="home.reviewTwoMeta">Học viên A2 - Quận Bình Thạnh</p>
                 </div>
               </div>
               <div class="testimonial-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <p class="testimonial-text" data-i18n="home.reviewTwoText">Tu khau tu van den luc thi thu deu ro rang, co nhan vien nhac lich va giai dap nhanh qua hotline.</p>
+              <p class="testimonial-text" data-i18n="home.reviewTwoText">Dịch vụ chăm sóc khách hàng rất tốt, nhân viên luôn sẵn sàng hỗ trợ và giải đáp mọi thắc mắc của học viên.</p>
             </article>
           </div>
           <div class="col-md-6 col-xl-4">
@@ -310,11 +344,11 @@
                 <span class="testimonial-avatar avatar-gold">PY</span>
                 <div>
                   <h3 class="testimonial-name">Pham Yen</h3>
-                  <p class="testimonial-meta" data-i18n="home.reviewThreeMeta">Hoc vien B1 - Quan 10</p>
+                  <p class="testimonial-meta" data-i18n="home.reviewThreeMeta">Học viên B1 - Quận 10</p>
                 </div>
               </div>
               <div class="testimonial-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
-              <p class="testimonial-text" data-i18n="home.reviewThreeText">Giao dien mobile rat de dung, minh co the on tap ly thuyet va xem dap an ngay sau khi nop bai.</p>
+              <p class="testimonial-text" data-i18n="home.reviewThreeText">Giao diện mobile rất dễ dùng, mình có thể ôn tập lý thuyết và xem đáp án ngay sau khi nộp bài.</p>
             </article>
           </div>
           <div class="col-md-6 col-xl-4">
@@ -323,11 +357,11 @@
                 <span class="testimonial-avatar avatar-green">AT</span>
                 <div>
                   <h3 class="testimonial-name">Le Anh Thu</h3>
-                  <p class="testimonial-meta" data-i18n="home.reviewFourMeta">Hoc vien B2 - Thu Duc</p>
+                  <p class="testimonial-meta" data-i18n="home.reviewFourMeta">Học viên B2 - Thủ Đức</p>
                 </div>
               </div>
               <div class="testimonial-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <p class="testimonial-text" data-i18n="home.reviewFourText">Trung tam co nhieu co so nen di hoc rat tien, minh doi lich duoc nhanh va khong bi gian doan.</p>
+              <p class="testimonial-text" data-i18n="home.reviewFourText">Trung tâm có nhiều cơ sở nên đi học rất tiện, mình đặt lịch được nhanh và không bị gián đoạn.</p>
             </article>
           </div>
           <div class="col-md-6 col-xl-4">
@@ -349,7 +383,7 @@
                 <span class="testimonial-avatar avatar-dark">BT</span>
                 <div>
                   <h3 class="testimonial-name">Nguyen Bao Tran</h3>
-                  <p class="testimonial-meta" data-i18n="home.reviewSixMeta">Hoc vien B1 - Go Vap</p>
+                  <p class="testimonial-meta" data-i18n="home.reviewSixMeta">Học viên B1 - Gò Vấp</p>
                 </div>
               </div>
               <div class="testimonial-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
@@ -364,24 +398,24 @@
       <div class="container">
         <div class="row g-4 align-items-center">
           <div class="col-lg-5">
-            <span class="section-badge mb-3" data-i18n="home.formBadge">Dang ky tu van</span>
-            <h2 class="section-title mb-3" data-i18n="home.formTitle">Nhan tu van lo trinh va hoc phi trong 5 phut</h2>
-            <p class="text-muted" data-i18n="home.formSupport">Responsive, AJAX submit, luu data cho admin dashboard va toi uu cho nguoi dung lan dau truy cap.</p>
+            <span class="section-badge mb-3" data-i18n="home.formBadge">Đăng ký tư vấn</span>
+            <h2 class="section-title mb-3" data-i18n="home.formTitle">Nhận tư vấn lộ trình và học phí trong 5 phút</h2>
+            <p class="text-muted" data-i18n="home.formSupport">Responsive, AJAX submit, lưu data cho admin dashboard và tối ưu cho người dùng lần đầu truy cập.</p>
             <ul class="feature-list mt-4">
-              <li data-i18n="home.formPointOne">Khong can tao tai khoan de gui yeu cau tu van</li>
-              <li data-i18n="home.formPointTwo">Admin lien he lai va tao tai khoan hoc vien sau khi chot dang ky</li>
-              <li data-i18n="home.formPointThree">Thong tin duoc luu ngay de trung tam theo doi va bao cao</li>
+              <li data-i18n="home.formPointOne">Không cần tạo tài khoản để gửi yêu cầu tư vấn</li>
+              <li data-i18n="home.formPointTwo">Admin liên hệ lại và tạo tài khoản học viên sau khi chốt đăng ký</li>
+              <li data-i18n="home.formPointThree">Thông tin được lưu ngay để trung tâm theo dõi và báo cáo</li>
             </ul>
           </div>
           <div class="col-lg-7">
             <div class="panel-card">
               <form id="registrationForm" class="row g-3">
-                <div class="col-md-6"><label class="form-label" data-i18n="home.formName">Ho va ten</label><input class="form-control" type="text" name="name" required></div>
-                <div class="col-md-6"><label class="form-label" data-i18n="home.formPhone">So dien thoai</label><input class="form-control" type="tel" name="phone" required></div>
+                <div class="col-md-6"><label class="form-label" data-i18n="home.formName">Họ và tên</label><input class="form-control" type="text" name="name" required></div>
+                <div class="col-md-6"><label class="form-label" data-i18n="home.formPhone">Số điện thoại</label><input class="form-control" type="tel" name="phone" required></div>
                 <div class="col-md-6"><label class="form-label" data-i18n="home.formEmail">Email</label><input class="form-control" type="email" name="email" required></div>
-                <div class="col-md-6"><label class="form-label" data-i18n="home.formCourse">Loai bang</label><select class="form-select" id="courseType" name="course_type" required><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option></select></div>
-                <div class="col-12"><label class="form-label" data-i18n="home.formNote">Ghi chu</label><textarea class="form-control" name="note" rows="4"></textarea></div>
-                <div class="col-12"><button class="btn btn-primary w-100" type="submit" data-i18n="home.formSubmit">Gui dang ky</button></div>
+                <div class="col-md-6"><label class="form-label" data-i18n="home.formCourse">Loại bằng</label><select class="form-select" id="courseType" name="course_type" required><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option></select></div>
+                <div class="col-12"><label class="form-label" data-i18n="home.formNote">Ghi chú</label><textarea class="form-control" name="note" rows="4"></textarea></div>
+                <div class="col-12"><button class="btn btn-primary w-100" type="submit" data-i18n="home.formSubmit">Gửi đăng ký</button></div>
               </form>
             </div>
           </div>
@@ -393,10 +427,10 @@
       <div class="container">
         <div class="cta-band d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
           <div>
-            <h2 class="h1 mb-2" data-i18n="home.ctaTitle">San sang bat dau hanh trinh lay bang lai xe?</h2>
-            <p class="mb-0 opacity-75" data-i18n="home.ctaText">Nhan tu van lo trinh, hoc phi va lich hoc phu hop ngay hom nay.</p>
+            <h2 class="h1 mb-2" data-i18n="home.ctaTitle">Sẵn sàng bắt đầu hành trình lấy bằng lái xe?</h2>
+            <p class="mb-0 opacity-75" data-i18n="home.ctaText">Nhận tư vấn lộ trình, học phí và lịch học phù hợp ngay hôm nay.</p>
           </div>
-          <a class="btn btn-light text-dark fw-semibold" href="/login.html" data-i18n="home.ctaButton">Dang nhap de quan ly</a>
+          <a class="btn btn-light text-dark fw-semibold" href="/login.html" data-i18n="home.ctaButton">Đăng nhập để quản lý</a>
         </div>
       </div>
     </section>
@@ -406,29 +440,29 @@
     <div class="container">
       <div class="row g-4">
         <div class="col-lg-4">
-          <h2 class="footer-title" data-i18n="common.brand">DriveMaster</h2>
-          <p class="footer-copy" data-i18n="common.footerText">Trung tam day bang lai xe uy tin voi lo trinh hoc nhanh, thi sat hach thong minh va quan tri hien dai.</p>
+          <h2 class="footer-title" data-i18n="common.brand">Trung tâm dạy lái xe Hằng Hà</h2>
+          <p class="footer-copy" data-i18n="common.footerText">Trung tâm dạy bằng lái xe uy tín với lộ trình học nhanh, thi sát hạch thông minh và quản trị hiện đại.</p>
           <div class="footer-contact-list">
             <div><i class="fa-solid fa-phone"></i><span data-i18n="footer.phone">0986 082 686</span></div>
-            <div><i class="fa-solid fa-envelope"></i><span data-i18n="footer.email">support@drivemaster.vn</span></div>
+            <div><i class="fa-solid fa-envelope"></i><span data-i18n="footer.email">kiniemboquenjerry@gmail.com</span></div>
             <div><i class="fa-solid fa-location-dot"></i><span data-i18n="footer.address">B23 - 16 Cienco 5, Tân lập, Đan Phượng, Hà Nội</span></div>
           </div>
         </div>
         <div class="col-sm-6 col-lg-4">
-          <h3 class="footer-heading" data-i18n="footer.linksTitle">Lien ket nhanh</h3>
+          <h3 class="footer-heading" data-i18n="footer.linksTitle">Liên kết nhanh</h3>
           <ul class="footer-links">
-            <li><a href="#courses" data-i18n="footer.linkCourses">Khoa hoc</a></li>
-            <li><a href="#contact" data-i18n="footer.linkConsulting">Dang ky tu van</a></li>
-            <li><a href="/login.html" data-i18n="footer.linkLogin">Dang nhap he thong</a></li>
-            <li><a href="#process" data-i18n="footer.linkProcess">Quy trinh hoc va quan ly</a></li>
+            <li><a href="#courses" data-i18n="footer.linkCourses">Khóa học</a></li>
+            <li><a href="#contact" data-i18n="footer.linkConsulting">Đăng ký tư vấn</a></li>
+            <li><a href="/login.html" data-i18n="footer.linkLogin">Đăng nhập hệ thống</a></li>
+            <li><a href="#process" data-i18n="footer.linkProcess">Quy trình học và quản lý</a></li>
           </ul>
         </div>
         <div class="col-sm-6 col-lg-4">
-          <h3 class="footer-heading" data-i18n="footer.supportTitle">Ho tro nguoi dung</h3>
+          <h3 class="footer-heading" data-i18n="footer.supportTitle">Hỗ trợ người dùng</h3>
           <ul class="footer-links">
-            <li data-i18n="footer.supportOne">Admin se tao tai khoan hoc vien sau khi xac nhan dang ky.</li>
-            <li data-i18n="footer.supportTwo">Hoc vien co the xem khoa hoc, ket qua dat truot va dap an sau moi lan thi.</li>
-            <li data-i18n="footer.supportThree">Dashboard duoc toi uu cho doanh nghiep vua va nho, de theo doi va van hanh.</li>
+            <li data-i18n="footer.supportOne">Admin sẽ tạo tài khoản học viên sau khi xác nhận đăng ký.</li>
+            <li data-i18n="footer.supportTwo">Học viên có thể xem khóa học, kết quả đạt trượt và đáp án sau mỗi lần thi.</li>
+            <li data-i18n="footer.supportThree">Dashboard được tối ưu cho doanh nghiệp vừa và nhỏ, để theo dõi và vận hành.</li>
           </ul>
         </div>
       </div>
@@ -437,8 +471,8 @@
       <div class="container">
         <div class="footer-map-intro">
           <div>
-            <span class="footer-map-badge" data-i18n="footer.locationsBadge">Mang luoi co so</span>
-            <h3 class="footer-map-title" data-i18n="footer.locationsTitle">Tim co so phu hop de hoc va tu van</h3>
+            <span class="footer-map-badge" data-i18n="footer.locationsBadge">Mạng lưới cơ sở</span>
+            <h3 class="footer-map-title" data-i18n="footer.locationsTitle">Tìm cơ sở phù hợp để học và tư vấn</h3>
           </div>
           <p class="footer-map-copy" data-i18n="footer.locationsCopy">Học viên có thể đến trực tiếp cơ sở chính hoặc lựa chọn điểm học gần nhất để được tư vấn chi tiết, nộp hồ sơ nhanh chóng và sắp xếp lịch học lái xe linh hoạt, phù hợp với thời gian cá nhân.</p>
         </div>
@@ -452,7 +486,7 @@
               <h4 class="footer-map-card-title" data-i18n="footer.mainName">DriveMaster Nguyen Van Linh</h4>
               <p class="footer-map-address" data-i18n="footer.mainAddress">B23 - 16 Cienco 5, Tân lập, Đan Phượng, Hà Nội</p>
               <div class="footer-map-meta">
-                <span><i class="fa-regular fa-clock"></i><span data-i18n="footer.mainHours">Mo cua: 7:30 - 19:30</span></span>
+                <span><i class="fa-regular fa-clock"></i><span data-i18n="footer.mainHours">Mở cửa: 7:30 - 19:30</span></span>
                 <span><i class="fa-solid fa-phone"></i><span data-i18n="footer.phone">0986 082 686</span></span>
               </div>
               <div class="footer-map-frame footer-map-frame-main">
@@ -475,7 +509,7 @@
               <h4 class="footer-map-card-title" data-i18n="footer.branchOneName">DriveMaster Cong Hoa</h4>
               <p class="footer-map-address" data-i18n="footer.branchOneAddress">45 Cong Hoa, Phuong 4, Tan Binh, TP.HCM</p>
               <div class="footer-map-meta footer-map-meta-compact">
-                <span><i class="fa-regular fa-clock"></i><span data-i18n="footer.branchOneHours">Tu van toi den 20:00</span></span>
+                <span><i class="fa-regular fa-clock"></i><span data-i18n="footer.branchOneHours">Tư vấn tới 20:00</span></span>
               </div>
               <div class="footer-map-frame">
                 <iframe
@@ -496,7 +530,7 @@
               <h4 class="footer-map-card-title" data-i18n="footer.branchTwoName">DriveMaster To Hien Thanh</h4>
               <p class="footer-map-address" data-i18n="footer.branchTwoAddress">278 To Hien Thanh, Phuong 15, Quan 10, TP.HCM</p>
               <div class="footer-map-meta footer-map-meta-compact">
-                <span><i class="fa-regular fa-clock"></i><span data-i18n="footer.branchTwoHours">Hoc cuoi tuan linh hoat</span></span>
+                <span><i class="fa-regular fa-clock"></i><span data-i18n="footer.branchTwoHours">Học cuối tuần linh hoạt</span></span>
               </div>
               <div class="footer-map-frame">
                 <iframe
