@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await window.DriveSchoolI18n.loadTranslations();
   window.DriveSchoolCommon.initAOS();
   window.DriveSchoolCommon.initZaloBubble();
+  initBlogDropdown();
   initPackageCards();
   initRegistrationForm();
   initCounters();
@@ -68,5 +69,29 @@ function initRegistrationForm() {
     } finally {
       submitButton.disabled = false;
     }
+  });
+}
+
+function initBlogDropdown() {
+  const dropdowns = document.querySelectorAll(".js-blog-dropdown");
+  if (!dropdowns.length || !window.bootstrap) return;
+
+  dropdowns.forEach((dropdownElement) => {
+    const toggle = dropdownElement.querySelector("[data-bs-toggle='dropdown']");
+    if (!toggle) return;
+
+    const instance = window.bootstrap.Dropdown.getOrCreateInstance(toggle);
+
+    dropdownElement.addEventListener("mouseenter", () => {
+      if (window.innerWidth >= 992) {
+        instance.show();
+      }
+    });
+
+    dropdownElement.addEventListener("mouseleave", () => {
+      if (window.innerWidth >= 992) {
+        instance.hide();
+      }
+    });
   });
 }

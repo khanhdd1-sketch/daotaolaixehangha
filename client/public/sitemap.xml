@@ -1,8 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>http://localhost:5000/index.html</loc></url>
-  <url><loc>http://localhost:5000/login.html</loc></url>
-  <url><loc>http://localhost:5000/exam.html</loc></url>
-  <url><loc>http://localhost:5000/result.html</loc></url>
-  <url><loc>http://localhost:5000/admin.html</loc></url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/login.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/exam.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/result.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/admin.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/about-us/bao-gia-hoc-bang-lai-xe.html</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/about-us/cach-thi-bang-lai-xe-b2.html</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/about-us/meo-thi-ly-thuyet-600-cau.html</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/about-us/kinh-nghiem-hoc-sa-hinh.html</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/about-us/ho-so-dang-ky-hoc-lai-xe.html</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/about-us/bang-lai-xe-b1-va-b2-khac-nhau-the-nao.html</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://daotaolaixehangha.com/about-us/kinh-nghiem-thi-mo-phong-bang-lai-xe.html</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>

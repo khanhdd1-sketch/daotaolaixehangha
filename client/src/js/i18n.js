@@ -5,10 +5,35 @@
     return key.split(".").reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : null), source);
   }
 
+  function isPlainObject(value) {
+    return Object.prototype.toString.call(value) === "[object Object]";
+  }
+
+  function mergeDeep(target, source) {
+    const output = { ...target };
+    Object.keys(source || {}).forEach((key) => {
+      const sourceValue = source[key];
+      const targetValue = output[key];
+
+      if (isPlainObject(targetValue) && isPlainObject(sourceValue)) {
+        output[key] = mergeDeep(targetValue, sourceValue);
+      } else {
+        output[key] = sourceValue;
+      }
+    });
+    return output;
+  }
+
   async function loadTranslations() {
     const lang = window.DriveSchoolCommon.getLang();
-    const response = await fetch(`/src/i18n/${lang}.json`);
-    dictionary = await response.json();
+    const sources = await Promise.all([
+      fetch(`/src/i18n/${lang}.json`).then((response) => response.json()),
+      fetch(`/src/i18n/blog.${lang}.json`)
+        .then((response) => (response.ok ? response.json() : {}))
+        .catch(() => ({}))
+    ]);
+
+    dictionary = sources.reduce((accumulator, source) => mergeDeep(accumulator, source), {});
     applyTranslations();
     initSwitcher();
     return dictionary;
