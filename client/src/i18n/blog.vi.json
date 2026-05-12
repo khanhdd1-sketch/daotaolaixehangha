@@ -35,7 +35,7 @@
       "button": "Xem bài nổi bật",
       "card1Meta1": "Cập nhật 2026",
       "card1Meta2": "6 phút đọc",
-      "card1Title": "Bảng giá học bằng lái xe A1, A2, B1, B2 mới nhất",
+      "card1Title": "Bảng giá học bằng lái xe A1, A2, B1, B2, C1 mới nhất",
       "card1Copy": "Tổng hợp học phí, lệ phí hồ sơ và cách chọn gói học phù hợp.",
       "card2Meta1": "B2 thực chiến",
       "card2Meta2": "7 phút đọc",
@@ -70,7 +70,7 @@
       "pricing": {
         "kicker": "Học phí cập nhật",
         "breadcrumbCurrent": "Bảng giá học bằng lái xe",
-        "title": "Bảng giá học bằng lái xe A1, A2, B1, B2 mới nhất 2026",
+        "title": "Bảng giá học bằng lái xe A1, A2, B1, B2, C1 mới nhất 2026",
         "lead": "Trước khi đăng ký học lái xe, nhiều học viên quan tâm nhất đến tổng chi phí cần chuẩn bị gồm học phí, hồ sơ, khám sức khỏe và lệ phí thi. Bài viết này giúp bạn hình dung rõ từng khoản để chọn lộ trình phù hợp.",
         "meta3": "Trung tâm dạy lái xe Hằng Hà",
         "h2a": "1. Tổng quan chi phí học lái xe",
@@ -228,7 +228,7 @@
     }
   },
   "meta": {
-    "blogPricingTitle": "Bảng giá học bằng lái xe A1, A2, B1, B2 mới nhất 2026 | Hằng Hà",
+    "blogPricingTitle": "Bảng giá học bằng lái xe A1, A2, B1, B2, C1 mới nhất 2026 | Hằng Hà",
     "blogPricingDescription": "Cập nhật bảng giá học bằng lái xe mới nhất tại Trung tâm dạy lái xe Hằng Hà, kèm lệ phí hồ sơ, thi sát hạch và gợi ý chọn khóa học phù hợp.",
     "blogB2Title": "Cách thi bằng lái xe B2 dễ đậu cho người mới | Hằng Hà",
     "blogB2Description": "Hướng dẫn cách thi bằng lái xe B2 cho người mới: ôn lý thuyết, học sa hình, thi đường trường, tránh lỗi mất điểm và tăng cơ hội đỗ ngay lần đầu.",
