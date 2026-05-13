@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://daotaolaixehangha.vercel.app/sitemap.xml
+Sitemap: https://hoclaixehangha.com/sitemap.xml

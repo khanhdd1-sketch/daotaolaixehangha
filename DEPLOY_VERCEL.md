@@ -84,7 +84,7 @@ Trong Vercel, ban co the doi ten project thanh:
 Thuong URL se co dang:
 
 ```text
-https://daotaolaixehangha.vercel.app
+https://hoclaixehangha.com
 ```
 
 ## 7. Domain rieng
