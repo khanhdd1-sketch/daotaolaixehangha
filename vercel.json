@@ -8,27 +8,27 @@
     }
   },
 
-  "routes": [
+  "rewrites": [
     {
-      "src": "^/sitemap\\.xml$",
-      "dest": "/client/public/sitemap.xml",
-      "headers": {
-        "Content-Type": "application/xml"
-      }
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
     },
     {
-      "src": "^/robots\\.txt$",
-      "dest": "/client/public/robots.txt"
+      "source": "/robots.txt",
+      "destination": "/robots.txt"
     },
 
     {
-      "src": "^/api/(.*)",
-      "dest": "/api/index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
-
     {
-      "src": "^/(.*)",
-      "dest": "/api/index.js"
+      "source": "/health",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/api/index.js"
     }
   ]
 }
