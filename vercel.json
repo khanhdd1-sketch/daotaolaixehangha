@@ -1,12 +1,23 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "node scripts/prepare-vercel.js",
+
   "functions": {
     "api/index.js": {
       "maxDuration": 300
     }
   },
+
   "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/robots.txt"
+    },
+
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
