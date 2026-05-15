@@ -208,7 +208,7 @@ function renderThirdPartyTable(attempts) {
             <td>${window.DriveSchoolCommon.escapeHtml(String(item.score || 0))}</td>
             <td>${item.passed ? '<span class="badge text-bg-success">Đạt</span>' : '<span class="badge text-bg-danger">Chưa đạt</span>'}</td>
             <td>${window.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
-            <td>${renderThirdPartyLinkCell(item.exam_url, "Mở bài thi")}</td>
+            <!-- <td>${renderThirdPartyLinkCell(item.exam_url, "Mở bài thi")}</td> -->
             <td>${renderProofCell(item.proof_url, index)}</td>
           </tr>
         `
