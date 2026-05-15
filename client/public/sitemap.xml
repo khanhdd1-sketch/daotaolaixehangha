@@ -3,6 +3,19 @@
 
   <url>
     <loc>https://daotaolaixehangha.vercel.app/</loc>
+    <xhtml:link rel="alternate" hreflang="vi"
+      href="https://daotaolaixehangha.vercel.app/?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="en"
+      href="https://daotaolaixehangha.vercel.app/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default"
+      href="https://daotaolaixehangha.vercel.app/"/>
+    <xhtml:link rel="alternate" hreflang="vi-VN"
+      href="https://daotaolaixehangha.vercel.app/"/>
+    <image:image>
+      <image:loc>
+        https://daotaolaixehangha.vercel.app/assets/img/cover.jpg
+      </image:loc>
+    </image:image>
     <lastmod>2026-05-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
