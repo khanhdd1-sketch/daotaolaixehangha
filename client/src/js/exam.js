@@ -3,7 +3,7 @@ let proofPreviewUrl = "";
 const studentCharts = { progress: null, status: null };
 
 const DEFAULT_EXAM_TYPE = "theory";
-const MAX_PROOF_DATA_URL_LENGTH = 45000;
+const DEFAULT_PROOF_IMAGE_HELP = "Có thể chọn ảnh chụp màn hình từ điện thoại hoặc máy tính. Ảnh sẽ được upload lên cloud và lưu bằng URL.";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await window.DriveSchoolI18n.loadTranslations();
@@ -49,7 +49,7 @@ function renderThirdPartyLinks() {
   const entries = Object.entries(workspace.links || {});
 
   if (!entries.length) {
-    container.innerHTML = '<div class="text-muted">Chưa có link thi cho khoá học này.</div>';
+    container.innerHTML = '<div class="text-muted">Chưa có link thi cho khóa học này.</div>';
     return;
   }
 
@@ -138,7 +138,8 @@ async function handleSubmitResult(event) {
   submitButton.disabled = true;
   try {
     if (proofFile) {
-      payload.proof_url = await buildProofDataUrl(proofFile);
+      document.getElementById("proofImageHelp").textContent = "Đang tải ảnh minh chứng lên cloud...";
+      payload.proof_url = await uploadProofImage(proofFile);
     }
 
     await window.DriveSchoolCommon.apiFetch("/api/third-party/submit", {
@@ -301,7 +302,7 @@ function renderProofPreview(file) {
   proofPreviewUrl = URL.createObjectURL(file);
   previewImage.src = proofPreviewUrl;
   previewContainer.classList.remove("d-none");
-  previewHelp.textContent = `Da chon: ${file.name}`;
+  previewHelp.textContent = `Đã chọn: ${file.name}. Ảnh sẽ được upload lên cloud khi bấm Gửi kết quả.`;
 }
 
 function clearProofPreview() {
@@ -316,84 +317,45 @@ function clearProofPreview() {
 
   previewImage.removeAttribute("src");
   previewContainer.classList.add("d-none");
-  previewHelp.textContent = "Co the chon anh chup man hinh tu dien thoai hoac may tinh. He thong se tu nen truoc khi gui.";
+  previewHelp.textContent = DEFAULT_PROOF_IMAGE_HELP;
 }
 
-async function buildProofDataUrl(file) {
+async function uploadProofImage(file) {
   if (!String(file.type || "").startsWith("image/")) {
     throw new Error("Vui lòng chọn file ảnh minh chứng.");
   }
 
-  const sourceDataUrl = await readFileAsDataUrl(file);
-  const image = await loadImage(sourceDataUrl).catch(() => null);
+  const configResponse = await window.DriveSchoolCommon.apiFetch("/api/third-party/proof-upload-config");
+  const uploadConfig = configResponse.data || {};
 
-  if (!image) {
-    if (sourceDataUrl.length <= MAX_PROOF_DATA_URL_LENGTH) {
-      return sourceDataUrl;
-    }
-    throw new Error("Ảnh minh chứng chưa được hỗ trợ. Vui lòng đổi sang định dạng PNG hoặc JPG.");
+  if (!uploadConfig.uploadUrl || !uploadConfig.apiKey || !uploadConfig.timestamp || !uploadConfig.signature || !uploadConfig.publicId) {
+    throw new Error("Chưa nhận được cấu hình upload ảnh minh chứng.");
   }
 
-  const compressionSteps = [
-    { maxDimension: 1440, type: "image/webp", quality: 0.82 },
-    { maxDimension: 1280, type: "image/jpeg", quality: 0.8 },
-    { maxDimension: 1080, type: "image/jpeg", quality: 0.72 },
-    { maxDimension: 960, type: "image/jpeg", quality: 0.62 },
-    { maxDimension: 820, type: "image/jpeg", quality: 0.55 }
-  ];
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", String(uploadConfig.apiKey));
+  formData.append("timestamp", String(uploadConfig.timestamp));
+  formData.append("signature", String(uploadConfig.signature));
+  formData.append("folder", String(uploadConfig.folder || ""));
+  formData.append("public_id", String(uploadConfig.publicId));
 
-  for (const step of compressionSteps) {
-    const candidate = serializeImage(image, step);
-    if (candidate && candidate.length <= MAX_PROOF_DATA_URL_LENGTH) {
-      return candidate;
-    }
-  }
-
-  throw new Error("Anh minh chung hoi lon. Vui long chup gon phan diem hoac cat anh truoc khi gui.");
-}
-
-function serializeImage(image, { maxDimension, type, quality }) {
-  const naturalWidth = image.naturalWidth || image.width || 1;
-  const naturalHeight = image.naturalHeight || image.height || 1;
-  const scale = Math.min(1, maxDimension / Math.max(naturalWidth, naturalHeight));
-  const width = Math.max(1, Math.round(naturalWidth * scale));
-  const height = Math.max(1, Math.round(naturalHeight * scale));
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-
-  if (!context) {
-    return "";
-  }
-
-  canvas.width = width;
-  canvas.height = height;
-  context.fillStyle = "#ffffff";
-  context.fillRect(0, 0, width, height);
-  context.drawImage(image, 0, 0, width, height);
-
-  const dataUrl = canvas.toDataURL(type, quality);
-  if (type === "image/webp" && !dataUrl.startsWith("data:image/webp")) {
-    return "";
-  }
-  return dataUrl;
-}
-
-function readFileAsDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ""));
-    reader.onerror = () => reject(new Error("Khong the doc anh minh chung."));
-    reader.readAsDataURL(file);
+  const response = await fetch(uploadConfig.uploadUrl, {
+    method: "POST",
+    body: formData
   });
-}
+  const data = await response.json().catch(() => ({}));
 
-function loadImage(dataUrl) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("Khong the tai anh minh chung."));
-    image.src = dataUrl;
-  });
+  if (!response.ok) {
+    throw new Error(data.error?.message || "Không thể tải ảnh minh chứng lên cloud.");
+  }
+
+  const secureUrl = String(data.secure_url || "").trim();
+  if (!/^https:\/\//i.test(secureUrl)) {
+    throw new Error("Không nhận được URL ảnh minh chứng hợp lệ.");
+  }
+
+  return secureUrl;
 }
 
 function buildStudentChartOptions(overrides = {}) {

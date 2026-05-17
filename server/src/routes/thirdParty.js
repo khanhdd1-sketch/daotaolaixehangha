@@ -1,5 +1,6 @@
 const express = require("express");
 const sheetsService = require("../services/sheetsService");
+const cloudinaryService = require("../services/cloudinaryService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 const { normalizeCourseType, parseBoolean } = require("../utils/helpers");
 
@@ -83,15 +84,19 @@ function sanitizeProofUrl(value) {
     return "";
   }
 
-  if (proofUrl.length > 50000) {
-    return null;
-  }
-
-  if (/^https?:\/\//i.test(proofUrl) || /^data:image\/[a-z0-9.+-]+;base64,/i.test(proofUrl)) {
+  if (/^data:image\/[a-z0-9.+-]+;base64,/i.test(proofUrl)) {
     return proofUrl;
   }
 
-  return null;
+  if (!/^https?:\/\//i.test(proofUrl)) {
+    return null;
+  }
+
+  if (cloudinaryService.isConfigured() && !cloudinaryService.isOwnedAssetUrl(proofUrl)) {
+    return null;
+  }
+
+  return proofUrl;
 }
 
 router.use(requireAuth, requireRole("student"));
@@ -100,6 +105,19 @@ async function getStudent(userId) {
   const usersResponse = await sheetsService.getUsers();
   return (usersResponse.data || []).find((item) => item.id === userId) || null;
 }
+
+router.get("/proof-upload-config", (req, res) => {
+  const uploadConfig = cloudinaryService.buildProofUploadConfig({ userId: req.user.sub });
+
+  if (!uploadConfig) {
+    return res.status(503).json({
+      success: false,
+      message: "Cloudinary chua duoc cau hinh. Vui long them bien moi truong truoc khi upload anh minh chung."
+    });
+  }
+
+  return res.json({ success: true, data: uploadConfig });
+});
 
 router.get("/workspace", async (req, res, next) => {
   try {
@@ -149,7 +167,7 @@ router.post("/submit", async (req, res, next) => {
     if (proofUrl === null) {
       return res.status(400).json({
         success: false,
-        message: "Anh minh chung khong hop le hoac qua lon. Vui long cat gon anh roi gui lai."
+        message: "Anh minh chung khong hop le. Vui long upload lai anh qua he thong."
       });
     }
 

@@ -254,6 +254,8 @@ function openProofPreview(index) {
   const previewImage = document.getElementById("proofPreviewImage");
   const previewFallback = document.getElementById("proofPreviewFallback");
   const previewMeta = document.getElementById("proofPreviewMeta");
+  const previewUrlGroup = document.getElementById("proofPreviewUrlGroup");
+  const previewUrlInput = document.getElementById("proofPreviewUrl");
   const externalLink = document.getElementById("proofPreviewExternalLink");
 
   if (!proofUrl) {
@@ -266,6 +268,14 @@ function openProofPreview(index) {
   previewImage.removeAttribute("src");
   previewFallback.classList.remove("d-none");
   previewFallback.textContent = "Đang tải ảnh minh chứng...";
+
+  if (/^https?:\/\//i.test(proofUrl)) {
+    previewUrlInput.value = proofUrl;
+    previewUrlGroup.classList.remove("d-none");
+  } else {
+    previewUrlInput.value = "";
+    previewUrlGroup.classList.add("d-none");
+  }
 
   externalLink.href = proofUrl;
   externalLink.classList.remove("d-none");
@@ -289,6 +299,8 @@ function resetProofPreviewModal() {
   const previewImage = document.getElementById("proofPreviewImage");
   const previewFallback = document.getElementById("proofPreviewFallback");
   const previewMeta = document.getElementById("proofPreviewMeta");
+  const previewUrlGroup = document.getElementById("proofPreviewUrlGroup");
+  const previewUrlInput = document.getElementById("proofPreviewUrl");
   const externalLink = document.getElementById("proofPreviewExternalLink");
 
   previewImage.classList.add("d-none");
@@ -296,6 +308,8 @@ function resetProofPreviewModal() {
   previewFallback.classList.remove("d-none");
   previewFallback.textContent = "Ảnh minh chứng sẽ hiển thị tại đây.";
   previewMeta.textContent = "Xem nhanh ảnh học viên gửi cho admin.";
+  previewUrlGroup.classList.add("d-none");
+  previewUrlInput.value = "";
   externalLink.classList.add("d-none");
   externalLink.removeAttribute("href");
 }
