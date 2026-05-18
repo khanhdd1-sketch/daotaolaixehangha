@@ -334,18 +334,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </div>
                         <div class="col-lg-6">
                             <div class="hero-visual" data-aos="zoom-in">
-                                <picture>
-                                    <!-- ✅ WebP responsive -->
-                                    <source
-                                    srcset="
-                                        /assets/img/mainpage.webp 480w,
-                                    "
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                    type="image/webp"
-                                    />
-
-                                    <!-- ✅ fallback JPG -->
-                                    <img
+                                <img
+                                    rel="preload"
                                     class="hero-visual-image"
                                     src="/assets/img/mainpage.jpg"
                                     alt="Hoc vien tai trung tam dao tao lai xe Hang Ha"
@@ -353,8 +343,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     height="1444"
                                     fetchpriority="high"
                                     decoding="async"
-                                    />
-                                </picture>
+                                />
                                 <div class="hero-stat">
                                     <div class="counter" data-counter-target="1280">0</div>
                                     <div class="text-muted" data-i18n="home.stat">Học viên đã đăng ký</div>
