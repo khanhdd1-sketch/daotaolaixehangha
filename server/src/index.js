@@ -1,8 +1,16 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
+
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const path = require("path");
-const fs = require("fs");
+const path = require("node:path");
+const fs = require("node:fs");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 const { assertSecureRuntimeConfig } = require("./config/security");
 const { corsOptionsDelegate, requestSizeGuard, securityHeaders } = require("./middleware/securityMiddleware");

@@ -1,3 +1,10 @@
+
+/**
+ * Copyright (c) 2026 Trung tâm đào tạo lái xe Hằng Hà
+ *
+ * This script is part of internal system.
+ * Unauthorized use, copying or distribution is prohibited.
+ */
 const SHEET_HEADERS = {
   registrations: ['id', 'name', 'phone', 'email', 'course_type', 'note', 'created_at'],
   users: ['id', 'name', 'email', 'password_hash', 'role', 'course_type', 'created_at'],

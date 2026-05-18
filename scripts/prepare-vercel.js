@@ -1,5 +1,12 @@
-const fs = require("fs");
-const path = require("path");
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
+const fs = require("node:fs");
+const path = require("node:path");
 
 const rootDir = path.resolve(__dirname, "..");
 const publicDir = path.join(rootDir, "public");

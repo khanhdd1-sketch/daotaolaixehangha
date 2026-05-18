@@ -1,3 +1,10 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const cloudinaryService = require("../services/cloudinaryService");
