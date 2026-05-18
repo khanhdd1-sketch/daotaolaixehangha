@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const { getJwtSecret } = require("../config/security");
 
 const ITERATIONS = 100000;
 const KEY_LENGTH = 64;
@@ -29,13 +30,13 @@ function signToken(user) {
       email: user.email,
       name: user.name
     },
-    process.env.JWT_SECRET || "dev-secret",
+    getJwtSecret(),
     { expiresIn: "8h" }
   );
 }
 
 function verifyToken(token) {
-  return jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
+  return jwt.verify(token, getJwtSecret());
 }
 
 module.exports = {

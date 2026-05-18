@@ -1,9 +1,10 @@
 const { createId, nowIso } = require("../utils/helpers");
 const { hashPassword } = require("./authService");
+const { isProduction } = require("../config/security");
 
 const mockStore = {
   registrations: [],
-  users: [
+  users: isProduction() ? [] : [
     {
       id: "admin_001",
       name: "System Admin",

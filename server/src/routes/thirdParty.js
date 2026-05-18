@@ -3,6 +3,7 @@ const sheetsService = require("../services/sheetsService");
 const cloudinaryService = require("../services/cloudinaryService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 const { normalizeCourseType, parseBoolean } = require("../utils/helpers");
+const { clampString, isSafeHttpUrl } = require("../utils/validators");
 
 const router = express.Router();
 
@@ -92,6 +93,10 @@ function sanitizeProofUrl(value) {
     return null;
   }
 
+  if (!isSafeHttpUrl(proofUrl)) {
+    return null;
+  }
+
   if (cloudinaryService.isConfigured() && !cloudinaryService.isOwnedAssetUrl(proofUrl)) {
     return null;
   }
@@ -160,7 +165,7 @@ router.post("/submit", async (req, res, next) => {
     const score = Number(req.body.score);
     const proofUrl = sanitizeProofUrl(req.body.proof_url);
 
-    if (!examMeta.item || !Number.isFinite(score)) {
+    if (!examMeta.item || !Number.isFinite(score) || score < 0 || score > 1000) {
       return res.status(400).json({ success: false, message: "Loai thi hoac diem khong hop le." });
     }
 
@@ -179,7 +184,7 @@ router.post("/submit", async (req, res, next) => {
       exam_url: examMeta.item.url || "",
       score,
       passed: parseBoolean(req.body.passed),
-      note: String(req.body.note || ""),
+      note: clampString(req.body.note, 500),
       proof_url: proofUrl
     });
 
