@@ -1,66 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+>
   <url>
     <loc>https://daotaolaixehangha.vercel.app/</loc>
-    <xhtml:link rel="alternate" hreflang="vi"
-      href="https://daotaolaixehangha.vercel.app/?lang=vi"/>
-    <xhtml:link rel="alternate" hreflang="en"
-      href="https://daotaolaixehangha.vercel.app/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="x-default"
-      href="https://daotaolaixehangha.vercel.app/"/>
-    <xhtml:link rel="alternate" hreflang="vi-VN"
-      href="https://daotaolaixehangha.vercel.app/"/>
-    <image:image>
-      <image:loc>
-        https://daotaolaixehangha.vercel.app/assets/img/cover.jpg
-      </image:loc>
-    </image:image>
-    <lastmod>2026-05-08</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://daotaolaixehangha.vercel.app/?lang=vi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://daotaolaixehangha.vercel.app/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://daotaolaixehangha.vercel.app/" />
+    <image:image>
+      <image:loc>https://daotaolaixehangha.vercel.app/assets/img/trung-tam-lai-xe-hang-ha-co-so-chinh.jpg</image:loc>
+      <image:title>Trung tam day lai xe Hang Ha</image:title>
+    </image:image>
   </url>
-  
+
   <url>
     <loc>https://daotaolaixehangha.vercel.app/about-us/bao-gia-hoc-bang-lai-xe.html</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://daotaolaixehangha.vercel.app/assets/img/mainpage.jpg</image:loc>
+      <image:title>Bang gia hoc bang lai xe moi nhat</image:title>
+    </image:image>
   </url>
 
   <url>
     <loc>https://daotaolaixehangha.vercel.app/about-us/cach-thi-bang-lai-xe-b2.html</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://daotaolaixehangha.vercel.app/assets/img/phonghoc.jpg</image:loc>
+      <image:title>Cach thi bang lai xe B2</image:title>
+    </image:image>
   </url>
 
   <url>
     <loc>https://daotaolaixehangha.vercel.app/about-us/meo-thi-ly-thuyet-600-cau.html</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://daotaolaixehangha.vercel.app/assets/img/phonghoc.jpg</image:loc>
+      <image:title>Meo thi ly thuyet 600 cau</image:title>
+    </image:image>
   </url>
 
   <url>
     <loc>https://daotaolaixehangha.vercel.app/about-us/ho-so-dang-ky-hoc-lai-xe.html</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://daotaolaixehangha.vercel.app/assets/img/coso2.jpg</image:loc>
+      <image:title>Ho so dang ky hoc lai xe</image:title>
+    </image:image>
   </url>
 
   <url>
     <loc>https://daotaolaixehangha.vercel.app/about-us/bang-lai-xe-b1-va-b2-khac-nhau-the-nao.html</loc>
-    <lastmod>2026-05-11</lastmod>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://daotaolaixehangha.vercel.app/assets/img/coso3.jpg</image:loc>
+      <image:title>Bang lai xe B1 va B2 khac nhau the nao</image:title>
+    </image:image>
   </url>
 
   <url>
-    <loc>https://daotaolaixehangha.vercel.app/about-us/kinh-nghiem-thi-mo-phong-bang-lai-xe.html</loc>
-    <lastmod>2026-05-11</lastmod>
+    <loc>https://daotaolaixehangha.vercel.app/about-us/kinh-nghiem-hoc-sa-hinh.html</loc>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://daotaolaixehangha.vercel.app/assets/img/khuthuchanh.jpg</image:loc>
+      <image:title>Kinh nghiem hoc sa hinh</image:title>
+    </image:image>
   </url>
-
 </urlset>

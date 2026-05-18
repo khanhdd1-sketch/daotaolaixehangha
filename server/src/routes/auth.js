@@ -13,6 +13,7 @@ const { sanitizeEmail } = require("../utils/helpers");
 const { createRateLimiter, getRequestIp } = require("../middleware/rateLimitMiddleware");
 const { isProduction } = require("../config/security");
 const { isValidEmail } = require("../utils/validators");
+const { clearCsrfCookie, ensureCsrfCookie, issueCsrfCookie, requireCsrfToken } = require("../middleware/csrfMiddleware");
 
 const router = express.Router();
 const loginRateLimit = createRateLimiter({
@@ -47,8 +48,10 @@ router.post("/login", loginRateLimit, async (req, res, next) => {
       httpOnly: true,
       sameSite: "lax",
       secure: isProduction() || req.secure,
+      path: "/",
       maxAge: 8 * 60 * 60 * 1000
     });
+    issueCsrfCookie(req, res);
 
     return res.json({
       success: true,
@@ -67,16 +70,18 @@ router.post("/login", loginRateLimit, async (req, res, next) => {
   }
 });
 
-router.post("/logout", (req, res) => {
+router.post("/logout", requireAuth, requireCsrfToken, (req, res) => {
   res.clearCookie("auth_token", {
     httpOnly: true,
     sameSite: "lax",
-    secure: isProduction() || req.secure
+    secure: isProduction() || req.secure,
+    path: "/"
   });
+  clearCsrfCookie(req, res);
   res.json({ success: true, message: "Logged out" });
 });
 
-router.get("/me", requireAuth, async (req, res, next) => {
+router.get("/me", requireAuth, ensureCsrfCookie, async (req, res, next) => {
   try {
     const usersResponse = await sheetsService.getUsers();
     const user = (usersResponse.data || []).find((item) => item.id === req.user.sub);

@@ -65,5 +65,45 @@ describe("Server Tests", () => {
     expect(response.status).toBe(200);
     expect(response.body.data.token).toBeUndefined();
     expect(response.headers["set-cookie"]).toEqual(expect.arrayContaining([expect.stringContaining("auth_token=")]));
+    expect(response.headers["set-cookie"]).toEqual(expect.arrayContaining([expect.stringContaining("csrf_token=")]));
+  });
+
+  it("should reject cookie-auth logout without a matching csrf token", async () => {
+    const loginResponse = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: "admin@drivingschool.vn",
+        password: "Admin@123"
+      });
+
+    const cookies = loginResponse.headers["set-cookie"] || [];
+
+    const response = await request(app)
+      .post("/api/auth/logout")
+      .set("Cookie", cookies);
+
+    expect(response.status).toBe(403);
+    expect(response.body.message).toBe("CSRF validation failed");
+  });
+
+  it("should allow cookie-auth logout with a matching csrf token", async () => {
+    const loginResponse = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: "admin@drivingschool.vn",
+        password: "Admin@123"
+      });
+
+    const cookies = loginResponse.headers["set-cookie"] || [];
+    const csrfCookie = cookies.find((cookie) => cookie.startsWith("csrf_token=")) || "";
+    const csrfToken = csrfCookie.split(";")[0].split("=")[1];
+
+    const response = await request(app)
+      .post("/api/auth/logout")
+      .set("Cookie", cookies)
+      .set("X-CSRF-Token", csrfToken);
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
   });
 });

@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   initPackageCards();
   initRegistrationForm();
   initCounters();
-  window.DriveSchoolCommon.trackVisit();
+  window.setTimeout(() => {
+    window.DriveSchoolCommon.trackVisit();
+  }, 1200);
 });
 
 function t(key, fallback = "") {
@@ -34,7 +36,15 @@ function initPackageCards() {
 }
 
 function initCounters() {
-  document.querySelectorAll("[data-counter-target]").forEach((element) => {
+  const elements = Array.from(document.querySelectorAll("[data-counter-target]"));
+  if (!elements.length) return;
+
+  const animateCounter = (element) => {
+    if (element.dataset.counterAnimated === "true") {
+      return;
+    }
+
+    element.dataset.counterAnimated = "true";
     const target = Number(element.dataset.counterTarget || 0);
     let current = 0;
     const step = Math.max(1, Math.ceil(target / 60));
@@ -46,7 +56,23 @@ function initCounters() {
       }
       element.textContent = current.toLocaleString();
     }, 30);
-  });
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    elements.forEach(animateCounter);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.35 });
+
+  elements.forEach((element) => observer.observe(element));
 }
 
 function initRegistrationForm() {
@@ -59,9 +85,18 @@ function initRegistrationForm() {
     const submitButton = form.querySelector("button[type='submit']");
 
     if (!payload.name || !payload.phone || !payload.email || !payload.course_type) {
+      window.DriveSchoolCommon.trackEvent("lead_form_submit_error", {
+        form_name: "registration_form",
+        error_type: "missing_required_fields"
+      });
       window.DriveSchoolCommon.showToast(t("home.toastMissingFields", "Please complete all required fields."), "danger");
       return;
     }
+
+    window.DriveSchoolCommon.trackEvent("lead_form_submit_attempt", {
+      form_name: "registration_form",
+      course_type: payload.course_type
+    });
 
     submitButton.disabled = true;
     try {
@@ -69,9 +104,25 @@ function initRegistrationForm() {
         method: "POST",
         body: JSON.stringify(payload)
       });
+      window.DriveSchoolCommon.trackLeadConversion({
+        form_name: "registration_form",
+        page_location: window.location.href,
+        course_type: payload.course_type,
+        lead_source: "landing_page"
+      });
+      window.DriveSchoolCommon.trackEvent("lead_form_submit_success", {
+        form_name: "registration_form",
+        course_type: payload.course_type,
+        lead_source: "landing_page"
+      });
       window.DriveSchoolCommon.showToast(t("home.toastRegistrationSuccess", "Registration submitted successfully."), "success");
       form.reset();
     } catch (error) {
+      window.DriveSchoolCommon.trackEvent("lead_form_submit_error", {
+        form_name: "registration_form",
+        course_type: payload.course_type,
+        error_message: error.message
+      });
       window.DriveSchoolCommon.showToast(error.message, "danger");
     } finally {
       submitButton.disabled = false;

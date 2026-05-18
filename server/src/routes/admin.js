@@ -9,12 +9,14 @@ const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const { hashPassword } = require("../services/authService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
+const { requireCsrfToken } = require("../middleware/csrfMiddleware");
 const { normalizeCourseType, sanitizeEmail } = require("../utils/helpers");
 const { clampString, isStrongPassword, isValidCourseType, isValidEmail } = require("../utils/validators");
 
 const router = express.Router();
 
 router.use(requireAuth, requireRole("admin"));
+router.use(requireCsrfToken);
 
 router.get("/results", async (req, res, next) => {
   try {
