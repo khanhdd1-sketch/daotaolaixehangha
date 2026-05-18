@@ -20,7 +20,7 @@ function hashPassword(password) {
 }
 
 function comparePassword(password, storedHash) {
-  if (!storedHash || !storedHash.includes(":")) {
+  if (!storedHash?.includes(":")) {
     return false;
   }
 

@@ -91,19 +91,23 @@ function syncExamTypeMeta() {
   const examTypeSelect = document.getElementById("examType");
   const availableExamTypes = Object.keys(workspace.links || {});
 
-  if (availableExamTypes.length && !(workspace?.links || {})[examTypeSelect?.value]) {
-    examTypeSelect.value = availableExamTypes.includes(DEFAULT_EXAM_TYPE) ? DEFAULT_EXAM_TYPE : availableExamTypes[0];
+  if (
+    availableExamTypes.length &&
+    !workspace?.links?.[examTypeSelect?.value]
+  ) {
+    examTypeSelect.value = availableExamTypes.includes(DEFAULT_EXAM_TYPE)
+      ? DEFAULT_EXAM_TYPE
+      : availableExamTypes[0];
   }
-
   const examType = examTypeSelect.value;
-  const item = (workspace?.links || {})[examType] || {};
+  const item = workspace?.links?.[examType] ?? {};
 
   document.getElementById("platformName").value = item.platform_name || "";
   document.getElementById("examUrl").value = item.url || "";
 }
 
 function handleProofImageChange(event) {
-  const file = event?.target?.files && event?.target?.files[0];
+  const file = event?.target?.files?.[0];
 
   if (!file) {
     clearProofPreview();
@@ -172,11 +176,15 @@ function renderHistory() {
 
   document.getElementById("attemptCount").textContent = String(attempts.length);
   document.getElementById("historyBadge").textContent = `${attempts.length} lần`;
-  document.getElementById("latestStatus").textContent = attempts[0]
-    ? attempts[0].passed
-      ? "Đạt"
-      : "Chưa đạt"
-    : "-";
+  const latest = attempts[0];
+  let status = "-";
+
+  if (latest) {
+    status = latest.passed ? "Đạt" : "Chưa đạt";
+  }
+
+  document.getElementById("latestStatus").textContent = status;
+
 
   historyTable.innerHTML = attempts.length
     ? attempts

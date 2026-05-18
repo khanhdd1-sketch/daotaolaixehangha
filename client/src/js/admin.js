@@ -247,7 +247,7 @@ function handleThirdPartyTableClick(event) {
     return;
   }
 
-  const index = Number(previewButton.getAttribute("data-proof-index"));
+  const index = Number(previewButton.dataset.proofIndex);
   if (!Number.isInteger(index) || index < 0) {
     return;
   }

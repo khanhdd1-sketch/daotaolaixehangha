@@ -55,7 +55,7 @@ async function apiFetch(url, options = {}) {
     headers: {
       "Content-Type": "application/json",
       ...csrfHeaders,
-      ...(options.headers || {})
+      ...(options.headers)
     },
     ...options
   });
