@@ -18,7 +18,7 @@ router.get("/", requireAuth, async (req, res, next) => {
     const exams = examsResponse.data || [];
     const mappedResults = results.map((item) => ({
       ...item,
-      exam_title: (exams.find((exam) => exam.id === item.exam_id) || {}).title || item.exam_id
+      exam_title: (exams.find((exam) => exam.id === item.exam_id)?.title) || item.exam_id
     }));
 
     if (req.user.role === "admin") {

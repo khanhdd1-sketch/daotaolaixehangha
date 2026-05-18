@@ -38,7 +38,7 @@ function sanitizeSegment(value, fallback = "proof") {
 
 function signParams(params, apiSecret) {
   const payload = Object.keys(params)
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .map((key) => `${key}=${params[key]}`)
     .join("&");
 

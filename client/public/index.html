@@ -194,14 +194,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <a class="nav-link" href="#process" data-i18n="common.navProcess">Quy trình</a>
                             </li>
                             <li class="nav-item dropdown js-blog-dropdown">
-                                <a
-                                    class="nav-link dropdown-toggle blog-dropdown-toggle"
-                                    href="#"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    ><span data-i18n="common.navBlog">Cẩm nang học lái</span></a
-                                >
+                            <button
+                                class="nav-link dropdown-toggle blog-dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <span data-i18n="common.navBlog">Cẩm nang học lái</span>
+                            </button>
                                 <ul class="dropdown-menu blog-dropdown-menu">
                                     <li>
                                         <a class="dropdown-item" href="/about-us/bao-gia-hoc-bang-lai-xe.html">
@@ -1011,19 +1010,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <div class="panel-card">
                                 <form id="registrationForm" class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label" data-i18n="home.formName">Họ và tên</label
-                                        ><input class="form-control" type="text" name="name" required />
+                                        <label for="name" class="form-label" data-i18n="home.formName">Họ và tên</label
+                                        ><input class="form-control" type="text" id="name" name="name" required />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" data-i18n="home.formPhone">Số điện thoại</label
-                                        ><input class="form-control" type="tel" name="phone" required />
+                                        <label for="phone" class="form-label" data-i18n="home.formPhone">Số điện thoại</label
+                                        ><input class="form-control" type="tel" id="phone" name="phone" required />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" data-i18n="home.formEmail">Email</label
-                                        ><input class="form-control" type="email" name="email" required />
+                                        <label for="email" class="form-label" data-i18n="home.formEmail">Email</label
+                                        ><input class="form-control" type="email" id="email" name="email" required />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" data-i18n="home.formCourse">Loại bằng</label>
+                                        <label for="courseType" class="form-label" data-i18n="home.formCourse">Loại bằng</label>
                                         <select class="form-select" id="courseType" name="course_type" required>
                                             <option value="A1">A1</option>
                                             <option value="A2">A2</option>
@@ -1033,8 +1032,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label" data-i18n="home.formNote">Ghi chú</label
-                                        ><textarea class="form-control" name="note" rows="4"></textarea>
+                                        <label for="note" class="form-label" data-i18n="home.formNote">Ghi chú</label>
+                                        <textarea class="form-control" id="note" name="note" rows="4"></textarea>
                                     </div>
                                     <div class="col-12">
                                         <button class="btn btn-primary w-100" type="submit" data-i18n="home.formSubmit">

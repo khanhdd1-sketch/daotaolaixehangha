@@ -118,7 +118,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <h2 class="h4 mb-3">Gửi kết quả cho admin</h2>
         <form id="thirdPartyResultForm" class="row g-3">
           <div class="col-md-4">
-            <label class="form-label">Loại thi</label>
+            <label for="examType" class="form-label">Loại thi</label>
             <select class="form-select" id="examType" name="exam_type" required>
               <option value="theory">Thi thử lý thuyết</option>
               <option value="theory_600">Thi 600 câu</option>
@@ -126,26 +126,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </select>
           </div>
           <div class="col-md-4">
-            <label class="form-label">Điểm</label>
-            <input class="form-control" type="number" step="0.1" min="0" name="score" required>
+            <label for="score" class="form-label">Điểm</label>
+            <input class="form-control" type="number" step="0.1" min="0" id="score" name="score" required>
           </div>
           <div class="col-md-4">
-            <label class="form-label">Trạng thái</label>
-            <select class="form-select" name="passed" required>
+            <label for="passed" class="form-label">Trạng thái</label>
+            <select class="form-select" id="passed" name="passed" required>
               <option value="true">Đạt</option>
               <option value="false">Chưa đạt</option>
             </select>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Nền tảng</label>
+            <label for="platformName" class="form-label">Nền tảng</label>
             <input class="form-control" type="text" name="platform_name" id="platformName" readonly>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Link bài thi</label>
+            <label for="examUrl" class="form-label">Link bài thi</label>
             <input class="form-control" type="url" name="exam_url" id="examUrl" readonly>
           </div>
           <div class="col-12">
-            <label class="form-label">Ảnh minh chứng (nếu có)</label>
+            <label for="proofImage" class="form-label">Ảnh minh chứng (nếu có)</label>
             <input class="form-control" type="file" id="proofImage" name="proof_image" accept="image/*">
             <div class="form-text" id="proofImageHelp">Có thể chọn ảnh chụp màn hình từ điện thoại hoặc máy tính. Ảnh sẽ được upload lên cloud và lưu bằng URL.</div>
             <div class="d-none mt-3" id="proofPreviewContainer">
@@ -159,8 +159,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
           </div>
           <div class="col-12">
-            <label class="form-label">Ghi chú</label>
-            <textarea class="form-control" name="note" rows="2" placeholder="Ví dụ: Đạt 35/35, lần đầu"></textarea>
+            <label for="note" class="form-label">Ghi chú</label>
+            <textarea class="form-control" id="note" name="note" rows="2" placeholder="Ví dụ: Đạt 35/35, lần đầu"></textarea>
           </div>
           <div class="col-12 text-end">
             <button class="btn btn-primary" type="submit">Gửi kết quả</button>

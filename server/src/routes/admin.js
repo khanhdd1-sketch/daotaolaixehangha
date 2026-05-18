@@ -39,8 +39,8 @@ router.get("/learning-attempts", async (req, res, next) => {
     const lessons = lessonsResponse.data || [];
     const data = (attemptsResponse.data || []).map((item) => ({
       ...item,
-      student_name: (users.find((user) => user.id === item.user_id) || {}).name || item.user_id,
-      lesson_title: (lessons.find((lesson) => lesson.id === item.lesson_id) || {}).title || item.lesson_id
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id,
+      lesson_title: lessons.find((lesson) => lesson.id === item.lesson_id)?.title ?? item.lesson_id
     }));
 
     res.json({ success: true, data });
@@ -375,8 +375,8 @@ router.get("/simulation-attempts", async (req, res, next) => {
     const exams = examsResponse.data || [];
     const data = (attemptsResponse.data || []).map((item) => ({
       ...item,
-      student_name: (users.find((user) => user.id === item.user_id) || {}).name || item.user_id,
-      exam_title: (exams.find((exam) => exam.id === item.exam_id) || {}).title || item.exam_id
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id,
+      exam_title: exams.find((exam) => exam.id === item.exam_id)?.title ?? item.exam_id
     }));
     res.json({ success: true, data });
   } catch (error) {
@@ -393,7 +393,7 @@ router.get("/third-party-attempts", async (req, res, next) => {
     const users = usersResponse.data || [];
     const data = (attemptsResponse.data || []).map((item) => ({
       ...item,
-      student_name: (users.find((user) => user.id === item.user_id) || {}).name || item.user_id
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
     }));
     res.json({ success: true, data });
   } catch (error) {

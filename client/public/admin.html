@@ -86,11 +86,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                </div>
                <div class="row g-3 align-items-end">
                   <div class="col-md-4">
-                     <label class="form-label">Từ ngày</label>
+                     <label for="filterDate" class="form-label">Từ ngày</label>
                      <input class="form-control" type="date" id="filterDate">
                   </div>
                   <div class="col-md-4">
-                     <label class="form-label">Khóa học</label>
+                     <label for="filterCourse" class="form-label">Khóa học</label>
                      <select class="form-select" id="filterCourse">
                         <option value="">Tất cả</option>
                         <option value="A1">A1</option>
@@ -152,11 +152,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                      </div>
                      <div class="table-filter-grid mb-3">
                         <div>
-                           <label class="form-label">Tìm nhanh</label>
+                           <label for="studentSearchInput" class="form-label">Tìm nhanh</label>
                            <input class="form-control" type="search" id="studentSearchInput" placeholder="Tên hoặc email">
                         </div>
                         <div>
-                           <label class="form-label">Khóa học</label>
+                           <label for="studentCourseFilterLocal" class="form-label">Khóa học</label>
                            <select class="form-select" id="studentCourseFilterLocal">
                               <option value="">Tất cả</option>
                               <option value="A1">A1</option>
@@ -194,11 +194,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                      </div>
                      <div class="table-filter-grid mb-3">
                         <div>
-                           <label class="form-label">Tìm nhanh</label>
+                           <label for="registrationSearchInput" class="form-label">Tìm nhanh</label>
                            <input class="form-control" type="search" id="registrationSearchInput" placeholder="Tên, số điện thoại hoặc email">
                         </div>
                         <div>
-                           <label class="form-label">Lọc Khóa học</label>
+                           <label for="registrationCourseFilterLocal" class="form-label">Lọc Khóa học</label>
                            <select class="form-select" id="registrationCourseFilterLocal">
                               <option value="">Tất cả</option>
                               <option value="A1">A1</option>
@@ -237,11 +237,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                </div>
                <div class="table-filter-grid mb-3">
                   <div>
-                     <label class="form-label">Tìm nhanh</label>
+                     <label for="thirdPartySearchInput" class="form-label">Tìm nhanh</label>
                      <input class="form-control" type="search" id="thirdPartySearchInput" placeholder="Học viên, loại thi hoặc nền tảng">
                   </div>
                   <div>
-                     <label class="form-label">Lọc Khóa học</label>
+                     <label for="thirdPartyCourseFilterLocal" class="form-label">Lọc Khóa học</label>
                      <select class="form-select" id="thirdPartyCourseFilterLocal">
                         <option value="">Tất cả</option>
                         <option value="A1">A1</option>
@@ -252,7 +252,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                      </select>
                   </div>
                   <div>
-                     <label class="form-label">Lọc trạng thái</label>
+                     <label for="thirdPartyStatusFilter" class="form-label">Lọc trạng thái</label>
                      <select class="form-select" id="thirdPartyStatusFilter">
                         <option value="">Tất cả</option>
                         <option value="passed">Đạt</option>
@@ -271,7 +271,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                            <th>Điểm</th>
                            <th>Trạng thái</th>
                            <th>Thời gian</th>
-                           <!-- <th>Link bài thi</th> -->
                            <th>Minh chứng</th>
                         </tr>
                      </thead>
@@ -293,12 +292,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                </div>
                <div class="modal-body">
                   <form id="createStudentForm" class="row g-3">
-                     <div class="col-12"><label class="form-label">Tên học viên</label><input class="form-control" type="text" name="name" required></div>
-                     <div class="col-12"><label class="form-label">Email</label><input class="form-control" type="email" name="email" required></div>
-                     <div class="col-md-6"><label class="form-label">Mật khẩu</label><input class="form-control" type="text" name="password" required></div>
+                     <div class="col-12"><label for="studentName" class="form-label">Tên học viên</label><input class="form-control" type="text" id="studentName" name="name" required></div>
+                     <div class="col-12"><label for="studentEmail" class="form-label">Email</label><input class="form-control" type="email" id="studentEmail" name="email" required></div>
+                     <div class="col-md-6"><label for="studentPassword" class="form-label">Mật khẩu</label><input class="form-control" type="text" id="studentPassword" name="password" required></div>
                      <div class="col-md-6">
-                        <label class="form-label">Loại bằng</label>
-                        <select class="form-select" name="course_type" required>
+                        <label for="studentCourseType" class="form-label">Loại bằng</label>
+                        <select class="form-select" id="studentCourseType" name="course_type" required>
                            <option value="A1">A1</option>
                            <option value="A2">A2</option>
                            <option value="B1">B1</option>

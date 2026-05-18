@@ -5,7 +5,7 @@
  *
  * All rights reserved.
  */
-const crypto = require("crypto");
+const crypto = require("node:crypto");
 const jwt = require("jsonwebtoken");
 const { getJwtSecret } = require("../config/security");
 
@@ -20,7 +20,7 @@ function hashPassword(password) {
 }
 
 function comparePassword(password, storedHash) {
-  if (!storedHash || !storedHash.includes(":")) {
+  if (!storedHash?.includes(":")) {
     return false;
   }
 

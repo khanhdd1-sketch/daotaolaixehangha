@@ -8,7 +8,7 @@
 const { verifyToken } = require("../services/authService");
 
 function extractToken(req) {
-  if (req.cookies && req.cookies.auth_token) {
+  if (req.cookies.auth_token) {
     return { token: req.cookies.auth_token, source: "cookie" };
   }
 
@@ -23,7 +23,7 @@ function extractToken(req) {
 function requireAuth(req, res, next) {
   try {
     const auth = extractToken(req);
-    if (!auth || !auth.token) {
+    if (!auth.token) {
       return res.status(401).json({ success: false, message: "Authentication required" });
     }
 
@@ -31,6 +31,7 @@ function requireAuth(req, res, next) {
     req.authSource = auth.source;
     return next();
   } catch (error) {
+    console.error("Token verification failed:", error);
     return res.status(401).json({ success: false, message: "Invalid or expired token" });
   }
 }

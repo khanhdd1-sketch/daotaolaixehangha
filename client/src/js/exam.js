@@ -13,23 +13,23 @@ const DEFAULT_EXAM_TYPE = "theory";
 const DEFAULT_PROOF_IMAGE_HELP = "Có thể chọn ảnh chụp màn hình từ điện thoại hoặc máy tính. Ảnh sẽ được upload lên cloud và lưu bằng URL.";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await window.DriveSchoolI18n.loadTranslations();
-  window.DriveSchoolCommon.initZaloBubble();
-  window.DriveSchoolCommon.trackVisit();
+  await globalThis.DriveSchoolI18n.loadTranslations();
+  globalThis.DriveSchoolCommon.initZaloBubble();
+  globalThis.DriveSchoolCommon.trackVisit();
 
-  const currentUser = await window.DriveSchoolCommon.getCurrentUser();
+  const currentUser = await globalThis.DriveSchoolCommon.getCurrentUser();
   if (!currentUser) {
-    window.DriveSchoolCommon.redirectWithLang("/login.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/login.html");
     return;
   }
   if (currentUser.role !== "student") {
-    window.DriveSchoolCommon.redirectWithLang("/admin.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/admin.html");
     return;
   }
 
   const logoutButton = document.getElementById("studentLogoutButton");
   if (logoutButton) {
-    logoutButton.onclick = () => window.DriveSchoolCommon.logoutAndRedirect();
+    logoutButton.onclick = () => globalThis.DriveSchoolCommon.logoutAndRedirect();
   }
 
   await loadWorkspace();
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadWorkspace() {
-  const response = await window.DriveSchoolCommon.apiFetch("/api/third-party/workspace");
+  const response = await globalThis.DriveSchoolCommon.apiFetch("/api/third-party/workspace");
   workspace = response.data || { links: {}, attempts: [], student: null };
 
   const student = workspace.student || {};
@@ -65,9 +65,9 @@ function renderThirdPartyLinks() {
       ([examType, item]) => `
         <div class="col-md-4">
           <article class="question-card h-100">
-            <h3 class="h5 mb-2">${window.DriveSchoolCommon.escapeHtml(item.label || examType)}</h3>
-            <p class="text-muted mb-3">Nền tảng: ${window.DriveSchoolCommon.escapeHtml(item.platform_name || "-")}</p>
-            <a class="btn btn-outline-primary" href="${window.DriveSchoolCommon.escapeHtml(item.url || "#")}" target="_blank" rel="noopener noreferrer">
+            <h3 class="h5 mb-2">${globalThis.DriveSchoolCommon.escapeHtml(item.label || examType)}</h3>
+            <p class="text-muted mb-3">Nền tảng: ${globalThis.DriveSchoolCommon.escapeHtml(item.platform_name || "-")}</p>
+            <a class="btn btn-outline-primary" href="${globalThis.DriveSchoolCommon.escapeHtml(item.url || "#")}" target="_blank" rel="noopener noreferrer">
               Mở bài thi
             </a>
           </article>
@@ -91,19 +91,23 @@ function syncExamTypeMeta() {
   const examTypeSelect = document.getElementById("examType");
   const availableExamTypes = Object.keys(workspace.links || {});
 
-  if (availableExamTypes.length && !(workspace.links || {})[examTypeSelect.value]) {
-    examTypeSelect.value = availableExamTypes.includes(DEFAULT_EXAM_TYPE) ? DEFAULT_EXAM_TYPE : availableExamTypes[0];
+  if (
+    availableExamTypes.length &&
+    !workspace?.links?.[examTypeSelect?.value]
+  ) {
+    examTypeSelect.value = availableExamTypes.includes(DEFAULT_EXAM_TYPE)
+      ? DEFAULT_EXAM_TYPE
+      : availableExamTypes[0];
   }
-
   const examType = examTypeSelect.value;
-  const item = (workspace.links || {})[examType] || {};
+  const item = workspace?.links?.[examType] ?? {};
 
   document.getElementById("platformName").value = item.platform_name || "";
   document.getElementById("examUrl").value = item.url || "";
 }
 
 function handleProofImageChange(event) {
-  const file = event.target.files && event.target.files[0];
+  const file = event?.target?.files?.[0];
 
   if (!file) {
     clearProofPreview();
@@ -113,11 +117,22 @@ function handleProofImageChange(event) {
   if (!String(file.type || "").startsWith("image/")) {
     event.target.value = "";
     clearProofPreview();
-    window.DriveSchoolCommon.showToast("Vui lòng chọn file ảnh minh chứng.", "warning");
+    globalThis.DriveSchoolCommon.showToast("Vui lòng chọn file ảnh minh chứng.", "warning");
     return;
   }
 
   renderProofPreview(file);
+}
+
+
+function getStringField(formData, key) {
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function getBooleanField(formData, key) {
+  const value = formData.get(key);
+  return value === "true" || value === "on";
 }
 
 async function handleSubmitResult(event) {
@@ -125,20 +140,22 @@ async function handleSubmitResult(event) {
   const form = event.currentTarget;
   const submitButton = form.querySelector("button[type='submit']");
   const formData = new FormData(form);
+
   const payload = {
-    exam_type: String(formData.get("exam_type") || "").trim(),
-    score: String(formData.get("score") || "").trim(),
-    passed: formData.get("passed"),
-    note: String(formData.get("note") || "").trim(),
-    platform_name: document.getElementById("platformName").value.trim(),
-    exam_url: document.getElementById("examUrl").value.trim(),
+    exam_type: getStringField(formData, "exam_type"),
+    score: getStringField(formData, "score"),
+    passed: getBooleanField(formData, "passed"),
+    note: getStringField(formData, "note"),
+    platform_name: document.getElementById("platformName")?.value.trim() ?? "",
+    exam_url: document.getElementById("examUrl")?.value.trim() ?? "",
     proof_url: ""
   };
+
   const proofFile = document.getElementById("proofImage").files[0];
   const scoreValue = Number(payload.score);
 
   if (!payload.exam_type || !payload.platform_name || !payload.exam_url || payload.score === "" || !Number.isFinite(scoreValue)) {
-    window.DriveSchoolCommon.showToast("Vui long chon loai thi va nhap diem.", "warning");
+    globalThis.DriveSchoolCommon.showToast("Vui long chon loai thi va nhap diem.", "warning");
     return;
   }
 
@@ -149,18 +166,18 @@ async function handleSubmitResult(event) {
       payload.proof_url = await uploadProofImage(proofFile);
     }
 
-    await window.DriveSchoolCommon.apiFetch("/api/third-party/submit", {
+    await globalThis.DriveSchoolCommon.apiFetch("/api/third-party/submit", {
       method: "POST",
       body: JSON.stringify(payload)
     });
-    window.DriveSchoolCommon.showToast("Da gui ket qua cho admin.", "success");
+    globalThis.DriveSchoolCommon.showToast("Da gui ket qua cho admin.", "success");
     form.reset();
     clearProofPreview();
     document.getElementById("examType").value = DEFAULT_EXAM_TYPE;
     syncExamTypeMeta();
     await loadWorkspace();
   } catch (error) {
-    window.DriveSchoolCommon.showToast(error.message, "danger");
+    globalThis.DriveSchoolCommon.showToast(error.message, "danger");
   } finally {
     submitButton.disabled = false;
   }
@@ -172,22 +189,26 @@ function renderHistory() {
 
   document.getElementById("attemptCount").textContent = String(attempts.length);
   document.getElementById("historyBadge").textContent = `${attempts.length} lần`;
-  document.getElementById("latestStatus").textContent = attempts[0]
-    ? attempts[0].passed
-      ? "Đạt"
-      : "Chưa đạt"
-    : "-";
+  const latest = attempts[0];
+  let status = "-";
+
+  if (latest) {
+    status = latest.passed ? "Đạt" : "Chưa đạt";
+  }
+
+  document.getElementById("latestStatus").textContent = status;
+
 
   historyTable.innerHTML = attempts.length
     ? attempts
       .map(
         (item) => `
           <tr>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.exam_type || "-")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.platform_name || "-")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(String(item.score || 0))}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.exam_type || "-")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.platform_name || "-")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(String(item.score || 0))}</td>
             <td>${item.passed ? '<span class="badge text-bg-success">Dat</span>' : '<span class="badge text-bg-danger">Chua dat</span>'}</td>
-            <td>${window.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
+            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
           </tr>
         `
       )
@@ -332,7 +353,7 @@ async function uploadProofImage(file) {
     throw new Error("Vui lòng chọn file ảnh minh chứng.");
   }
 
-  const configResponse = await window.DriveSchoolCommon.apiFetch("/api/third-party/proof-upload-config");
+  const configResponse = await globalThis.DriveSchoolCommon.apiFetch("/api/third-party/proof-upload-config");
   const uploadConfig = configResponse.data || {};
 
   if (!uploadConfig.uploadUrl || !uploadConfig.apiKey || !uploadConfig.timestamp || !uploadConfig.signature || !uploadConfig.publicId) {
@@ -384,11 +405,11 @@ function buildStudentChartOptions(overrides = {}) {
     plugins: {
       legend: {
         ...baseLegend,
-        ...(overridePlugins.legend || {})
+        ...(overridePlugins.legend)
       },
       tooltip: {
         ...baseTooltip,
-        ...(overridePlugins.tooltip || {})
+        ...(overridePlugins.tooltip)
       }
     },
     ...restOverrides
@@ -396,7 +417,7 @@ function buildStudentChartOptions(overrides = {}) {
 }
 
 function upsertStudentChart(chartKey, canvasId, config) {
-  if (!window.Chart) {
+  if (!globalThis.Chart) {
     return;
   }
 
@@ -406,7 +427,7 @@ function upsertStudentChart(chartKey, canvasId, config) {
     return;
   }
 
-  studentCharts[chartKey] = new window.Chart(canvas, config);
+  studentCharts[chartKey] = new globalThis.Chart(canvas, config);
 }
 
 function destroyStudentChart(chartKey) {
