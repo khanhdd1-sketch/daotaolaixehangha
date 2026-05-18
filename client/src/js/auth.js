@@ -6,24 +6,24 @@
  * All rights reserved.
  */
 document.addEventListener("DOMContentLoaded", async () => {
-  await window.DriveSchoolI18n.loadTranslations();
-  window.DriveSchoolCommon.initZaloBubble();
-  window.DriveSchoolCommon.trackVisit();
+  await globalThis.DriveSchoolI18n.loadTranslations();
+  globalThis.DriveSchoolCommon.initZaloBubble();
+  globalThis.DriveSchoolCommon.trackVisit();
   initLoginForm();
   guardLoggedIn();
 });
 
 function t(key, fallback = "") {
-  return window.DriveSchoolI18n.t(key, fallback);
+  return globalThis.DriveSchoolI18n.t(key, fallback);
 }
 
 async function guardLoggedIn() {
-  const currentUser = await window.DriveSchoolCommon.getCurrentUser();
+  const currentUser = await globalThis.DriveSchoolCommon.getCurrentUser();
   if (currentUser?.role === "admin") {
-    window.DriveSchoolCommon.redirectWithLang("/admin.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/admin.html");
   }
   if (currentUser?.role === "student") {
-    window.DriveSchoolCommon.redirectWithLang("/exam.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/exam.html");
   }
 }
 
@@ -38,18 +38,18 @@ function initLoginForm() {
     submitButton.disabled = true;
 
     try {
-      const response = await window.DriveSchoolCommon.apiFetch("/api/auth/login", {
+      const response = await globalThis.DriveSchoolCommon.apiFetch("/api/auth/login", {
         method: "POST",
         body: JSON.stringify(payload)
       });
-      window.DriveSchoolCommon.showToast(t("login.toastSuccess", "Login successful."), "success");
+      globalThis.DriveSchoolCommon.showToast(t("login.toastSuccess", "Login successful."), "success");
       if (response.data.user.role === "admin") {
-        window.DriveSchoolCommon.redirectWithLang("/admin.html");
+        globalThis.DriveSchoolCommon.redirectWithLang("/admin.html");
       } else {
-        window.DriveSchoolCommon.redirectWithLang("/exam.html");
+        globalThis.DriveSchoolCommon.redirectWithLang("/exam.html");
       }
     } catch (error) {
-      window.DriveSchoolCommon.showToast(error.message, "danger");
+      globalThis.DriveSchoolCommon.showToast(error.message, "danger");
     } finally {
       submitButton.disabled = false;
     }

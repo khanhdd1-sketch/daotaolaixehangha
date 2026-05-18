@@ -6,31 +6,31 @@
  * All rights reserved.
  */
 document.addEventListener("DOMContentLoaded", async () => {
-  await window.DriveSchoolI18n.loadTranslations();
-  window.DriveSchoolCommon.initZaloBubble();
-  window.DriveSchoolCommon.trackVisit();
+  await globalThis.DriveSchoolI18n.loadTranslations();
+  globalThis.DriveSchoolCommon.initZaloBubble();
+  globalThis.DriveSchoolCommon.trackVisit();
 
-  const currentUser = await window.DriveSchoolCommon.getCurrentUser();
+  const currentUser = await globalThis.DriveSchoolCommon.getCurrentUser();
   if (!currentUser) {
-    window.DriveSchoolCommon.redirectWithLang("/login.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/login.html");
     return;
   }
 
   const logoutButton = document.getElementById("studentLogoutButton");
   if (logoutButton) {
-    logoutButton.onclick = () => window.DriveSchoolCommon.logoutAndRedirect();
+    logoutButton.onclick = () => globalThis.DriveSchoolCommon.logoutAndRedirect();
   }
 
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(globalThis.location.search);
   const resultId = params.get("id");
   if (!resultId) {
-    window.DriveSchoolCommon.redirectWithLang("/exam.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/exam.html");
     return;
   }
 
   const [resultResponse, historyResponse] = await Promise.all([
-    window.DriveSchoolCommon.apiFetch(`/api/results/${resultId}`),
-    window.DriveSchoolCommon.apiFetch("/api/results")
+    globalThis.DriveSchoolCommon.apiFetch(`/api/results/${resultId}`),
+    globalThis.DriveSchoolCommon.apiFetch("/api/results")
   ]);
 
   renderResult(resultResponse.data);
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function t(key, fallback = "") {
-  return window.DriveSchoolI18n.t(key, fallback);
+  return globalThis.DriveSchoolI18n.t(key, fallback);
 }
 
 function renderResult(result) {
@@ -62,11 +62,11 @@ function renderHistory(results, activeResultId) {
         (item) => `
           <tr class="${item.id === activeResultId ? "table-active" : ""}">
             <td>#${item.attempt_no || 1}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.exam_title || item.exam_id)}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(String(item.score))}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.exam_title || item.exam_id)}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(String(item.score))}</td>
             <td>${item.passed ? `<span class="badge text-bg-success">${t("result.pass", "PASSED")}</span>` : `<span class="badge text-bg-danger">${t("result.fail", "FAILED")}</span>`}</td>
-            <td>${window.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
-            <td><a class="btn btn-sm btn-outline-primary" href="${window.DriveSchoolCommon.withLangUrl(`/result.html?id=${item.id}`)}">${t("result.historyView", "View")}</a></td>
+            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
+            <td><a class="btn btn-sm btn-outline-primary" href="${globalThis.DriveSchoolCommon.withLangUrl(`/result.html?id=${item.id}`)}">${t("result.historyView", "View")}</a></td>
           </tr>
         `
       )
@@ -83,13 +83,13 @@ function renderAnswerReview(result) {
     return `
       <tr>
         <td>
-          <div class="fw-semibold">${index + 1}. ${window.DriveSchoolCommon.escapeHtml(question.question)}</div>
+          <div class="fw-semibold">${index + 1}. ${globalThis.DriveSchoolCommon.escapeHtml(question.question)}</div>
           ${question.is_critical ? `<div class="small text-danger mt-1">${t("admin.onlyCritical", "Critical")}</div>` : ""}
         </td>
-        <td>${window.DriveSchoolCommon.escapeHtml(selectedAnswer || "-")}</td>
-        <td>${window.DriveSchoolCommon.escapeHtml(correctAnswer || "-")}</td>
+        <td>${globalThis.DriveSchoolCommon.escapeHtml(selectedAnswer || "-")}</td>
+        <td>${globalThis.DriveSchoolCommon.escapeHtml(correctAnswer || "-")}</td>
         <td>${isCorrect ? `<span class="badge text-bg-success">${t("result.answerCorrect", "Correct")}</span>` : `<span class="badge text-bg-danger">${t("result.answerWrong", "Wrong")}</span>`}</td>
-        <td>${window.DriveSchoolCommon.escapeHtml(question.explanation || t("result.noExplanation", "No explanation available."))}</td>
+        <td>${globalThis.DriveSchoolCommon.escapeHtml(question.explanation || t("result.noExplanation", "No explanation available."))}</td>
       </tr>
     `;
   });

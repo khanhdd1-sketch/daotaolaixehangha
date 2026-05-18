@@ -6,20 +6,20 @@
  * All rights reserved.
  */
 document.addEventListener("DOMContentLoaded", async () => {
-  await window.DriveSchoolI18n.loadTranslations();
-  window.DriveSchoolCommon.initAOS();
-  window.DriveSchoolCommon.initZaloBubble();
+  await globalThis.DriveSchoolI18n.loadTranslations();
+  globalThis.DriveSchoolCommon.initAOS();
+  globalThis.DriveSchoolCommon.initZaloBubble();
   initBlogDropdown();
   initPackageCards();
   initRegistrationForm();
   initCounters();
-  window.setTimeout(() => {
-    window.DriveSchoolCommon.trackVisit();
+  globalThis.setTimeout(() => {
+    globalThis.DriveSchoolCommon.trackVisit();
   }, 1200);
 });
 
 function t(key, fallback = "") {
-  return window.DriveSchoolI18n.t(key, fallback);
+  return globalThis.DriveSchoolI18n.t(key, fallback);
 }
 
 function initPackageCards() {
@@ -58,7 +58,7 @@ function initCounters() {
     }, 30);
   };
 
-  if (!("IntersectionObserver" in window)) {
+  if (!("IntersectionObserver" in globalThis)) {
     elements.forEach(animateCounter);
     return;
   }
@@ -85,45 +85,45 @@ function initRegistrationForm() {
     const submitButton = form.querySelector("button[type='submit']");
 
     if (!payload.name || !payload.phone || !payload.email || !payload.course_type) {
-      window.DriveSchoolCommon.trackEvent("lead_form_submit_error", {
+      globalThis.DriveSchoolCommon.trackEvent("lead_form_submit_error", {
         form_name: "registration_form",
         error_type: "missing_required_fields"
       });
-      window.DriveSchoolCommon.showToast(t("home.toastMissingFields", "Please complete all required fields."), "danger");
+      globalThis.DriveSchoolCommon.showToast(t("home.toastMissingFields", "Please complete all required fields."), "danger");
       return;
     }
 
-    window.DriveSchoolCommon.trackEvent("lead_form_submit_attempt", {
+    globalThis.DriveSchoolCommon.trackEvent("lead_form_submit_attempt", {
       form_name: "registration_form",
       course_type: payload.course_type
     });
 
     submitButton.disabled = true;
     try {
-      await window.DriveSchoolCommon.apiFetch("/api/registrations", {
+      await globalThis.DriveSchoolCommon.apiFetch("/api/registrations", {
         method: "POST",
         body: JSON.stringify(payload)
       });
-      window.DriveSchoolCommon.trackLeadConversion({
+      globalThis.DriveSchoolCommon.trackLeadConversion({
         form_name: "registration_form",
-        page_location: window.location.href,
+        page_location: globalThis.location.href,
         course_type: payload.course_type,
         lead_source: "landing_page"
       });
-      window.DriveSchoolCommon.trackEvent("lead_form_submit_success", {
+      globalThis.DriveSchoolCommon.trackEvent("lead_form_submit_success", {
         form_name: "registration_form",
         course_type: payload.course_type,
         lead_source: "landing_page"
       });
-      window.DriveSchoolCommon.showToast(t("home.toastRegistrationSuccess", "Registration submitted successfully."), "success");
+      globalThis.DriveSchoolCommon.showToast(t("home.toastRegistrationSuccess", "Registration submitted successfully."), "success");
       form.reset();
     } catch (error) {
-      window.DriveSchoolCommon.trackEvent("lead_form_submit_error", {
+      globalThis.DriveSchoolCommon.trackEvent("lead_form_submit_error", {
         form_name: "registration_form",
         course_type: payload.course_type,
         error_message: error.message
       });
-      window.DriveSchoolCommon.showToast(error.message, "danger");
+      globalThis.DriveSchoolCommon.showToast(error.message, "danger");
     } finally {
       submitButton.disabled = false;
     }
@@ -132,16 +132,16 @@ function initRegistrationForm() {
 
 function initBlogDropdown() {
   const dropdowns = document.querySelectorAll(".js-blog-dropdown");
-  if (!dropdowns.length || !window.bootstrap) return;
+  if (!dropdowns.length || !globalThis.bootstrap) return;
 
   dropdowns.forEach((dropdownElement) => {
     const toggle = dropdownElement.querySelector("[data-bs-toggle='dropdown']");
     if (!toggle) return;
 
-    const instance = window.bootstrap.Dropdown.getOrCreateInstance(toggle);
+    const instance = globalThis.bootstrap.Dropdown.getOrCreateInstance(toggle);
 
     dropdownElement.addEventListener("mouseenter", () => {
-      if (window.innerWidth >= 992) {
+      if (globalThis.innerWidth >= 992) {
         instance.show();
       }
     });

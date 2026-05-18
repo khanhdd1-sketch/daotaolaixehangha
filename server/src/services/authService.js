@@ -5,7 +5,7 @@
  *
  * All rights reserved.
  */
-const crypto = require("crypto");
+const crypto = require("node:crypto");
 const jwt = require("jsonwebtoken");
 const { getJwtSecret } = require("../config/security");
 

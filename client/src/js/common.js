@@ -21,22 +21,22 @@ const trackingConfig = {
   debug: false
 };
 
-if (window.__MARKETING_CONFIG__ && typeof window.__MARKETING_CONFIG__ === "object") {
-  Object.assign(trackingConfig, window.__MARKETING_CONFIG__);
+if (globalThis.__MARKETING_CONFIG__ && typeof globalThis.__MARKETING_CONFIG__ === "object") {
+  Object.assign(trackingConfig, globalThis.__MARKETING_CONFIG__);
 }
 
 let trackingInitialized = false;
 
 function getLang() {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(globalThis.location.search);
   return params.get("lang") || localStorage.getItem("site_lang") || "vi";
 }
 
 function setLang(lang) {
   localStorage.setItem("site_lang", lang);
-  const url = new URL(window.location.href);
+  const url = new URL(globalThis.location.href);
   url.searchParams.set("lang", lang);
-  window.history.replaceState({}, "", url);
+  globalThis.history.replaceState({}, "", url);
 }
 
 async function apiFetch(url, options = {}) {
@@ -69,7 +69,7 @@ async function apiFetch(url, options = {}) {
 
 function showToast(message, variant = "success") {
   const container = document.getElementById("toastContainer");
-  if (!container || !window.bootstrap) return;
+  if (!container || !globalThis.bootstrap) return;
   const toastEl = document.createElement("div");
   toastEl.className = `toast align-items-center text-bg-${variant} border-0`;
   toastEl.innerHTML = `
@@ -79,7 +79,7 @@ function showToast(message, variant = "success") {
     </div>
   `;
   container.appendChild(toastEl);
-  const toast = new window.bootstrap.Toast(toastEl, { delay: 3200 });
+  const toast = new globalThis.bootstrap.Toast(toastEl, { delay: 3200 });
   toast.show();
   toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
 }
@@ -121,9 +121,9 @@ function initZaloBubble() {
 }
 
 function initAOS() {
-  if (window.AOS) {
+  if (globalThis.AOS) {
     const start = () => {
-      window.AOS.init({
+      globalThis.AOS.init({
         duration: 800,
         once: true,
         offset: 60,
@@ -131,10 +131,10 @@ function initAOS() {
       });
     };
 
-    if ("requestIdleCallback" in window) {
-      window.requestIdleCallback(start, { timeout: 1500 });
+    if ("requestIdleCallback" in globalThis) {
+      globalThis.requestIdleCallback(start, { timeout: 1500 });
     } else {
-      window.setTimeout(start, 500);
+      globalThis.setTimeout(start, 500);
     }
   }
 }
@@ -160,22 +160,22 @@ function loadScriptOnce(id, src, attributes = {}) {
 
 function getCookie(name) {
   const pattern = new RegExp(`(?:^|; )${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}=([^;]*)`);
-  const match = document.cookie.match(pattern);
+  const match = document.cookie.RegExp.exec(pattern);
   return match ? decodeURIComponent(match[1]) : "";
 }
 
 function getTrackingContext() {
   return {
-    page_location: window.location.href,
-    page_path: window.location.pathname,
+    page_location: globalThis.location.href,
+    page_path: globalThis.location.pathname,
     page_title: document.title,
     page_lang: getLang()
   };
 }
 
 function pushDataLayer(eventName, params = {}) {
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
+  globalThis.dataLayer = globalThis.dataLayer || [];
+  globalThis.dataLayer.push({
     event: eventName,
     event_timestamp: Date.now(),
     ...getTrackingContext(),
@@ -202,30 +202,30 @@ function bootTracking() {
   const { gtmId, ga4MeasurementId, googleAdsId } = trackingConfig;
   const shouldLoadGtag = Boolean(ga4MeasurementId || googleAdsId);
 
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = window.gtag || function gtag() {
-    window.dataLayer.push(arguments);
+  globalThis.dataLayer = globalThis.dataLayer || [];
+  globalThis.gtag = globalThis.gtag || function gtag() {
+    globalThis.dataLayer.push(arguments);
   };
 
   if (gtmId) {
-    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+    globalThis.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
     loadScriptOnce("gtm-script", `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`);
     insertGtmNoscript(gtmId);
   }
 
   if (shouldLoadGtag) {
     loadScriptOnce("gtag-script", `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4MeasurementId || googleAdsId)}`);
-    window.gtag("js", new Date());
+    globalThis.gtag("js", new Date());
 
     if (ga4MeasurementId) {
-      window.gtag("config", ga4MeasurementId, {
+      globalThis.gtag("config", ga4MeasurementId, {
         anonymize_ip: true,
         allow_google_signals: true
       });
     }
 
     if (googleAdsId) {
-      window.gtag("config", googleAdsId);
+      globalThis.gtag("config", googleAdsId);
     }
   }
 
@@ -240,11 +240,11 @@ function bootTracking() {
 function trackEvent(eventName, params = {}) {
   pushDataLayer(eventName, params);
 
-  if (!window.gtag) {
+  if (!globalThis.gtag) {
     return;
   }
 
-  window.gtag("event", eventName, params);
+  globalThis.gtag("event", eventName, params);
 }
 
 function trackLeadConversion(extraParams = {}) {
@@ -332,7 +332,7 @@ function initLazyMaps() {
     }));
   };
 
-  const observer = "IntersectionObserver" in window
+  const observer = "IntersectionObserver" in globalThis
     ? new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -385,17 +385,17 @@ function initDeferredScripts() {
   const triggerLoad = () => {
     nodes.forEach(loadDeferredScript);
     window.removeEventListener("scroll", triggerLoad);
-    window.removeEventListener("pointerdown", triggerLoad);
+    globalThis.removeEventListener("pointerdown", triggerLoad);
   };
 
-  if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(triggerLoad, { timeout: 8000 });
+  if ("requestIdleCallback" in globalThis) {
+    globalThis.requestIdleCallback(triggerLoad, { timeout: 8000 });
   } else {
-    window.setTimeout(triggerLoad, 8000);
+    globalThis.setTimeout(triggerLoad, 8000);
   }
 
-  window.addEventListener("scroll", triggerLoad, { once: true, passive: true });
-  window.addEventListener("pointerdown", triggerLoad, { once: true, passive: true });
+  globalThis.addEventListener("scroll", triggerLoad, { once: true, passive: true });
+  globalThis.addEventListener("pointerdown", triggerLoad, { once: true, passive: true });
 }
 
 async function trackVisit() {
@@ -403,7 +403,7 @@ async function trackVisit() {
     await apiFetch("/api/tracking/visit", {
       method: "POST",
       body: JSON.stringify({
-        page: window.location.pathname,
+        page: globalThis.location.pathname,
         lang: getLang()
       })
     });
@@ -422,24 +422,24 @@ async function getCurrentUser() {
 }
 
 function redirectWithLang(path) {
-  const url = new URL(path, window.location.origin);
+  const url = new URL(path, globalThis.location.origin);
   url.searchParams.set("lang", getLang());
-  window.location.href = url.toString();
+  globalThis.location.href = url.toString();
 }
 
 function withLangUrl(path) {
-  const url = new URL(path, window.location.origin);
+  const url = new URL(path, globalThis.location.origin);
   url.searchParams.set("lang", getLang());
   return `${url.pathname}${url.search}`;
 }
 
 function escapeHtml(value = "") {
   return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replaceAll(/&/g, "&amp;")
+    .replaceAll(/</g, "&lt;")
+    .replaceAll(/>/g, "&gt;")
+    .replaceAll(/"/g, "&quot;")
+    .replaceAll(/'/g, "&#039;");
 }
 
 function formatDateTime(value) {
@@ -457,7 +457,7 @@ async function logoutAndRedirect() {
   redirectWithLang("/login.html");
 }
 
-window.DriveSchoolCommon = {
+globalThis.DriveSchoolCommon = {
   getLang,
   setLang,
   apiFetch,

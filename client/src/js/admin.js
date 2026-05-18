@@ -20,22 +20,22 @@ const adminState = {
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await window.DriveSchoolI18n.loadTranslations();
-  window.DriveSchoolCommon.initZaloBubble();
-  window.DriveSchoolCommon.trackVisit();
+  await globalThis.DriveSchoolI18n.loadTranslations();
+  globalThis.DriveSchoolCommon.initZaloBubble();
+  globalThis.DriveSchoolCommon.trackVisit();
 
-  const currentUser = await window.DriveSchoolCommon.getCurrentUser();
+  const currentUser = await globalThis.DriveSchoolCommon.getCurrentUser();
   if (!currentUser) {
-    window.DriveSchoolCommon.redirectWithLang("/login.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/login.html");
     return;
   }
   if (currentUser.role !== "admin") {
-    window.DriveSchoolCommon.redirectWithLang("/exam.html");
+    globalThis.DriveSchoolCommon.redirectWithLang("/exam.html");
     return;
   }
 
-  adminState.studentModal = new window.bootstrap.Modal(document.getElementById("studentModal"));
-  adminState.proofPreviewModal = new window.bootstrap.Modal(document.getElementById("proofPreviewModal"));
+  adminState.studentModal = new globalThis.bootstrap.Modal(document.getElementById("studentModal"));
+  adminState.proofPreviewModal = new globalThis.bootstrap.Modal(document.getElementById("proofPreviewModal"));
   document.getElementById("adminName").textContent = currentUser.name;
 
   initControls();
@@ -47,7 +47,7 @@ function initControls() {
   document.getElementById("openStudentModalButton").onclick = () => adminState.studentModal.show();
   document.getElementById("createStudentForm").addEventListener("submit", handleStudentSubmit);
   document.getElementById("logoutButton").onclick = async () => {
-    await window.DriveSchoolCommon.logoutAndRedirect();
+    await globalThis.DriveSchoolCommon.logoutAndRedirect();
   };
 
   bindFilterControls(["studentSearchInput"], "input", applyStudentFilters);
@@ -80,13 +80,13 @@ async function refreshDashboard() {
 }
 
 async function loadUsers() {
-  const response = await window.DriveSchoolCommon.apiFetch("/api/admin/users");
+  const response = await globalThis.DriveSchoolCommon.apiFetch("/api/admin/users");
   adminState.students = (response.data || []).filter((item) => item.role === "student");
   applyStudentFilters();
 }
 
 async function loadRegistrations() {
-  const response = await window.DriveSchoolCommon.apiFetch("/api/admin/stats");
+  const response = await globalThis.DriveSchoolCommon.apiFetch("/api/admin/stats");
   adminState.registrations = response.data?.registrations || [];
   applyRegistrationFilters();
 }
@@ -99,7 +99,7 @@ async function loadStats() {
   if (from) query.set("from", from);
   if (course) query.set("course", course);
 
-  const response = await window.DriveSchoolCommon.apiFetch(`/api/admin/stats?${query.toString()}`);
+  const response = await globalThis.DriveSchoolCommon.apiFetch(`/api/admin/stats?${query.toString()}`);
   const stats = response.data || {};
   adminState.stats = stats;
 
@@ -114,7 +114,7 @@ async function loadStats() {
 }
 
 async function loadThirdPartyAttempts() {
-  const response = await window.DriveSchoolCommon.apiFetch("/api/admin/third-party-attempts");
+  const response = await globalThis.DriveSchoolCommon.apiFetch("/api/admin/third-party-attempts");
   adminState.thirdPartyAttempts = response.data || [];
   applyThirdPartyFilters();
 }
@@ -137,11 +137,11 @@ function applyStudentFilters() {
       .map(
         (item) => `
           <tr>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.name)}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.email)}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
-            <td>${window.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.note || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.name)}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.email)}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.note || "")}</td>
           </tr>
         `
       )
@@ -167,12 +167,12 @@ function applyRegistrationFilters() {
       .map(
         (item) => `
           <tr>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.name || "")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.phone || "")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.email || "")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
-            <td>${window.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.note || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.name || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.phone || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.email || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.note || "")}</td>
           </tr>
         `
       )
@@ -208,13 +208,13 @@ function renderThirdPartyTable(attempts) {
       .map(
         (item, index) => `
           <tr>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.student_name || item.user_id)}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.exam_type || "")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(item.platform_name || "")}</td>
-            <td>${window.DriveSchoolCommon.escapeHtml(String(item.score || 0))}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.student_name || item.user_id)}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.exam_type || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.platform_name || "")}</td>
+            <td>${globalThis.DriveSchoolCommon.escapeHtml(String(item.score || 0))}</td>
             <td>${item.passed ? '<span class="badge text-bg-success">Đạt</span>' : '<span class="badge text-bg-danger">Chưa đạt</span>'}</td>
-            <td>${window.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
+            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
             <!-- <td>${renderThirdPartyLinkCell(item.exam_url, "Mở bài thi")}</td> -->
             <td>${renderProofCell(item.proof_url, index)}</td>
           </tr>
@@ -229,15 +229,15 @@ async function handleStudentSubmit(event) {
   const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
 
   try {
-    await window.DriveSchoolCommon.apiFetch("/api/admin/users", {
+    await globalThis.DriveSchoolCommon.apiFetch("/api/admin/users", {
       method: "POST",
       body: JSON.stringify({ ...payload, role: "student" })
     });
     adminState.studentModal.hide();
-    window.DriveSchoolCommon.showToast("Đã tạo tài khoản học viên.", "success");
+    globalThis.DriveSchoolCommon.showToast("Đã tạo tài khoản học viên.", "success");
     await refreshDashboard();
   } catch (error) {
-    window.DriveSchoolCommon.showToast(error.message, "danger");
+    globalThis.DriveSchoolCommon.showToast(error.message, "danger");
   }
 }
 
@@ -266,7 +266,7 @@ function openProofPreview(index) {
   const externalLink = document.getElementById("proofPreviewExternalLink");
 
   if (!proofUrl) {
-    window.DriveSchoolCommon.showToast("Không có ảnh minh chứng để xem.", "warning");
+    globalThis.DriveSchoolCommon.showToast("Không có ảnh minh chứng để xem.", "warning");
     return;
   }
 
@@ -467,7 +467,7 @@ function buildChartOptions(overrides = {}) {
 }
 
 function upsertChart(chartKey, canvasId, config) {
-  if (!window.Chart) {
+  if (!globalThis.Chart) {
     return;
   }
 
@@ -477,7 +477,7 @@ function upsertChart(chartKey, canvasId, config) {
     return;
   }
 
-  adminState.charts[chartKey] = new window.Chart(canvas, config);
+  adminState.charts[chartKey] = new globalThis.Chart(canvas, config);
 }
 
 function destroyChart(chartKey) {
@@ -524,7 +524,7 @@ function normalizeText(value) {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\u0111/g, "d")
+    .replaceAll(/\u0111/g, "d")
     .trim();
 }
 
@@ -534,7 +534,7 @@ function renderThirdPartyLinkCell(value, label) {
     return '<span class="text-muted">Không có</span>';
   }
 
-  return `<a href="${window.DriveSchoolCommon.escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  return `<a href="${globalThis.DriveSchoolCommon.escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 }
 
 function renderProofCell(value, index) {
