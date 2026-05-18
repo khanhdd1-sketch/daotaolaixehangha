@@ -124,20 +124,33 @@ function handleProofImageChange(event) {
   renderProofPreview(file);
 }
 
+
+function getStringField(formData, key) {
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function getBooleanField(formData, key) {
+  const value = formData.get(key);
+  return value === "true" || value === "on";
+}
+
 async function handleSubmitResult(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const submitButton = form.querySelector("button[type='submit']");
   const formData = new FormData(form);
+
   const payload = {
-    exam_type: String(formData.get("exam_type") || "").trim(),
-    score: String(formData.get("score") || "").trim(),
-    passed: formData.get("passed"),
-    note: String(formData.get("note") || "").trim(),
-    platform_name: document.getElementById("platformName").value.trim(),
-    exam_url: document.getElementById("examUrl").value.trim(),
+    exam_type: getStringField(formData, "exam_type"),
+    score: getStringField(formData, "score"),
+    passed: getBooleanField(formData, "passed"),
+    note: getStringField(formData, "note"),
+    platform_name: document.getElementById("platformName")?.value.trim() ?? "",
+    exam_url: document.getElementById("examUrl")?.value.trim() ?? "",
     proof_url: ""
   };
+
   const proofFile = document.getElementById("proofImage").files[0];
   const scoreValue = Number(payload.score);
 
@@ -392,11 +405,11 @@ function buildStudentChartOptions(overrides = {}) {
     plugins: {
       legend: {
         ...baseLegend,
-        ...(overridePlugins.legend || {})
+        ...(overridePlugins.legend)
       },
       tooltip: {
         ...baseTooltip,
-        ...(overridePlugins.tooltip || {})
+        ...(overridePlugins.tooltip)
       }
     },
     ...restOverrides

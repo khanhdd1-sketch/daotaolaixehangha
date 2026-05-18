@@ -32,7 +32,7 @@ function issueCsrfCookie(req, res) {
 }
 
 function ensureCsrfCookie(req, res, next) {
-  if (!req.cookies || !req.cookies[CSRF_COOKIE_NAME]) {
+  if (!req.cookies[CSRF_COOKIE_NAME]) {
     issueCsrfCookie(req, res);
   }
 

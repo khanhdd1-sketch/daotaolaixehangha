@@ -443,15 +443,15 @@ function buildChartOptions(overrides = {}) {
   const mergedPlugins = {
     legend: {
       ...baseLegend,
-      ...(overridePlugins.legend || {}),
+      ...(overridePlugins.legend),
       labels: {
         ...baseLegend.labels,
-        ...(overridePlugins.legend?.labels || {})
+        ...(overridePlugins.legend?.labels)
       }
     },
     tooltip: {
       ...baseTooltip,
-      ...(overridePlugins.tooltip || {})
+      ...(overridePlugins.tooltip)
     }
   };
 
@@ -524,7 +524,7 @@ function normalizeText(value) {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replaceAll(/\u0111/g, "d")
+    .replaceAll("đ", "d")
     .trim();
 }
 

@@ -60,7 +60,7 @@ function normalizeThirdPartyExamToken(value) {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replaceAll(/\u0111/g, "d")
+    .replaceAll("đ", "d")
     .replace(/[^a-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "");
 }

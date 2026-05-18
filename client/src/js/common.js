@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2026 Driving Training Center Hang Ha
  * (Trung tam dao tao lai xe Hang Ha)
@@ -159,8 +160,13 @@ function loadScriptOnce(id, src, attributes = {}) {
 }
 
 function getCookie(name) {
-  const pattern = new RegExp(`(?:^|; )${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}=([^;]*)`);
-  const match = document.cookie.RegExp.exec(pattern);
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+
+  const pattern = new RegExp(
+    String.raw`(?:^|; )${escapedName}=([^;]*)`
+  );
+
+  const match = pattern.exec(document.cookie);
   return match ? decodeURIComponent(match[1]) : "";
 }
 
@@ -435,11 +441,11 @@ function withLangUrl(path) {
 
 function escapeHtml(value = "") {
   return String(value)
-    .replaceAll(/&/g, "&amp;")
-    .replaceAll(/</g, "&lt;")
-    .replaceAll(/>/g, "&gt;")
-    .replaceAll(/"/g, "&quot;")
-    .replaceAll(/'/g, "&#039;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function formatDateTime(value) {

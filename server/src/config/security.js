@@ -29,7 +29,7 @@ function getAllowedOrigins() {
     .map(normalizeOrigin)
     .filter(Boolean);
 
-  return Array.from(new Set([...(configuredOrigins.length ? configuredOrigins : DEFAULT_ALLOWED_ORIGINS)]));
+  return Array.from(new Set([(configuredOrigins.length ? configuredOrigins : DEFAULT_ALLOWED_ORIGINS)]));
 }
 
 function isAllowedOrigin(origin) {

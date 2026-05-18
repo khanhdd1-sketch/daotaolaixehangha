@@ -102,7 +102,7 @@ const mockStore = {
       video_url: "/assets/videos/sim-b2-02.mp4",
       order_no: 2,
       trigger_start_sec: 4.2,
-      trigger_end_sec: 6.0,
+      trigger_end_sec: 6,
       active: true
     },
     {
@@ -112,7 +112,7 @@ const mockStore = {
       video_url: "/assets/videos/sim-b2-03.mp4",
       order_no: 3,
       trigger_start_sec: 2.8,
-      trigger_end_sec: 4.0,
+      trigger_end_sec: 4,
       active: true
     }
   ],
