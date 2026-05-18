@@ -9,6 +9,11 @@
         <!-- ✅ Basic -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KMF7RN94');</script>
         <!-- Lang language -->
         <link rel="alternate" hreflang="vi" href="https://daotaolaixehangha.vercel.app/?lang=vi" />
         <link rel="alternate" hreflang="en" href="https://daotaolaixehangha.vercel.app/?lang=en" />
@@ -55,6 +60,7 @@
 
         <!-- ✅ Favicon -->
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="preload" as="image" href="/assets/img/mainpage.jpg" fetchpriority="high" />
 
         <!-- ✅ CSS -->
         <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -161,6 +167,8 @@
         </script>
     </head>
     <body data-page-title="meta.homeTitle">
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KMF7RN94"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <header class="site-header fixed-top">
             <nav class="navbar navbar-expand-lg">
                 <div class="container py-2">
@@ -272,8 +280,14 @@
                             </li>
                         </ul>
                         <div class="d-flex align-items-center gap-3">
-                            <span class="small fw-semibold text-nowrap" data-i18n="common.hotline"
-                                >Hotline: 0986 082 686</span
+                            <a
+                                class="small fw-semibold text-nowrap text-decoration-none text-reset"
+                                href="tel:0986082686"
+                                data-track-click="header_hotline_click"
+                                data-track-label="Header hotline"
+                                data-track-section="header"
+                                data-i18n="common.hotline"
+                                >Hotline: 0986 082 686</a
                             >
                             <div class="btn-group">
                                 <button class="btn btn-outline-secondary" data-lang-switch="vi" type="button">
@@ -304,10 +318,10 @@
                                 và hệ thống theo dõi học viên để sử dụng dễ dàng cho cả admin lẫn học viên.
                             </p>
                             <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="300">
-                                <a class="btn btn-primary" href="#registrationForm" data-i18n="home.primaryCta"
+                                <a class="btn btn-primary" href="#registrationForm" data-i18n="home.primaryCta" data-track-click="hero_register_cta" data-track-label="Hero dang ky tu van" data-track-section="hero"
                                     >Đăng ký tư vấn</a
                                 >
-                                <a class="btn btn-outline-dark" href="/login.html" data-i18n="home.secondaryCta"
+                                <a class="btn btn-outline-dark" href="/login.html" data-i18n="home.secondaryCta" data-track-click="hero_login_cta" data-track-label="Hero dang nhap he thong" data-track-section="hero"
                                     >Đăng nhập hệ thống</a
                                 >
                             </div>
@@ -321,6 +335,15 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="hero-visual" data-aos="zoom-in">
+                                <img
+                                    class="hero-visual-image"
+                                    src="/assets/img/mainpage.jpg"
+                                    alt="Hoc vien tai trung tam dao tao lai xe Hang Ha"
+                                    width="2568"
+                                    height="1444"
+                                    fetchpriority="high"
+                                    decoding="async"
+                                />
                                 <div class="hero-stat">
                                     <div class="counter" data-counter-target="1280">0</div>
                                     <div class="text-muted" data-i18n="home.stat">Học viên đã đăng ký</div>
@@ -502,6 +525,7 @@
                                     src="/assets/img/trung-tam-lai-xe-hang-ha-co-so-chinh.jpg"
                                     alt="Trung tâm dạy lái xe Hằng Hà cơ sở chính tại Đan Phượng"
                                     loading="lazy"
+                                    decoding="async"
                                 />
                                 <div class="campus-photo-overlay">
                                     <span
@@ -527,6 +551,7 @@
                                     src="/assets/img/coso2.jpg"
                                     alt="Trung tâm dạy lái xe Hằng Hà cơ sở 2"
                                     loading="lazy"
+                                    decoding="async"
                                 />
                                 <div class="campus-photo-overlay">
                                     <span class="campus-photo-chip" data-i18n="home.campusBranchChip">Cơ sở</span>
@@ -550,6 +575,7 @@
                                     src="/assets/img/coso3.jpg"
                                     alt="Trung tâm dạy lái xe Hằng Hà cơ sở 3"
                                     loading="lazy"
+                                    decoding="async"
                                 />
                                 <div class="campus-photo-overlay">
                                     <span class="campus-photo-chip" data-i18n="home.campusBranchChip">Cơ sở</span>
@@ -569,6 +595,7 @@
                                     src="/assets/img/khuthuchanh.jpg"
                                     alt="Trung tâm dạy lái xe Hằng Hà khu thực hành"
                                     loading="lazy"
+                                    decoding="async"
                                 />
                                 <div class="campus-photo-overlay">
                                     <span class="campus-photo-chip" data-i18n="home.campusPracticeChip"
@@ -592,6 +619,7 @@
                                     src="/assets/img/phonghoc.jpg"
                                     alt="Trung tâm dạy lái xe Hằng Hà phòng học"
                                     loading="lazy"
+                                    decoding="async"
                                 />
                                 <div class="campus-photo-overlay">
                                     <span class="campus-photo-chip" data-i18n="home.campusClassroomChip"
@@ -1032,7 +1060,7 @@
                                 Nhận tư vấn lộ trình, học phí và lịch học phù hợp ngay hôm nay.
                             </p>
                         </div>
-                        <a class="btn btn-light text-dark fw-semibold" href="/login.html" data-i18n="home.ctaButton"
+                        <a class="btn btn-light text-dark fw-semibold" href="/login.html" data-i18n="home.ctaButton" data-track-click="footer_cta_login" data-track-label="Footer CTA dang nhap" data-track-section="cta_band"
                             >Đăng nhập để quản lý</a
                         >
                     </div>
@@ -1086,14 +1114,13 @@
                                 >
                             </div>
                             <div class="footer-map-frame footer-map-frame-main">
-                                <iframe
-                                    title="Trung tâm dạy lái xe Hằng Hà - Đan Phượng"
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.211429273267!2d105.7095585!3d21.0734183!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455005c35a55d%3A0x6571b2c33467847e!2zQ8O0bmcgdHkgY-G7lSBwaOG6p24gxJHDoG8gdOG6oW8gbMOhIGkgZmeuZSBIIOG6sW5nIEjDoA!5e0!3m2!1svi!2s!4v1712646000000"
-                                    loading="lazy"
-                                    allowfullscreen
-                                    referrerpolicy="no-referrer-when-downgrade"
+                                <div
+                                    class="lazy-map-embed"
+                                    data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.211429273267!2d105.7095585!3d21.0734183!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455005c35a55d%3A0x6571b2c33467847e!2zQ8O0bmcgdHkgY-G7lSBwaOG6p24gxJHDoG8gdOG6oW8gbMOhIGkgZmeuZSBIIOG6sW5nIEjDoA!5e0!3m2!1svi!2s!4v1712646000000"
+                                    data-map-title="Trung tâm dạy lái xe Hằng Hà - Đan Phượng"
                                 >
-                                </iframe>
+                                    <button class="btn btn-outline-light btn-sm lazy-map-button" type="button">Tải bản đồ</button>
+                                </div>
                             </div>
                         </article>
                     </div>
@@ -1121,13 +1148,13 @@
                                 >
                             </div>
                             <div class="footer-map-frame">
-                                <iframe
-                                    title="DriveMaster Cong Hoa map"
-                                    src="https://www.google.com/maps?q=45%20Cong%20Hoa%20Phuong%204%20Tan%20Binh%20TP.HCM&output=embed"
-                                    loading="lazy"
-                                    allowfullscreen
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                ></iframe>
+                                <div
+                                    class="lazy-map-embed"
+                                    data-map-src="https://www.google.com/maps?q=45%20Cong%20Hoa%20Phuong%204%20Tan%20Binh%20TP.HCM&output=embed"
+                                    data-map-title="DriveMaster Cong Hoa map"
+                                >
+                                    <button class="btn btn-outline-light btn-sm lazy-map-button" type="button">Tải bản đồ</button>
+                                </div>
                             </div>
                         </article>
                     </div>
@@ -1157,13 +1184,13 @@
                                 >
                             </div>
                             <div class="footer-map-frame">
-                                <iframe
-                                    title="DriveMaster To Hien Thanh map"
-                                    src="https://www.google.com/maps?q=278%20To%20Hien%20Thanh%20Phuong%2015%20Quan%2010%20TP.HCM&output=embed"
-                                    loading="lazy"
-                                    allowfullscreen
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                ></iframe>
+                                <div
+                                    class="lazy-map-embed"
+                                    data-map-src="https://www.google.com/maps?q=278%20To%20Hien%20Thanh%20Phuong%2015%20Quan%2010%20TP.HCM&output=embed"
+                                    data-map-title="DriveMaster To Hien Thanh map"
+                                >
+                                    <button class="btn btn-outline-light btn-sm lazy-map-button" type="button">Tải bản đồ</button>
+                                </div>
                             </div>
                         </article>
                     </div>
@@ -1181,7 +1208,7 @@
                         </p>
                         <div class="footer-contact-list">
                             <div>
-                                <i class="fa-solid fa-phone"></i><span data-i18n="footer.phone">0986 082 686</span>
+                                <i class="fa-solid fa-phone"></i><a class="text-reset text-decoration-none" href="tel:0986082686" data-track-click="footer_hotline_click" data-track-label="Footer hotline" data-track-section="footer" data-i18n="footer.phone">0986 082 686</a>
                             </div>
                             <div>
                                 <i class="fa-solid fa-envelope"></i
@@ -1233,14 +1260,13 @@
         <script src="/src/js/common.js"></script>
         <script src="/src/js/i18n.js"></script>
         <script src="/src/js/main.js"></script>
-        <script
+        <div
+            id="lazyChatbotConfig"
+            data-deferred-script-src="https://app.preny.ai/embed-global.js"
             data-name-bot="BOT Hỗ trợ"
-            src="https://app.preny.ai/embed-global.js"
             data-button-style="width:300px;height:200px;display:relative;left:0;bottom:0;"
             data-language="vi"
-            async
-            defer
             data-preny-bot-id="6878a53bc4eb6d49d5450edf"
-        ></script>
+        ></div>
     </body>
 </html>
