@@ -1,3 +1,10 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 const {
   createId,
   nowIso,
@@ -8,10 +15,11 @@ const {
   normalizeChoice
 } = require("../utils/helpers");
 const { mockStore } = require("./mockStore");
+const { isMockModeEnabled } = require("../config/security");
 
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || "";
 const APPS_SCRIPT_SECRET = process.env.APPS_SCRIPT_SECRET || "";
-const USE_MOCK_DATA = String(process.env.USE_MOCK_DATA || "true").toLowerCase() === "true";
+const USE_MOCK_DATA = isMockModeEnabled();
 
 function normalizeExam(exam) {
   if (!exam) return exam;

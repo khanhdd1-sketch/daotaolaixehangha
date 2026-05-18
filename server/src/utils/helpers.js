@@ -1,4 +1,11 @@
-const crypto = require("crypto");
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
+const crypto = require("node:crypto");
 
 function createId(prefix) {
   return `${prefix}_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;

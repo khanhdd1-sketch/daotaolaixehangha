@@ -1,3 +1,10 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 let workspace = { links: {}, attempts: [], student: null };
 let proofPreviewUrl = "";
 const studentCharts = { progress: null, status: null };

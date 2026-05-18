@@ -1,9 +1,17 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 const { createId, nowIso } = require("../utils/helpers");
 const { hashPassword } = require("./authService");
+const { isProduction } = require("../config/security");
 
 const mockStore = {
   registrations: [],
-  users: [
+  users: isProduction() ? [] : [
     {
       id: "admin_001",
       name: "System Admin",

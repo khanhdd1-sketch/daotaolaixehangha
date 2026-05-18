@@ -1,9 +1,19 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
+
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const path = require("path");
-const fs = require("fs");
+const path = require("node:path");
+const fs = require("node:fs");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
+const { assertSecureRuntimeConfig } = require("./config/security");
+const { corsOptionsDelegate, requestSizeGuard, securityHeaders } = require("./middleware/securityMiddleware");
 
 const authRoutes = require("./routes/auth");
 const examRoutes = require("./routes/exams");
@@ -23,12 +33,14 @@ const clientPublic = path.join(rootDir, "client", "public");
 const clientSrc = path.join(rootDir, "client", "src");
 const clientIndexFile = path.join(clientPublic, "index.html");
 
-app.use(
-  cors({
-    origin: true,
-    credentials: true
-  })
-);
+assertSecureRuntimeConfig();
+
+app.disable("x-powered-by");
+app.set("trust proxy", 1);
+
+app.use(securityHeaders);
+app.use(cors(corsOptionsDelegate));
+app.use(requestSizeGuard(2 * 1024 * 1024));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cookieParser());
@@ -69,7 +81,9 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.status(error.status || 500).json({
     success: false,
-    message: error.message || "Internal server error"
+    message: process.env.NODE_ENV === "production"
+      ? "Internal server error"
+      : error.message || "Internal server error"
   });
 });
 

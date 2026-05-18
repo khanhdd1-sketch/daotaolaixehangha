@@ -1,4 +1,10 @@
-// This file contains the exam controller logic for managing exam-related operations, including fetching questions and submitting results.
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 
 const sheetsService = require('../services/sheetsService');
 

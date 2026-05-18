@@ -1,3 +1,10 @@
+
+/**
+ * Copyright (c) 2026 Trung tâm đào tạo lái xe Hằng Hà
+ *
+ * This script is part of internal system.
+ * Unauthorized use, copying or distribution is prohibited.
+ */
 const SHARED_SECRET = 'drivemaster-2026-super-secret';
 const SHEETS = {
   registrations: 'registrations',

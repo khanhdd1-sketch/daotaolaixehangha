@@ -1,3 +1,10 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 const request = require("supertest");
 const app = require("../src/index");
 const { signToken } = require("../src/services/authService");
@@ -45,5 +52,18 @@ describe("Server Tests", () => {
       timestamp: expect.any(Number),
       uploadUrl: "https://api.cloudinary.com/v1_1/demo-cloud/image/upload"
     }));
+  });
+
+  it("should not expose the JWT token in the login response body", async () => {
+    const response = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: "admin@drivingschool.vn",
+        password: "Admin@123"
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.token).toBeUndefined();
+    expect(response.headers["set-cookie"]).toEqual(expect.arrayContaining([expect.stringContaining("auth_token=")]));
   });
 });

@@ -1,8 +1,16 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const { hashPassword } = require("../services/authService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 const { normalizeCourseType, sanitizeEmail } = require("../utils/helpers");
+const { clampString, isStrongPassword, isValidCourseType, isValidEmail } = require("../utils/validators");
 
 const router = express.Router();
 
@@ -64,7 +72,7 @@ router.get("/users", async (req, res, next) => {
 router.post("/users", async (req, res, next) => {
   try {
     const payload = {
-      name: String(req.body.name || "").trim(),
+      name: clampString(req.body.name, 120),
       email: sanitizeEmail(req.body.email),
       password: String(req.body.password || ""),
       role: String(req.body.role || "student"),
@@ -73,6 +81,21 @@ router.post("/users", async (req, res, next) => {
 
     if (!payload.name || !payload.email || !payload.password) {
       return res.status(400).json({ success: false, message: "Missing required user fields" });
+    }
+
+    if (!isValidEmail(payload.email)) {
+      return res.status(400).json({ success: false, message: "Invalid email format" });
+    }
+
+    if (!isStrongPassword(payload.password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 10 characters and include uppercase, lowercase, number and symbol"
+      });
+    }
+
+    if (payload.course_type && !isValidCourseType(payload.course_type)) {
+      return res.status(400).json({ success: false, message: "Invalid course type" });
     }
 
     const usersResponse = await sheetsService.getUsers();
