@@ -41,6 +41,7 @@ function bindAdminEvents() {
   document.getElementById("createStudentForm").addEventListener("submit", handleStudentSubmit);
   document.getElementById("examForm").addEventListener("submit", handleExamSubmit);
   document.getElementById("questionForm").addEventListener("submit", handleQuestionSubmit);
+  document.getElementById("questionImageFile").addEventListener("change", handleQuestionImageChange);
   document.getElementById("simulationExamForm").addEventListener("submit", handleSimulationExamSubmit);
   document.getElementById("simulationClipForm").addEventListener("submit", handleSimulationClipSubmit);
 
@@ -197,6 +198,7 @@ function renderQuestionTable() {
           <div class="fw-semibold">${escape(item.question)}</div>
           <div class="small text-muted mt-1">${escape(item.explanation || "")}</div>
         </td>
+        <td>${item.image_url ? `<button class="btn btn-sm btn-outline-secondary" type="button" data-action="preview-question-image" data-image-url="${escape(item.image_url)}">Xem anh</button>` : '<span class="text-muted">Khong co</span>'}</td>
         <td>${escape(item.correct_answer || "-")}</td>
         <td>${item.is_critical ? '<span class="badge text-bg-danger">Diem liet</span>' : '<span class="badge text-bg-light">Thuong</span>'}</td>
         <td class="text-end">
@@ -205,7 +207,7 @@ function renderQuestionTable() {
         </td>
       </tr>
     `).join("")
-    : buildEmptyRow(5, "Chua co cau hoi.");
+    : buildEmptyRow(6, "Chua co cau hoi.");
 }
 
 function renderSimulationExamList() {
@@ -382,17 +384,28 @@ async function handleExamSubmit(event) {
 async function handleQuestionSubmit(event) {
   event.preventDefault();
   const form = event.currentTarget;
+  const imageFile = document.getElementById("questionImageFile").files[0];
   const payload = serializeForm(form);
+  const submitButton = form.querySelector("button[type='submit']");
   const questionId = payload.id;
   const url = questionId ? `/api/admin/questions/${encodeURIComponent(questionId)}` : "/api/admin/questions";
   const method = questionId ? "PUT" : "POST";
-  await globalThis.DriveSchoolCommon.apiFetch(url, {
-    method,
-    body: JSON.stringify(payload)
-  });
-  resetQuestionForm();
-  globalThis.DriveSchoolCommon.showToast("Da luu cau hoi.", "success");
-  await refreshAdminApp();
+
+  submitButton.disabled = true;
+  try {
+    if (imageFile) {
+      payload.image_url = await uploadQuestionImage(imageFile, payload.exam_id);
+    }
+    await globalThis.DriveSchoolCommon.apiFetch(url, {
+      method,
+      body: JSON.stringify(payload)
+    });
+    resetQuestionForm();
+    globalThis.DriveSchoolCommon.showToast("Da luu cau hoi.", "success");
+    await refreshAdminApp();
+  } finally {
+    submitButton.disabled = false;
+  }
 }
 
 async function handleSimulationExamSubmit(event) {
@@ -440,6 +453,12 @@ async function handleExamListClick(event) {
 }
 
 async function handleQuestionTableClick(event) {
+  const previewButton = event.target.closest("[data-action='preview-question-image']");
+  if (previewButton) {
+    setQuestionImagePreview(previewButton.dataset.imageUrl || "");
+    return;
+  }
+
   const editButton = event.target.closest("[data-action='edit-question']");
   if (editButton) {
     const item = adminState.questions.find((question) => question.id === editButton.dataset.questionId);
@@ -525,6 +544,8 @@ function fillQuestionForm(item) {
   document.getElementById("questionCorrectAnswer").value = item.correct_answer || "A";
   document.getElementById("questionCritical").checked = Boolean(item.is_critical);
   document.getElementById("questionExplanation").value = item.explanation || "";
+  document.getElementById("questionImageUrl").value = item.image_url || "";
+  setQuestionImagePreview(item.image_url || "");
 }
 
 function fillSimulationExamForm(item) {
@@ -563,6 +584,8 @@ function resetQuestionForm() {
     document.getElementById("questionExamId").value = adminState.exams[0].id;
   }
   document.getElementById("questionCorrectAnswer").value = "A";
+  document.getElementById("questionImageUrl").value = "";
+  setQuestionImagePreview("");
 }
 
 function resetSimulationExamForm() {
@@ -664,4 +687,76 @@ function escape(value) {
 
 function buildEmptyRow(colspan, message) {
   return `<tr><td colspan="${colspan}" class="text-center text-muted py-4">${message}</td></tr>`;
+}
+
+function handleQuestionImageChange(event) {
+  const file = event.target.files?.[0];
+  if (!file) {
+    const currentUrl = document.getElementById("questionImageUrl").value.trim();
+    setQuestionImagePreview(currentUrl);
+    return;
+  }
+
+  if (!String(file.type || "").startsWith("image/")) {
+    event.target.value = "";
+    globalThis.DriveSchoolCommon.showToast("Vui long chon file anh hop le.", "warning");
+    return;
+  }
+
+  const previewUrl = URL.createObjectURL(file);
+  setQuestionImagePreview(previewUrl, true);
+  document.getElementById("questionImageHelp").textContent = `Se upload anh: ${file.name}`;
+}
+
+async function uploadQuestionImage(file, examId) {
+  const configResponse = await globalThis.DriveSchoolCommon.apiFetch(`/api/admin/question-image-upload-config?exam_id=${encodeURIComponent(examId || "")}`);
+  const uploadConfig = configResponse.data || {};
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", String(uploadConfig.apiKey || ""));
+  formData.append("timestamp", String(uploadConfig.timestamp || ""));
+  formData.append("signature", String(uploadConfig.signature || ""));
+  formData.append("folder", String(uploadConfig.folder || ""));
+  formData.append("public_id", String(uploadConfig.publicId || ""));
+
+  const response = await fetch(uploadConfig.uploadUrl, {
+    method: "POST",
+    body: formData
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error?.message || "Khong the tai anh cau hoi.");
+  }
+
+  const secureUrl = String(data.secure_url || "").trim();
+  document.getElementById("questionImageUrl").value = secureUrl;
+  document.getElementById("questionImageHelp").textContent = "Anh cau hoi da duoc upload.";
+  return secureUrl;
+}
+
+let questionImageObjectUrl = "";
+
+function setQuestionImagePreview(url, isObjectUrl = false) {
+  const wrap = document.getElementById("questionImagePreviewWrap");
+  const image = document.getElementById("questionImagePreview");
+  const help = document.getElementById("questionImageHelp");
+
+  if (questionImageObjectUrl) {
+    URL.revokeObjectURL(questionImageObjectUrl);
+    questionImageObjectUrl = "";
+  }
+
+  if (!url) {
+    image.removeAttribute("src");
+    wrap.classList.add("d-none");
+    help.textContent = "Anh se duoc upload len folder Cloudinary rieng cho cau hoi.";
+    return;
+  }
+
+  if (isObjectUrl) {
+    questionImageObjectUrl = url;
+  }
+
+  image.src = url;
+  wrap.classList.remove("d-none");
 }

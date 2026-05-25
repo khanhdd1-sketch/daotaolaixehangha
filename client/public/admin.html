@@ -347,6 +347,18 @@
                 <label class="form-label" for="questionExplanation">Giai thich hien sau khi nop</label>
                 <textarea class="form-control" id="questionExplanation" name="explanation" rows="2"></textarea>
               </div>
+              <div class="col-md-7">
+                <label class="form-label" for="questionImageFile">Anh cau hoi (co the bo trong)</label>
+                <input class="form-control" id="questionImageFile" type="file" accept="image/*">
+                <div class="form-text" id="questionImageHelp">Anh se duoc upload len folder Cloudinary rieng cho cau hoi.</div>
+              </div>
+              <div class="col-md-5">
+                <label class="form-label" for="questionImageUrl">URL anh da luu</label>
+                <input class="form-control" id="questionImageUrl" name="image_url" readonly>
+              </div>
+              <div class="col-12 d-none" id="questionImagePreviewWrap">
+                <img id="questionImagePreview" class="img-fluid rounded border" style="max-height:220px;" alt="Anh cau hoi">
+              </div>
               <div class="col-12 d-flex gap-2 justify-content-end">
                 <button class="btn btn-outline-secondary" id="resetQuestionFormButton" type="button">Lam moi</button>
                 <button class="btn btn-primary" type="submit">Luu cau hoi</button>
@@ -358,6 +370,7 @@
                   <tr>
                     <th>De thi</th>
                     <th>Cau hoi</th>
+                    <th>Anh</th>
                     <th>Dung</th>
                     <th>Diem liet</th>
                     <th></th>

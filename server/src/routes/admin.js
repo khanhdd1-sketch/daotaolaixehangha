@@ -8,15 +8,49 @@
 const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const { hashPassword } = require("../services/authService");
+const cloudinaryService = require("../services/cloudinaryService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 const { requireCsrfToken } = require("../middleware/csrfMiddleware");
 const { normalizeCourseType, sanitizeEmail } = require("../utils/helpers");
-const { clampString, isStrongPassword, isValidCourseType, isValidEmail } = require("../utils/validators");
+const { clampString, isSafeHttpUrl, isStrongPassword, isValidCourseType, isValidEmail } = require("../utils/validators");
 
 const router = express.Router();
 
 router.use(requireAuth, requireRole("admin"));
 router.use(requireCsrfToken);
+
+function sanitizeQuestionImageUrl(value) {
+  const imageUrl = String(value || "").trim();
+  if (!imageUrl) {
+    return "";
+  }
+
+  if (!/^https?:\/\//i.test(imageUrl) || !isSafeHttpUrl(imageUrl)) {
+    return null;
+  }
+
+  if (cloudinaryService.isConfigured() && !cloudinaryService.isOwnedAssetUrl(imageUrl)) {
+    return null;
+  }
+
+  return imageUrl;
+}
+
+router.get("/question-image-upload-config", (req, res) => {
+  const uploadConfig = cloudinaryService.buildQuestionImageUploadConfig({
+    userId: req.user.sub,
+    examId: String(req.query.exam_id || "")
+  });
+
+  if (!uploadConfig) {
+    return res.status(503).json({
+      success: false,
+      message: "Cloudinary chua duoc cau hinh cho anh cau hoi."
+    });
+  }
+
+  return res.json({ success: true, data: uploadConfig });
+});
 
 router.get("/results", async (req, res, next) => {
   try {
@@ -243,7 +277,11 @@ router.delete("/exams/:id", async (req, res, next) => {
 
 router.post("/questions", async (req, res, next) => {
   try {
-    const response = await sheetsService.upsertQuestion(req.body);
+    const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
+    if (imageUrl === null) {
+      return res.status(400).json({ success: false, message: "Anh cau hoi khong hop le." });
+    }
+    const response = await sheetsService.upsertQuestion({ ...req.body, image_url: imageUrl });
     res.status(201).json(response);
   } catch (error) {
     next(error);
@@ -252,7 +290,11 @@ router.post("/questions", async (req, res, next) => {
 
 router.put("/questions/:id", async (req, res, next) => {
   try {
-    const response = await sheetsService.upsertQuestion({ ...req.body, id: req.params.id });
+    const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
+    if (imageUrl === null) {
+      return res.status(400).json({ success: false, message: "Anh cau hoi khong hop le." });
+    }
+    const response = await sheetsService.upsertQuestion({ ...req.body, id: req.params.id, image_url: imageUrl });
     res.json(response);
   } catch (error) {
     next(error);

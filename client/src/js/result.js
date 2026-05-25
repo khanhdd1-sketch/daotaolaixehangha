@@ -84,6 +84,7 @@ function renderAnswerReview(result) {
       <tr>
         <td>
           <div class="fw-semibold">${index + 1}. ${globalThis.DriveSchoolCommon.escapeHtml(question.question)}</div>
+          ${question.image_url ? `<div class="mt-2"><img class="img-fluid rounded border" style="max-height:220px;" src="${globalThis.DriveSchoolCommon.escapeHtml(question.image_url)}" alt="Anh cau hoi ${index + 1}" loading="lazy"></div>` : ""}
           ${question.is_critical ? `<div class="small text-danger mt-1">${t("admin.onlyCritical", "Critical")}</div>` : ""}
         </td>
         <td>${globalThis.DriveSchoolCommon.escapeHtml(selectedAnswer || "-")}</td>

@@ -39,7 +39,8 @@ function normalizeQuestion(question) {
     ...question,
     correct_answer: normalizeChoice(question.correct_answer),
     is_critical: parseBoolean(question.is_critical),
-    explanation: String(question.explanation || "").trim()
+    explanation: String(question.explanation || "").trim(),
+    image_url: String(question.image_url || "").trim()
   };
 }
 
@@ -407,6 +408,7 @@ const sheetsService = {
       option_c: data.option_c,
       option_d: data.option_d,
       explanation: data.explanation || "",
+      image_url: String(data.image_url || "").trim(),
       correct_answer: String(data.correct_answer || "").toUpperCase(),
       is_critical: parseBoolean(data.is_critical)
     };

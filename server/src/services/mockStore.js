@@ -277,7 +277,8 @@ const mockStore = {
       option_d: "Re phai khong quan sat",
       correct_answer: "A",
       is_critical: true,
-      explanation: "Den do bat buoc dung truoc vach dung de bao dam an toan."
+      explanation: "Den do bat buoc dung truoc vach dung de bao dam an toan.",
+      image_url: ""
     },
     {
       id: "q_a1_002",
@@ -289,7 +290,8 @@ const mockStore = {
       option_d: "Khong can xi nhan",
       correct_answer: "A",
       is_critical: false,
-      explanation: "Bat tin hieu bao huong giup cac phuong tien khac nhan biet."
+      explanation: "Bat tin hieu bao huong giup cac phuong tien khac nhan biet.",
+      image_url: ""
     },
     {
       id: "q_b2_001",
@@ -301,7 +303,8 @@ const mockStore = {
       option_d: "Slow down only",
       correct_answer: "B",
       is_critical: true,
-      explanation: "At a red light, the driver must stop behind the stop line and wait for the next signal."
+      explanation: "At a red light, the driver must stop behind the stop line and wait for the next signal.",
+      image_url: ""
     },
     {
       id: "q_b2_002",
@@ -313,7 +316,8 @@ const mockStore = {
       option_d: "Only look forward",
       correct_answer: "A",
       is_critical: false,
-      explanation: "Before changing lanes, the driver should check mirrors and blind spots to avoid collisions."
+      explanation: "Before changing lanes, the driver should check mirrors and blind spots to avoid collisions.",
+      image_url: ""
     },
     {
       id: "q_b2_003",
@@ -325,7 +329,8 @@ const mockStore = {
       option_d: "No documents are needed",
       correct_answer: "A",
       is_critical: false,
-      explanation: "Drivers should carry their driving license and relevant vehicle papers."
+      explanation: "Drivers should carry their driving license and relevant vehicle papers.",
+      image_url: ""
     },
     {
       id: "q_b2_004",
@@ -337,7 +342,8 @@ const mockStore = {
       option_d: "Use high beam",
       correct_answer: "B",
       is_critical: true,
-      explanation: "Pedestrians have priority at the crossing."
+      explanation: "Pedestrians have priority at the crossing.",
+      image_url: ""
     },
     {
       id: "q_b2x_001",
@@ -349,7 +355,8 @@ const mockStore = {
       option_d: "Chi dung phanh tay",
       correct_answer: "B",
       is_critical: false,
-      explanation: "Giam toc do va tang khoang cach giup xe an toan hon."
+      explanation: "Giam toc do va tang khoang cach giup xe an toan hon.",
+      image_url: ""
     },
     {
       id: "q_b2x_002",
@@ -361,7 +368,8 @@ const mockStore = {
       option_d: "Bat den khan cap va quay dau",
       correct_answer: "B",
       is_critical: true,
-      explanation: "Bien cam quay dau co hieu luc bat buoc nguoi lai xe phai chap hanh."
+      explanation: "Bien cam quay dau co hieu luc bat buoc nguoi lai xe phai chap hanh.",
+      image_url: ""
     },
     {
       id: "q_b2x_003",
@@ -373,7 +381,8 @@ const mockStore = {
       option_d: "Vuot khi xe doi dien dang den gan",
       correct_answer: "A",
       is_critical: false,
-      explanation: "Chi vuot khi du dieu kien an toan va co bao hieu ro rang."
+      explanation: "Chi vuot khi du dieu kien an toan va co bao hieu ro rang.",
+      image_url: ""
     },
     {
       id: "q_c1_001",
@@ -385,7 +394,8 @@ const mockStore = {
       option_d: "Chi dap phanh lien tuc",
       correct_answer: "A",
       is_critical: true,
-      explanation: "Xe tai khi xuong doc dai can su dung so thap va phanh dong co."
+      explanation: "Xe tai khi xuong doc dai can su dung so thap va phanh dong co.",
+      image_url: ""
     },
     {
       id: "q_c1_002",
@@ -397,7 +407,8 @@ const mockStore = {
       option_d: "Den trong xe",
       correct_answer: "A",
       is_critical: false,
-      explanation: "Tai trong cho phep la yeu to an toan va phap ly quan trong."
+      explanation: "Tai trong cho phep la yeu to an toan va phap ly quan trong.",
+      image_url: ""
     }
   ],
   lesson_watches: [],

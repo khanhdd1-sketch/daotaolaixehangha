@@ -333,6 +333,7 @@ function openTheoryRunner() {
         <div class="fw-semibold">${index + 1}. ${escape(question.question)}</div>
         ${question.is_critical ? '<span class="badge text-bg-danger">Diem liet</span>' : ""}
       </div>
+      ${question.image_url ? `<div class="mb-3"><img class="img-fluid rounded border" style="max-height:280px;" src="${escape(question.image_url)}" alt="Anh minh hoa cau hoi ${index + 1}" loading="lazy"></div>` : ""}
       ${["A", "B", "C", "D"].map((option) => `
         <label class="answer-option">
           <input type="radio" name="question_${escape(question.id)}" value="${option}">
