@@ -63,6 +63,16 @@ async function apiFetch(url, options = {}) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
+    if (
+      response.status === 401 &&
+      !String(url).includes("/api/auth/login") &&
+      !String(url).includes("/api/auth/me")
+    ) {
+      const currentPath = globalThis.location.pathname;
+      if (["/admin.html", "/exam.html", "/result.html"].includes(currentPath)) {
+        globalThis.setTimeout(() => redirectWithLang("/login.html"), 0);
+      }
+    }
     throw new Error(data.message || "Request failed");
   }
   return data;

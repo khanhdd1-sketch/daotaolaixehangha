@@ -265,7 +265,7 @@ const sheetsService = {
         success: true,
         data: mockStore.exams
           .map(normalizeExam)
-          .filter((item) => !courseType || !item.course_type || item.course_type === courseType)
+          .filter((item) => !courseType || item.course_type === courseType)
       };
     }
 
@@ -274,7 +274,7 @@ const sheetsService = {
       success: true,
       data: (response.data || [])
         .map(normalizeExam)
-        .filter((item) => !courseType || !item.course_type || item.course_type === courseType)
+        .filter((item) => !courseType || item.course_type === courseType)
     };
   },
 
@@ -518,14 +518,20 @@ const sheetsService = {
     }
 
     const questionsResponse = await this.getQuestionsByExam(result.exam_id);
+    const answers = parseJsonSafe(result.answers_json, {});
+    const servedQuestionIds = Object.keys(answers);
+    const filteredQuestions = servedQuestionIds.length
+      ? (questionsResponse.data || []).filter((item) => servedQuestionIds.includes(item.id))
+      : (questionsResponse.data || []);
+
     return {
       success: true,
       data: {
         ...result,
-        answers: parseJsonSafe(result.answers_json, {}),
+        answers,
         exam: (examsResponse.data || []).find((item) => item.id === result.exam_id) || null,
         user: (usersResponse.data || []).find((item) => item.id === result.user_id) || null,
-        questions: questionsResponse.data || []
+        questions: filteredQuestions
       }
     };
   }

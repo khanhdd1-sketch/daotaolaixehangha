@@ -326,7 +326,7 @@ function openTheoryRunner() {
 
   section.classList.remove("d-none");
   document.getElementById("theoryRunnerTitle").textContent = detail.exam.title || "Lam de";
-  document.getElementById("theoryRunnerMeta").textContent = `${detail.exam.total_questions} cau | Dat ${detail.exam.pass_score} | ${detail.exam.duration_minutes} phut`;
+  document.getElementById("theoryRunnerMeta").textContent = `${detail.questions.length} cau | ${detail.critical_count || 0} cau diem liet | Dat ${detail.exam.pass_score} | ${detail.exam.duration_minutes} phut`;
   document.getElementById("theoryQuestionList").innerHTML = (detail.questions || []).map((question, index) => `
     <article class="question-card mb-3">
       <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
@@ -361,14 +361,15 @@ async function handleTheorySubmit(event) {
   const answers = {};
   (detail.questions || []).forEach((question) => {
     const selected = document.querySelector(`input[name="question_${question.id}"]:checked`);
-    if (selected) {
-      answers[question.id] = selected.value;
-    }
+    answers[question.id] = selected ? selected.value : "";
   });
 
   const response = await globalThis.DriveSchoolCommon.apiFetch(`/api/exams/${encodeURIComponent(detail.exam.id)}/submit`, {
     method: "POST",
-    body: JSON.stringify({ answers })
+    body: JSON.stringify({
+      answers,
+      question_ids: (detail.questions || []).map((question) => question.id)
+    })
   });
   globalThis.DriveSchoolCommon.showToast("Da nop bai ly thuyet.", "success");
   closeTheoryRunner();

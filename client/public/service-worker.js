@@ -1,4 +1,4 @@
-const CACHE_NAME = "drive-school-v1";
+const CACHE_NAME = "drive-school-v2";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -35,7 +35,17 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+  const requestUrl = new URL(event.request.url);
+
   if (event.request.method !== "GET") {
+    return;
+  }
+
+  if (!["http:", "https:"].includes(requestUrl.protocol)) {
+    return;
+  }
+
+  if (requestUrl.pathname.startsWith("/api/")) {
     return;
   }
 
@@ -46,7 +56,11 @@ self.addEventListener("fetch", (event) => {
       }
 
       return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
+        if (
+          !networkResponse ||
+          networkResponse.status !== 200 ||
+          !(networkResponse.type === "basic" || networkResponse.type === "default")
+        ) {
           return networkResponse;
         }
 
@@ -54,6 +68,12 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
         return networkResponse;
       });
-    }).catch(() => caches.match("/exam.html"))
+    }).catch(() => {
+      if (event.request.mode === "navigate") {
+        return caches.match("/exam.html");
+      }
+
+      return Response.error();
+    })
   );
 });
