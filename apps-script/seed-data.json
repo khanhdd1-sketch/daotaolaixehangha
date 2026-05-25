@@ -47,6 +47,7 @@
   "exams": [
     {
       "id": "exam_b2_001",
+      "course_type": "B2",
       "title": "De thi B2 mo phong so 01",
       "pass_score": 26,
       "total_questions": 30,
@@ -55,6 +56,7 @@
     },
     {
       "id": "exam_a1_001",
+      "course_type": "A1",
       "title": "De thi A1 co ban",
       "pass_score": 21,
       "total_questions": 25,

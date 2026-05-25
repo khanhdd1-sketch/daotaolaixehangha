@@ -404,6 +404,12 @@ function initDeferredScripts() {
   globalThis.addEventListener("pointerdown", triggerLoad, { once: true, passive: true });
 }
 
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  }
+}
+
 async function trackVisit() {
   try {
     await apiFetch("/api/tracking/visit", {
@@ -489,5 +495,6 @@ document.addEventListener("DOMContentLoaded", () => {
   bindTrackingClicks();
   initLazyMaps();
   initDeferredScripts();
+  registerServiceWorker();
   pushDataLayer("marketing_page_view");
 });

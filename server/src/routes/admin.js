@@ -62,6 +62,68 @@ router.get("/stats", async (req, res, next) => {
   }
 });
 
+router.get("/dashboard", async (req, res, next) => {
+  try {
+    const filters = {
+      from: String(req.query.from || ""),
+      course: normalizeCourseType(req.query.course || "")
+    };
+
+    const [
+      statsResponse,
+      usersResponse,
+      examsResponse,
+      resultsResponse,
+      simulationExamsResponse,
+      simulationAttemptsResponse,
+      thirdPartyAttemptsResponse
+    ] = await Promise.all([
+      sheetsService.getStats(filters),
+      sheetsService.getUsers(),
+      sheetsService.getExams(),
+      sheetsService.getResults(),
+      sheetsService.getSimulationExams({ include_inactive: true }),
+      sheetsService.getSimulationAttempts(),
+      sheetsService.getThirdPartyAttempts()
+    ]);
+
+    const stats = statsResponse.data || {};
+    const users = usersResponse.data || [];
+    const students = users.filter((item) => item.role === "student");
+    const exams = examsResponse.data || [];
+    const examResults = (resultsResponse.data || []).map((item) => ({
+      ...item,
+      exam_title: exams.find((exam) => exam.id === item.exam_id)?.title ?? item.exam_id,
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
+    }));
+    const simulationExams = simulationExamsResponse.data || [];
+    const simulationAttempts = (simulationAttemptsResponse.data || []).map((item) => ({
+      ...item,
+      exam_title: simulationExams.find((exam) => exam.id === item.exam_id)?.title ?? item.exam_id,
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
+    }));
+    const thirdPartyAttempts = (thirdPartyAttemptsResponse.data || []).map((item) => ({
+      ...item,
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        stats,
+        students,
+        exams,
+        exam_results: examResults,
+        simulation_exams: simulationExams,
+        simulation_attempts: simulationAttempts,
+        third_party_attempts: thirdPartyAttempts
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/users", async (req, res, next) => {
   try {
     const response = await sheetsService.getUsers();

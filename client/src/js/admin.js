@@ -1,21 +1,17 @@
-
-/**
- * Copyright (c) 2026 Driving Training Center Hang Ha
- * (Trung tâm đào tạo lái xe Hằng Hà)
- *
- * All rights reserved.
- */
 const adminState = {
-  studentModal: null,
-  proofPreviewModal: null,
-  stats: null,
+  dashboard: null,
   students: [],
   registrations: [],
+  exams: [],
+  questions: [],
+  simulationExams: [],
+  simulationClips: [],
+  examResults: [],
+  simulationAttempts: [],
   thirdPartyAttempts: [],
-  filteredThirdPartyAttempts: [],
   charts: {
     overview: null,
-    thirdParty: null
+    channels: null
   }
 };
 
@@ -34,489 +30,623 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  adminState.studentModal = new globalThis.bootstrap.Modal(document.getElementById("studentModal"));
-  adminState.proofPreviewModal = new globalThis.bootstrap.Modal(document.getElementById("proofPreviewModal"));
   document.getElementById("adminName").textContent = currentUser.name;
-
-  initControls();
-  await refreshDashboard();
+  bindAdminEvents();
+  await refreshAdminApp();
 });
 
-function initControls() {
-  document.getElementById("filterButton").onclick = loadStats;
-  document.getElementById("openStudentModalButton").onclick = () => adminState.studentModal.show();
+function bindAdminEvents() {
+  document.getElementById("logoutButton").onclick = () => globalThis.DriveSchoolCommon.logoutAndRedirect();
+  document.getElementById("filterButton").onclick = refreshAdminApp;
   document.getElementById("createStudentForm").addEventListener("submit", handleStudentSubmit);
-  document.getElementById("logoutButton").onclick = async () => {
-    await globalThis.DriveSchoolCommon.logoutAndRedirect();
-  };
+  document.getElementById("examForm").addEventListener("submit", handleExamSubmit);
+  document.getElementById("questionForm").addEventListener("submit", handleQuestionSubmit);
+  document.getElementById("simulationExamForm").addEventListener("submit", handleSimulationExamSubmit);
+  document.getElementById("simulationClipForm").addEventListener("submit", handleSimulationClipSubmit);
 
-  bindFilterControls(["studentSearchInput"], "input", applyStudentFilters);
-  bindFilterControls(["studentCourseFilterLocal"], "change", applyStudentFilters);
+  document.getElementById("resetExamFormButton").onclick = resetExamForm;
+  document.getElementById("resetQuestionFormButton").onclick = resetQuestionForm;
+  document.getElementById("resetSimulationExamFormButton").onclick = resetSimulationExamForm;
+  document.getElementById("resetSimulationClipFormButton").onclick = resetSimulationClipForm;
 
-  bindFilterControls(["registrationSearchInput"], "input", applyRegistrationFilters);
-  bindFilterControls(["registrationCourseFilterLocal"], "change", applyRegistrationFilters);
+  [
+    "studentSearchInput",
+    "registrationSearchInput",
+    "resultSearchInput"
+  ].forEach((id) => document.getElementById(id).addEventListener("input", renderAllTables));
 
-  bindFilterControls(["thirdPartySearchInput"], "input", applyThirdPartyFilters);
-  bindFilterControls(["thirdPartyCourseFilterLocal", "thirdPartyStatusFilter"], "change", applyThirdPartyFilters);
-  document.getElementById("thirdPartyTable").addEventListener("click", handleThirdPartyTableClick);
+  [
+    "studentCourseFilterLocal",
+    "registrationCourseFilterLocal",
+    "resultCourseFilter",
+    "resultTypeFilter",
+    "resultStatusFilter",
+    "questionExamId",
+    "simulationClipExamId"
+  ].forEach((id) => document.getElementById(id).addEventListener("change", renderAllTables));
 
-  document.getElementById("studentModal").addEventListener("hidden.bs.modal", () => {
-    document.getElementById("createStudentForm").reset();
-  });
-  document.getElementById("proofPreviewModal").addEventListener("hidden.bs.modal", resetProofPreviewModal);
+  document.getElementById("examList").addEventListener("click", handleExamListClick);
+  document.getElementById("questionTable").addEventListener("click", handleQuestionTableClick);
+  document.getElementById("simulationExamList").addEventListener("click", handleSimulationExamListClick);
+  document.getElementById("simulationClipTable").addEventListener("click", handleSimulationClipTableClick);
 }
 
-function bindFilterControls(ids, eventName, handler) {
-  ids.forEach((id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.addEventListener(eventName, handler);
-    }
-  });
-}
-
-async function refreshDashboard() {
-  await Promise.all([loadUsers(), loadRegistrations(), loadStats(), loadThirdPartyAttempts()]);
-}
-
-async function loadUsers() {
-  const response = await globalThis.DriveSchoolCommon.apiFetch("/api/admin/users");
-  adminState.students = (response.data || []).filter((item) => item.role === "student");
-  applyStudentFilters();
-}
-
-async function loadRegistrations() {
-  const response = await globalThis.DriveSchoolCommon.apiFetch("/api/admin/stats");
-  adminState.registrations = response.data?.registrations || [];
-  applyRegistrationFilters();
-}
-
-async function loadStats() {
-  const query = new URLSearchParams();
+async function refreshAdminApp() {
+  const params = new URLSearchParams();
   const from = document.getElementById("filterDate").value;
   const course = document.getElementById("filterCourse").value;
+  if (from) params.set("from", from);
+  if (course) params.set("course", course);
 
-  if (from) query.set("from", from);
-  if (course) query.set("course", course);
+  const [dashboardResponse, questionsResponse, simulationExamsResponse] = await Promise.all([
+    globalThis.DriveSchoolCommon.apiFetch(`/api/admin/dashboard?${params.toString()}`),
+    globalThis.DriveSchoolCommon.apiFetch("/api/admin/questions"),
+    globalThis.DriveSchoolCommon.apiFetch("/api/admin/simulation-exams")
+  ]);
 
-  const response = await globalThis.DriveSchoolCommon.apiFetch(`/api/admin/stats?${query.toString()}`);
-  const stats = response.data || {};
-  adminState.stats = stats;
+  const simulationExams = simulationExamsResponse.data || [];
+  const clipResponses = await Promise.all(
+    simulationExams.map((exam) => globalThis.DriveSchoolCommon.apiFetch(`/api/admin/simulation-clips?exam_id=${encodeURIComponent(exam.id)}`))
+  );
 
+  adminState.dashboard = dashboardResponse.data || {};
+  adminState.students = adminState.dashboard.students || [];
+  adminState.registrations = adminState.dashboard.stats?.registrations || [];
+  adminState.exams = adminState.dashboard.exams || [];
+  adminState.questions = questionsResponse.data || [];
+  adminState.simulationExams = simulationExams;
+  adminState.simulationClips = clipResponses.flatMap((response) => response.data || []);
+  adminState.examResults = adminState.dashboard.exam_results || [];
+  adminState.simulationAttempts = adminState.dashboard.simulation_attempts || [];
+  adminState.thirdPartyAttempts = adminState.dashboard.third_party_attempts || [];
+
+  renderDashboardStats();
+  syncExamAndClipSelects();
+  renderAllTables();
+  renderCharts();
+}
+
+function renderDashboardStats() {
+  const stats = adminState.dashboard.stats || {};
   document.getElementById("statVisits").textContent = stats.totalVisits || 0;
   document.getElementById("statRegistrations").textContent = stats.totalRegistrations || 0;
   document.getElementById("statStudents").textContent = stats.totalStudents || 0;
   document.getElementById("statPassed").textContent = stats.passedCount || 0;
   document.getElementById("statFailed").textContent = stats.failedCount || 0;
-
-  document.getElementById("overviewChartBadge").textContent = buildOverviewBadgeText(from, course);
-  renderOverviewChart(stats);
+  document.getElementById("dashboardFilterBadge").textContent = buildFilterBadge();
 }
 
-async function loadThirdPartyAttempts() {
-  const response = await globalThis.DriveSchoolCommon.apiFetch("/api/admin/third-party-attempts");
-  adminState.thirdPartyAttempts = response.data || [];
-  applyThirdPartyFilters();
+function renderAllTables() {
+  renderStudents();
+  renderRegistrations();
+  renderExamList();
+  renderQuestionTable();
+  renderSimulationExamList();
+  renderSimulationClipTable();
+  renderResultTable();
 }
 
-function applyStudentFilters() {
+function renderStudents() {
   const searchTerm = normalizeText(document.getElementById("studentSearchInput").value);
   const courseFilter = document.getElementById("studentCourseFilterLocal").value;
   const filtered = adminState.students.filter((item) => {
-    const matchesCourse = !courseFilter || String(item.course_type || "") === courseFilter;
-    const matchesSearch = !searchTerm || matchesTextSearch(
-      [item.name, item.email, item.course_type, item.note],
-      searchTerm
-    );
-    return matchesCourse && matchesSearch;
+    return (!courseFilter || item.course_type === courseFilter)
+      && matchesSearch([item.name, item.email, item.course_type], searchTerm);
   });
 
-  document.getElementById("studentCountBadge").textContent = `${filtered.length} học viên`;
+  document.getElementById("studentCountBadge").textContent = `${filtered.length} hoc vien`;
   document.getElementById("studentTable").innerHTML = filtered.length
-    ? filtered
-      .map(
-        (item) => `
-          <tr>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.name)}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.email)}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.note || "")}</td>
-          </tr>
-        `
-      )
-      .join("")
-    : '<tr><td colspan="5" class="text-center text-muted py-4">Không tìm thấy học viên phù hợp.</td></tr>';
+    ? filtered.map((item) => `
+      <tr>
+        <td>${escape(item.name)}</td>
+        <td>${escape(item.email)}</td>
+        <td>${escape(item.course_type || "-")}</td>
+        <td>${globalThis.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
+      </tr>
+    `).join("")
+    : buildEmptyRow(4, "Chua co hoc vien phu hop.");
 }
 
-function applyRegistrationFilters() {
+function renderRegistrations() {
   const searchTerm = normalizeText(document.getElementById("registrationSearchInput").value);
   const courseFilter = document.getElementById("registrationCourseFilterLocal").value;
   const filtered = adminState.registrations.filter((item) => {
-    const matchesCourse = !courseFilter || String(item.course_type || "") === courseFilter;
-    const matchesSearch = !searchTerm || matchesTextSearch(
-      [item.name, item.phone, item.email, item.course_type, item.note],
-      searchTerm
-    );
-    return matchesCourse && matchesSearch;
+    return (!courseFilter || item.course_type === courseFilter)
+      && matchesSearch([item.name, item.phone, item.email, item.note, item.course_type], searchTerm);
   });
 
   document.getElementById("registrationCountBadge").textContent = `${filtered.length} lead`;
   document.getElementById("registrationTable").innerHTML = filtered.length
-    ? filtered
-      .map(
-        (item) => `
-          <tr>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.name || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.phone || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.email || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.note || "")}</td>
-          </tr>
-        `
-      )
-      .join("")
-    : '<tr><td colspan="6" class="text-center text-muted py-4">Không tìm thấy lead phù hợp.</td></tr>';
+    ? filtered.map((item) => `
+      <tr>
+        <td>${escape(item.name || "")}</td>
+        <td>${escape(item.phone || "")}</td>
+        <td>${escape(item.email || "")}</td>
+        <td>${escape(item.course_type || "-")}</td>
+        <td>${globalThis.DriveSchoolCommon.formatDateTime(item.created_at)}</td>
+        <td>${escape(item.note || "")}</td>
+      </tr>
+    `).join("")
+    : buildEmptyRow(6, "Chua co lead phu hop.");
 }
 
-function applyThirdPartyFilters() {
-  const searchTerm = normalizeText(document.getElementById("thirdPartySearchInput").value);
-  const courseFilter = document.getElementById("thirdPartyCourseFilterLocal").value;
-  const statusFilter = document.getElementById("thirdPartyStatusFilter").value;
+function renderExamList() {
+  document.getElementById("examCountBadge").textContent = `${adminState.exams.length} de`;
+  document.getElementById("examList").innerHTML = adminState.exams.length
+    ? adminState.exams.map((exam) => `
+      <button class="admin-list-item" type="button" data-exam-id="${escape(exam.id)}" data-action="edit-exam">
+        <div>
+          <div class="fw-semibold">${escape(exam.title)}</div>
+          <div class="small text-muted">${escape(exam.course_type || "-")} | ${exam.pass_score}/${exam.total_questions} | ${exam.duration_minutes} phut</div>
+        </div>
+        <span class="badge ${exam.active ? "text-bg-success" : "text-bg-secondary"}">${exam.active ? "Dang mo" : "Tam an"}</span>
+      </button>
+    `).join("")
+    : '<div class="text-muted">Chua co de ly thuyet.</div>';
+}
 
-  const filtered = adminState.thirdPartyAttempts.filter((item) => {
-    const statusValue = item.passed ? "passed" : "failed";
+function renderQuestionTable() {
+  const examFilter = document.getElementById("questionExamId").value;
+  const questions = adminState.questions.filter((item) => !examFilter || item.exam_id === examFilter);
+  document.getElementById("questionCountBadge").textContent = `${questions.length} cau`;
+  document.getElementById("questionTable").innerHTML = questions.length
+    ? questions.map((item) => `
+      <tr>
+        <td>${escape(item.exam_title || findExamTitle(item.exam_id))}</td>
+        <td>
+          <div class="fw-semibold">${escape(item.question)}</div>
+          <div class="small text-muted mt-1">${escape(item.explanation || "")}</div>
+        </td>
+        <td>${escape(item.correct_answer || "-")}</td>
+        <td>${item.is_critical ? '<span class="badge text-bg-danger">Diem liet</span>' : '<span class="badge text-bg-light">Thuong</span>'}</td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary" type="button" data-question-id="${escape(item.id)}" data-action="edit-question">Sua</button>
+          <button class="btn btn-sm btn-outline-danger" type="button" data-question-id="${escape(item.id)}" data-action="delete-question">Xoa</button>
+        </td>
+      </tr>
+    `).join("")
+    : buildEmptyRow(5, "Chua co cau hoi.");
+}
+
+function renderSimulationExamList() {
+  document.getElementById("simulationExamCountBadge").textContent = `${adminState.simulationExams.length} de`;
+  document.getElementById("simulationExamList").innerHTML = adminState.simulationExams.length
+    ? adminState.simulationExams.map((exam) => `
+      <button class="admin-list-item" type="button" data-simulation-exam-id="${escape(exam.id)}" data-action="edit-simulation-exam">
+        <div>
+          <div class="fw-semibold">${escape(exam.title)}</div>
+          <div class="small text-muted">${escape(exam.course_type || "-")} | Dat ${exam.pass_score} diem | ${exam.total_clips} clip</div>
+        </div>
+        <span class="badge ${exam.active ? "text-bg-success" : "text-bg-secondary"}">${exam.active ? "Dang mo" : "Tam an"}</span>
+      </button>
+    `).join("")
+    : '<div class="text-muted">Chua co bai mo phong.</div>';
+}
+
+function renderSimulationClipTable() {
+  const examFilter = document.getElementById("simulationClipExamId").value;
+  const clips = adminState.simulationClips.filter((item) => !examFilter || item.exam_id === examFilter);
+  document.getElementById("simulationClipCountBadge").textContent = `${clips.length} clip`;
+  document.getElementById("simulationClipTable").innerHTML = clips.length
+    ? clips.map((item) => `
+      <tr>
+        <td>${escape(findSimulationExamTitle(item.exam_id))}</td>
+        <td>
+          <div class="fw-semibold">${escape(item.title)}</div>
+          <div class="small text-muted">${escape(item.video_url)}</div>
+        </td>
+        <td>${item.trigger_start_sec}s - ${item.trigger_end_sec}s</td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary" type="button" data-simulation-clip-id="${escape(item.id)}" data-action="edit-simulation-clip">Sua</button>
+          <button class="btn btn-sm btn-outline-danger" type="button" data-simulation-clip-id="${escape(item.id)}" data-action="delete-simulation-clip">Xoa</button>
+        </td>
+      </tr>
+    `).join("")
+    : buildEmptyRow(4, "Chua co clip mo phong.");
+}
+
+function renderResultTable() {
+  const searchTerm = normalizeText(document.getElementById("resultSearchInput").value);
+  const courseFilter = document.getElementById("resultCourseFilter").value;
+  const typeFilter = document.getElementById("resultTypeFilter").value;
+  const statusFilter = document.getElementById("resultStatusFilter").value;
+  const merged = [
+    ...adminState.examResults.map((item) => ({
+      ...item,
+      source_type: "theory",
+      source_label: "Ly thuyet noi bo",
+      display_name: item.exam_title || item.exam_id,
+      course_type: resolveCourseTypeByExam(item.exam_id)
+    })),
+    ...adminState.simulationAttempts.map((item) => ({
+      ...item,
+      source_type: "simulation",
+      source_label: "Mo phong",
+      display_name: item.exam_title || item.exam_id,
+      course_type: resolveCourseTypeBySimulationExam(item.exam_id)
+    })),
+    ...adminState.thirdPartyAttempts.map((item) => ({
+      ...item,
+      source_type: "third_party",
+      source_label: "3rd-party",
+      display_name: `${item.exam_type || "-"} | ${item.platform_name || "-"}`,
+      attempt_no: item.attempt_no || 1
+    }))
+  ];
+
+  const filtered = merged.filter((item) => {
     const matchesCourse = !courseFilter || String(item.course_type || "") === courseFilter;
-    const matchesStatus = !statusFilter || statusValue === statusFilter;
-    const matchesSearch = !searchTerm || matchesTextSearch(
-      [item.student_name, item.user_id, item.exam_type, item.platform_name, item.course_type],
-      searchTerm
-    );
-    return matchesCourse && matchesStatus && matchesSearch;
+    const matchesType = !typeFilter || item.source_type === typeFilter;
+    const matchesStatus = !statusFilter || (item.passed ? "passed" : "failed") === statusFilter;
+    const matchesKeyword = matchesSearch([
+      item.student_name,
+      item.display_name,
+      item.platform_name,
+      item.exam_type,
+      item.course_type
+    ], searchTerm);
+    return matchesCourse && matchesType && matchesStatus && matchesKeyword;
+  }).sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0));
+
+  document.getElementById("resultCountBadge").textContent = `${filtered.length} ket qua`;
+  document.getElementById("resultTable").innerHTML = filtered.length
+    ? filtered.map((item) => `
+      <tr>
+        <td>${escape(item.student_name || item.user_id)}</td>
+        <td>${escape(item.course_type || "-")}</td>
+        <td>${escape(item.source_label)}</td>
+        <td>${escape(item.display_name || "-")}</td>
+        <td>#${escape(String(item.attempt_no || 1))}</td>
+        <td>${escape(String(item.score || 0))}</td>
+        <td>${item.passed ? '<span class="badge text-bg-success">Dat</span>' : '<span class="badge text-bg-danger">Chua dat</span>'}</td>
+        <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
+      </tr>
+    `).join("")
+    : buildEmptyRow(8, "Chua co ket qua phu hop.");
+}
+
+function renderCharts() {
+  const stats = adminState.dashboard.stats || {};
+  upsertChart("overview", "adminOverviewChart", {
+    type: "bar",
+    data: {
+      labels: ["Luot truy cap", "Lead", "Hoc vien", "Dat", "Chua dat"],
+      datasets: [
+        {
+          label: "So luong",
+          data: [
+            Number(stats.totalVisits || 0),
+            Number(stats.totalRegistrations || 0),
+            Number(stats.totalStudents || 0),
+            Number(stats.passedCount || 0),
+            Number(stats.failedCount || 0)
+          ],
+          backgroundColor: ["#0d47a1", "#ef6c00", "#039be5", "#2e7d32", "#c62828"],
+          borderRadius: 12,
+          maxBarThickness: 52
+        }
+      ]
+    },
+    options: buildChartOptions({ plugins: { legend: { display: false } } })
   });
 
-  adminState.filteredThirdPartyAttempts = filtered;
-  document.getElementById("thirdPartyCountBadge").textContent = `${filtered.length} kết quả`;
-  renderThirdPartyTable(filtered);
-  renderThirdPartyChart(filtered);
-}
-
-function renderThirdPartyTable(attempts) {
-  document.getElementById("thirdPartyTable").innerHTML = attempts.length
-    ? attempts
-      .map(
-        (item, index) => `
-          <tr>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.student_name || item.user_id)}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.course_type || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.exam_type || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(item.platform_name || "")}</td>
-            <td>${globalThis.DriveSchoolCommon.escapeHtml(String(item.score || 0))}</td>
-            <td>${item.passed ? '<span class="badge text-bg-success">Đạt</span>' : '<span class="badge text-bg-danger">Chưa đạt</span>'}</td>
-            <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
-            <!-- <td>${renderThirdPartyLinkCell(item.exam_url, "Mở bài thi")}</td> -->
-            <td>${renderProofCell(item.proof_url, index)}</td>
-          </tr>
-        `
-      )
-      .join("")
-    : '<tr><td colspan="9" class="text-center text-muted py-4">Không tìm thấy kết quả phù hợp.</td></tr>';
+  upsertChart("channels", "adminChannelChart", {
+    type: "doughnut",
+    data: {
+      labels: ["Ly thuyet noi bo", "Mo phong", "3rd-party"],
+      datasets: [
+        {
+          data: [
+            adminState.examResults.length,
+            adminState.simulationAttempts.length,
+            adminState.thirdPartyAttempts.length
+          ],
+          backgroundColor: ["#0d47a1", "#ef6c00", "#00897b"],
+          hoverOffset: 8
+        }
+      ]
+    },
+    options: buildChartOptions()
+  });
 }
 
 async function handleStudentSubmit(event) {
   event.preventDefault();
   const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
-
-  try {
-    await globalThis.DriveSchoolCommon.apiFetch("/api/admin/users", {
-      method: "POST",
-      body: JSON.stringify({ ...payload, role: "student" })
-    });
-    adminState.studentModal.hide();
-    globalThis.DriveSchoolCommon.showToast("Đã tạo tài khoản học viên.", "success");
-    await refreshDashboard();
-  } catch (error) {
-    globalThis.DriveSchoolCommon.showToast(error.message, "danger");
-  }
-}
-
-function handleThirdPartyTableClick(event) {
-  const previewButton = event.target.closest("[data-proof-index]");
-  if (!previewButton) {
-    return;
-  }
-
-  const index = Number(previewButton.dataset.proofIndex);
-  if (!Number.isInteger(index) || index < 0) {
-    return;
-  }
-
-  openProofPreview(index);
-}
-
-function openProofPreview(index) {
-  const item = adminState.filteredThirdPartyAttempts[index];
-  const proofUrl = item ? getSafeLink(item.proof_url, { allowDataImage: true }) : "";
-  const previewImage = document.getElementById("proofPreviewImage");
-  const previewFallback = document.getElementById("proofPreviewFallback");
-  const previewMeta = document.getElementById("proofPreviewMeta");
-  const previewUrlGroup = document.getElementById("proofPreviewUrlGroup");
-  const previewUrlInput = document.getElementById("proofPreviewUrl");
-  const externalLink = document.getElementById("proofPreviewExternalLink");
-
-  if (!proofUrl) {
-    globalThis.DriveSchoolCommon.showToast("Không có ảnh minh chứng để xem.", "warning");
-    return;
-  }
-
-  previewMeta.textContent = `${item.student_name || item.user_id} | ${item.exam_type || "Minh chứng"}`;
-  previewImage.classList.add("d-none");
-  previewImage.removeAttribute("src");
-  previewFallback.classList.remove("d-none");
-  previewFallback.textContent = "Đang tải ảnh minh chứng...";
-
-  if (/^https?:\/\//i.test(proofUrl)) {
-    previewUrlInput.value = proofUrl;
-    previewUrlGroup.classList.remove("d-none");
-  } else {
-    previewUrlInput.value = "";
-    previewUrlGroup.classList.add("d-none");
-  }
-
-  externalLink.href = proofUrl;
-  externalLink.classList.remove("d-none");
-
-  previewImage.onload = () => {
-    previewFallback.classList.add("d-none");
-    previewImage.classList.remove("d-none");
-  };
-
-  previewImage.onerror = () => {
-    previewImage.classList.add("d-none");
-    previewFallback.classList.remove("d-none");
-    previewFallback.textContent = "Không thể hiển thị trực tiếp. Bạn có thể mở trong tab mới.";
-  };
-
-  previewImage.src = proofUrl;
-  adminState.proofPreviewModal.show();
-}
-
-function resetProofPreviewModal() {
-  const previewImage = document.getElementById("proofPreviewImage");
-  const previewFallback = document.getElementById("proofPreviewFallback");
-  const previewMeta = document.getElementById("proofPreviewMeta");
-  const previewUrlGroup = document.getElementById("proofPreviewUrlGroup");
-  const previewUrlInput = document.getElementById("proofPreviewUrl");
-  const externalLink = document.getElementById("proofPreviewExternalLink");
-
-  previewImage.classList.add("d-none");
-  previewImage.removeAttribute("src");
-  previewFallback.classList.remove("d-none");
-  previewFallback.textContent = "Ảnh minh chứng sẽ hiển thị tại đây.";
-  previewMeta.textContent = "Xem nhanh ảnh học viên gửi cho admin.";
-  previewUrlGroup.classList.add("d-none");
-  previewUrlInput.value = "";
-  externalLink.classList.add("d-none");
-  externalLink.removeAttribute("href");
-}
-
-function renderOverviewChart(stats) {
-  const labels = ["Lượt truy cập", "Đăng ký", "Học viên", "Đạt", "Chưa đạt"];
-  const values = [
-    Number(stats.totalVisits || 0),
-    Number(stats.totalRegistrations || 0),
-    Number(stats.totalStudents || 0),
-    Number(stats.passedCount || 0),
-    Number(stats.failedCount || 0)
-  ];
-  const hasData = values.some((value) => value > 0);
-
-  setChartEmptyState("adminOverviewChart", "adminOverviewChartEmpty", hasData);
-  if (!hasData) {
-    destroyChart("overview");
-    return;
-  }
-
-  upsertChart("overview", "adminOverviewChart", {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Số lượng",
-          data: values,
-          backgroundColor: ["#0d47a1", "#ef6c00", "#0288d1", "#2e7d32", "#c62828"],
-          borderRadius: 12,
-          maxBarThickness: 48
-        }
-      ]
-    },
-    options: buildChartOptions({
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { precision: 0 }
-        }
-      }
-    })
+  await globalThis.DriveSchoolCommon.apiFetch("/api/admin/users", {
+    method: "POST",
+    body: JSON.stringify({ ...payload, role: "student" })
   });
+  event.currentTarget.reset();
+  document.getElementById("studentPassword").value = "Student@123";
+  globalThis.DriveSchoolCommon.showToast("Da tao hoc vien.", "success");
+  await refreshAdminApp();
 }
 
-function renderThirdPartyChart(attempts) {
-  const grouped = attempts.reduce((accumulator, item) => {
-    const label = String(item.exam_type || "Khac");
-    if (!accumulator[label]) {
-      accumulator[label] = { passed: 0, failed: 0 };
-    }
+async function handleExamSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const payload = serializeForm(form);
+  const examId = payload.id;
+  const url = examId ? `/api/admin/exams/${encodeURIComponent(examId)}` : "/api/admin/exams";
+  const method = examId ? "PUT" : "POST";
+  await globalThis.DriveSchoolCommon.apiFetch(url, {
+    method,
+    body: JSON.stringify(payload)
+  });
+  resetExamForm();
+  globalThis.DriveSchoolCommon.showToast("Da luu de ly thuyet.", "success");
+  await refreshAdminApp();
+}
 
-    if (item.passed) {
-      accumulator[label].passed += 1;
-    } else {
-      accumulator[label].failed += 1;
-    }
-    return accumulator;
-  }, {});
+async function handleQuestionSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const payload = serializeForm(form);
+  const questionId = payload.id;
+  const url = questionId ? `/api/admin/questions/${encodeURIComponent(questionId)}` : "/api/admin/questions";
+  const method = questionId ? "PUT" : "POST";
+  await globalThis.DriveSchoolCommon.apiFetch(url, {
+    method,
+    body: JSON.stringify(payload)
+  });
+  resetQuestionForm();
+  globalThis.DriveSchoolCommon.showToast("Da luu cau hoi.", "success");
+  await refreshAdminApp();
+}
 
-  const labels = Object.keys(grouped);
-  const hasData = labels.length > 0;
+async function handleSimulationExamSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const payload = serializeForm(form);
+  const examId = payload.id;
+  const url = examId
+    ? `/api/admin/simulation-exams/${encodeURIComponent(examId)}`
+    : "/api/admin/simulation-exams";
+  const method = examId ? "PUT" : "POST";
+  await globalThis.DriveSchoolCommon.apiFetch(url, {
+    method,
+    body: JSON.stringify(payload)
+  });
+  resetSimulationExamForm();
+  globalThis.DriveSchoolCommon.showToast("Da luu de mo phong.", "success");
+  await refreshAdminApp();
+}
 
-  document.getElementById("thirdPartyChartBadge").textContent = `${attempts.length} kết quả`;
-  setChartEmptyState("adminThirdPartyChart", "adminThirdPartyChartEmpty", hasData);
-  if (!hasData) {
-    destroyChart("thirdParty");
+async function handleSimulationClipSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const payload = serializeForm(form);
+  const clipId = payload.id;
+  const url = clipId
+    ? `/api/admin/simulation-clips/${encodeURIComponent(clipId)}`
+    : "/api/admin/simulation-clips";
+  const method = clipId ? "PUT" : "POST";
+  await globalThis.DriveSchoolCommon.apiFetch(url, {
+    method,
+    body: JSON.stringify(payload)
+  });
+  resetSimulationClipForm();
+  globalThis.DriveSchoolCommon.showToast("Da luu clip mo phong.", "success");
+  await refreshAdminApp();
+}
+
+async function handleExamListClick(event) {
+  const button = event.target.closest("[data-action='edit-exam']");
+  if (!button) return;
+  const exam = adminState.exams.find((item) => item.id === button.dataset.examId);
+  if (!exam) return;
+  fillExamForm(exam);
+}
+
+async function handleQuestionTableClick(event) {
+  const editButton = event.target.closest("[data-action='edit-question']");
+  if (editButton) {
+    const item = adminState.questions.find((question) => question.id === editButton.dataset.questionId);
+    if (item) fillQuestionForm(item);
     return;
   }
 
-  upsertChart("thirdParty", "adminThirdPartyChart", {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Đạt",
-          data: labels.map((label) => grouped[label].passed),
-          backgroundColor: "#2e7d32",
-          borderRadius: 10
-        },
-        {
-          label: "Chưa đạt",
-          data: labels.map((label) => grouped[label].failed),
-          backgroundColor: "#c62828",
-          borderRadius: 10
-        }
-      ]
-    },
-    options: buildChartOptions({
-      indexAxis: "y",
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: { precision: 0 }
-        },
-        y: {
-          ticks: {
-            autoSkip: false
-          }
-        }
-      }
-    })
+  const deleteButton = event.target.closest("[data-action='delete-question']");
+  if (!deleteButton) return;
+  await globalThis.DriveSchoolCommon.apiFetch(`/api/admin/questions/${encodeURIComponent(deleteButton.dataset.questionId)}`, {
+    method: "DELETE"
   });
+  globalThis.DriveSchoolCommon.showToast("Da xoa cau hoi.", "success");
+  await refreshAdminApp();
 }
 
-function buildChartOptions(overrides = {}) {
-  const { plugins: overridePlugins = {}, ...restOverrides } = overrides;
-  const baseLegend = {
-    position: "bottom",
-    labels: {
-      usePointStyle: true,
-      boxWidth: 10
-    }
-  };
-  const baseTooltip = {
-    intersect: false,
-    mode: "index"
-  };
-  const mergedPlugins = {
-    legend: {
-      ...baseLegend,
-      ...(overridePlugins.legend),
-      labels: {
-        ...baseLegend.labels,
-        ...(overridePlugins.legend?.labels)
-      }
-    },
-    tooltip: {
-      ...baseTooltip,
-      ...(overridePlugins.tooltip)
-    }
-  };
+async function handleSimulationExamListClick(event) {
+  const button = event.target.closest("[data-action='edit-simulation-exam']");
+  if (!button) return;
+  const exam = adminState.simulationExams.find((item) => item.id === button.dataset.simulationExamId);
+  if (!exam) return;
+  fillSimulationExamForm(exam);
+}
 
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: {
-      duration: 450
-    },
-    plugins: mergedPlugins,
-    ...restOverrides
-  };
+async function handleSimulationClipTableClick(event) {
+  const editButton = event.target.closest("[data-action='edit-simulation-clip']");
+  if (editButton) {
+    const item = adminState.simulationClips.find((clip) => clip.id === editButton.dataset.simulationClipId);
+    if (item) fillSimulationClipForm(item);
+    return;
+  }
+
+  const deleteButton = event.target.closest("[data-action='delete-simulation-clip']");
+  if (!deleteButton) return;
+  await globalThis.DriveSchoolCommon.apiFetch(`/api/admin/simulation-clips/${encodeURIComponent(deleteButton.dataset.simulationClipId)}`, {
+    method: "DELETE"
+  });
+  globalThis.DriveSchoolCommon.showToast("Da xoa clip mo phong.", "success");
+  await refreshAdminApp();
+}
+
+function syncExamAndClipSelects() {
+  const questionExamSelect = document.getElementById("questionExamId");
+  const clipExamSelect = document.getElementById("simulationClipExamId");
+
+  const previousQuestionExam = questionExamSelect.value;
+  const previousClipExam = clipExamSelect.value;
+
+  questionExamSelect.innerHTML = adminState.exams.map((item) => `
+    <option value="${escape(item.id)}">${escape(item.course_type || "-")} - ${escape(item.title)}</option>
+  `).join("");
+
+  clipExamSelect.innerHTML = adminState.simulationExams.map((item) => `
+    <option value="${escape(item.id)}">${escape(item.course_type || "-")} - ${escape(item.title)}</option>
+  `).join("");
+
+  if (adminState.exams.some((item) => item.id === previousQuestionExam)) {
+    questionExamSelect.value = previousQuestionExam;
+  }
+  if (adminState.simulationExams.some((item) => item.id === previousClipExam)) {
+    clipExamSelect.value = previousClipExam;
+  }
+}
+
+function fillExamForm(exam) {
+  document.getElementById("examId").value = exam.id || "";
+  document.getElementById("examCourseType").value = exam.course_type || "B2";
+  document.getElementById("examTitle").value = exam.title || "";
+  document.getElementById("examPassScore").value = exam.pass_score || "";
+  document.getElementById("examTotalQuestions").value = exam.total_questions || "";
+  document.getElementById("examDurationMinutes").value = exam.duration_minutes || 20;
+  document.getElementById("examActive").checked = exam.active !== false;
+}
+
+function fillQuestionForm(item) {
+  document.getElementById("questionId").value = item.id || "";
+  document.getElementById("questionExamId").value = item.exam_id || "";
+  document.getElementById("questionText").value = item.question || "";
+  document.getElementById("optionA").value = item.option_a || "";
+  document.getElementById("optionB").value = item.option_b || "";
+  document.getElementById("optionC").value = item.option_c || "";
+  document.getElementById("optionD").value = item.option_d || "";
+  document.getElementById("questionCorrectAnswer").value = item.correct_answer || "A";
+  document.getElementById("questionCritical").checked = Boolean(item.is_critical);
+  document.getElementById("questionExplanation").value = item.explanation || "";
+}
+
+function fillSimulationExamForm(item) {
+  document.getElementById("simulationExamId").value = item.id || "";
+  document.getElementById("simulationExamCourseType").value = item.course_type || "B2";
+  document.getElementById("simulationExamTitle").value = item.title || "";
+  document.getElementById("simulationExamDescription").value = item.description || "";
+  document.getElementById("simulationExamPassScore").value = item.pass_score || "";
+  document.getElementById("simulationExamTotalClips").value = item.total_clips || "";
+  document.getElementById("simulationExamActive").checked = item.active !== false;
+}
+
+function fillSimulationClipForm(item) {
+  document.getElementById("simulationClipId").value = item.id || "";
+  document.getElementById("simulationClipExamId").value = item.exam_id || "";
+  document.getElementById("simulationClipTitle").value = item.title || "";
+  document.getElementById("simulationClipVideoUrl").value = item.video_url || "";
+  document.getElementById("simulationClipOrderNo").value = item.order_no || "";
+  document.getElementById("simulationClipTriggerStart").value = item.trigger_start_sec || "";
+  document.getElementById("simulationClipTriggerEnd").value = item.trigger_end_sec || "";
+  document.getElementById("simulationClipActive").checked = item.active !== false;
+}
+
+function resetExamForm() {
+  document.getElementById("examForm").reset();
+  document.getElementById("examId").value = "";
+  document.getElementById("examCourseType").value = "B2";
+  document.getElementById("examDurationMinutes").value = 20;
+  document.getElementById("examActive").checked = true;
+}
+
+function resetQuestionForm() {
+  document.getElementById("questionForm").reset();
+  document.getElementById("questionId").value = "";
+  if (adminState.exams[0]) {
+    document.getElementById("questionExamId").value = adminState.exams[0].id;
+  }
+  document.getElementById("questionCorrectAnswer").value = "A";
+}
+
+function resetSimulationExamForm() {
+  document.getElementById("simulationExamForm").reset();
+  document.getElementById("simulationExamId").value = "";
+  document.getElementById("simulationExamCourseType").value = "B2";
+  document.getElementById("simulationExamActive").checked = true;
+}
+
+function resetSimulationClipForm() {
+  document.getElementById("simulationClipForm").reset();
+  document.getElementById("simulationClipId").value = "";
+  if (adminState.simulationExams[0]) {
+    document.getElementById("simulationClipExamId").value = adminState.simulationExams[0].id;
+  }
+  document.getElementById("simulationClipActive").checked = true;
+}
+
+function serializeForm(form) {
+  const payload = {};
+  new FormData(form).forEach((value, key) => {
+    payload[key] = typeof value === "string" ? value.trim() : value;
+  });
+
+  form.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
+    payload[checkbox.name] = checkbox.checked;
+  });
+
+  return payload;
 }
 
 function upsertChart(chartKey, canvasId, config) {
-  if (!globalThis.Chart) {
-    return;
+  if (!globalThis.Chart) return;
+  if (adminState.charts[chartKey]) {
+    adminState.charts[chartKey].destroy();
   }
-
-  destroyChart(chartKey);
   const canvas = document.getElementById(canvasId);
-  if (!canvas) {
-    return;
-  }
-
+  if (!canvas) return;
   adminState.charts[chartKey] = new globalThis.Chart(canvas, config);
 }
 
-function destroyChart(chartKey) {
-  if (adminState.charts[chartKey]) {
-    adminState.charts[chartKey].destroy();
-    adminState.charts[chartKey] = null;
-  }
+function buildChartOptions(overrides = {}) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          usePointStyle: true,
+          boxWidth: 10
+        }
+      }
+    },
+    ...overrides
+  };
 }
 
-function setChartEmptyState(canvasId, emptyId, hasData) {
-  const canvas = document.getElementById(canvasId);
-  const empty = document.getElementById(emptyId);
-
-  if (canvas) {
-    canvas.classList.toggle("d-none", !hasData);
-  }
-
-  if (empty) {
-    empty.classList.toggle("d-none", hasData);
-  }
+function resolveCourseTypeByExam(examId) {
+  return adminState.exams.find((item) => item.id === examId)?.course_type || "";
 }
 
-function buildOverviewBadgeText(from, course) {
-  if (!from && !course) {
-    return "Toàn bộ dữ liệu";
-  }
-
-  const tokens = [];
-  if (from) {
-    tokens.push(`Từ ${from}`);
-  }
-  if (course) {
-    tokens.push(`Khóa ${course}`);
-  }
-  return tokens.join(" | ");
+function resolveCourseTypeBySimulationExam(examId) {
+  return adminState.simulationExams.find((item) => item.id === examId)?.course_type || "";
 }
 
-function matchesTextSearch(values, normalizedSearchTerm) {
-  return values.some((value) => normalizeText(value).includes(normalizedSearchTerm));
+function findExamTitle(examId) {
+  return adminState.exams.find((item) => item.id === examId)?.title || examId;
+}
+
+function findSimulationExamTitle(examId) {
+  return adminState.simulationExams.find((item) => item.id === examId)?.title || examId;
+}
+
+function buildFilterBadge() {
+  const from = document.getElementById("filterDate").value;
+  const course = document.getElementById("filterCourse").value;
+  if (!from && !course) return "Toan bo du lieu";
+  return [from ? `Tu ${from}` : "", course ? `Bang ${course}` : ""].filter(Boolean).join(" | ");
+}
+
+function matchesSearch(values, normalizedSearch) {
+  if (!normalizedSearch) return true;
+  return values.some((value) => normalizeText(value).includes(normalizedSearch));
 }
 
 function normalizeText(value) {
@@ -528,38 +658,10 @@ function normalizeText(value) {
     .trim();
 }
 
-function renderThirdPartyLinkCell(value, label) {
-  const safeUrl = getSafeLink(value);
-  if (!safeUrl) {
-    return '<span class="text-muted">Không có</span>';
-  }
-
-  return `<a href="${globalThis.DriveSchoolCommon.escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+function escape(value) {
+  return globalThis.DriveSchoolCommon.escapeHtml(value);
 }
 
-function renderProofCell(value, index) {
-  const safeUrl = getSafeLink(value, { allowDataImage: true });
-  if (!safeUrl) {
-    return '<span class="text-muted">Không có</span>';
-  }
-
-  return `<button class="btn btn-outline-primary btn-sm" type="button" data-proof-index="${index}">Xem ảnh</button>`;
-}
-
-function getSafeLink(value, { allowDataImage = false } = {}) {
-  const url = String(value || "").trim();
-
-  if (!url) {
-    return "";
-  }
-
-  if (/^https?:\/\//i.test(url)) {
-    return url;
-  }
-
-  if (allowDataImage && /^data:image\/[a-z0-9.+-]+;base64,/i.test(url)) {
-    return url;
-  }
-
-  return "";
+function buildEmptyRow(colspan, message) {
+  return `<tr><td colspan="${colspan}" class="text-center text-muted py-4">${message}</td></tr>`;
 }

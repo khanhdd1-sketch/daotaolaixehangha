@@ -1,350 +1,559 @@
-
-<!--
-  Copyright (c) 2026 Trung tâm đào tạo lái xe Hằng Hà
-  All rights reserved.
--->
 <!DOCTYPE html>
 <html lang="vi">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-KMF7RN94');</script>
-      <meta name="robots" content="noindex, nofollow">
-      <meta name="description" content="Dashboard admin quản lý học viên và kết quả thi 3rd-party">
-      <title>Trung tâm dạy lái xe Hằng Hà | Dashboard Admin</title>
-      <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-      <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
-      <link href="/src/css/main.css" rel="stylesheet">
-      <!-- ✅ Favicon -->
-      <link rel="icon" type="image/x-icon" href="/favicon.ico">   
-   </head>
-   <body>
-      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KMF7RN94"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-      <main class="page-shell">
-         <div class="container">
-            <section class="admin-hero mb-4">
-               <div class="admin-hero-content">
-                  <div>
-                     <span class="section-badge mb-3">Trang quản lý của admin</span>
-                     <h1 class="admin-hero-title">Xin chào, <span id="adminName"></span></h1>
-                     <p class="admin-hero-copy mb-0">Quản lý học viên, form đăng ký và kết quả thi thử bên thứ 3.</p>
-                  </div>
-                  <div class="admin-hero-actions">
-                     <a class="btn btn-outline-light" href="/index.html">Trang chủ</a>
-                     <button class="btn btn-light" id="logoutButton">Đăng xuất</button>
-                  </div>
-               </div>
-            </section>
-            <section class="row g-4 mb-4">
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-blue">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-chart-line"></i></div>
-                     <div class="text-muted">Lượt truy cập</div>
-                     <div class="stat-value" id="statVisits">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-orange">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-file-signature"></i></div>
-                     <div class="text-muted">Form Đăng ký</div>
-                     <div class="stat-value" id="statRegistrations">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-sky">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
-                     <div class="text-muted">Học viên</div>
-                     <div class="stat-value" id="statStudents">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-green">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-                     <div class="text-muted">Lượt thi Đạt</div>
-                     <div class="stat-value" id="statPassed">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-red">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
-                     <div class="text-muted">Lượt thi chưa đạt</div>
-                     <div class="stat-value" id="statFailed">0</div>
-                  </article>
-               </div>
-            </section>
-            <section class="dashboard-card mb-4">
-               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                  <div>
-                     <h2 class="h4 mb-1">Bộ lọc tổng quan</h2>
-                     <p class="text-muted mb-0">Dùng để xem nhanh chỉ số và biểu đồ tổng hợp của dashboard.</p>
-                  </div>
-               </div>
-               <div class="row g-3 align-items-end">
-                  <div class="col-md-4">
-                     <label for="filterDate" class="form-label">Từ ngày</label>
-                     <input class="form-control" type="date" id="filterDate">
-                  </div>
-                  <div class="col-md-4">
-                     <label for="filterCourse" class="form-label">Khóa học</label>
-                     <select class="form-select" id="filterCourse">
-                        <option value="">Tất cả</option>
-                        <option value="A1">A1</option>
-                        <option value="A2">A2</option>
-                        <option value="B1">B1</option>
-                        <option value="B2">B2</option>
-                        <option value="C1">C1</option>
-                     </select>
-                  </div>
-                  <div class="col-md-4">
-                     <button class="btn btn-primary w-100" id="filterButton">Áp dụng bộ lọc</button>
-                  </div>
-               </div>
-            </section>
-            <section class="row g-4 mb-4">
-               <div class="col-xl-7">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Biểu đồ tổng quan</h2>
-                           <p class="text-muted mb-0">Theo bộ lọc tổng quan ở phía trên.</p>
-                        </div>
-                        <span class="compact-badge" id="overviewChartBadge">Toàn bộ dữ liệu</span>
-                     </div>
-                     <div class="chart-shell">
-                        <canvas id="adminOverviewChart"></canvas>
-                     </div>
-                     <p class="text-muted small mb-0 d-none" id="adminOverviewChartEmpty">Chưa có dữ liệu tổng quan để hiển thị biểu đồ.</p>
-                  </div>
-               </div>
-               <div class="col-xl-5">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Biểu đồ kết quả 3rd-party</h2>
-                           <p class="text-muted mb-0">Cập nhật theo bộ lọc riêng của bảng kết quả phía dưới.</p>
-                        </div>
-                        <span class="compact-badge" id="thirdPartyChartBadge">0 kết quả</span>
-                     </div>
-                     <div class="chart-shell">
-                        <canvas id="adminThirdPartyChart"></canvas>
-                     </div>
-                     <p class="text-muted small mb-0 d-none" id="adminThirdPartyChartEmpty">Chưa có dữ liệu kết quả để hiển thị biểu đồ.</p>
-                  </div>
-               </div>
-            </section>
-            <section class="row g-4 mb-4">
-               <div class="col-xl-5">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Danh sách học viên</h2>
-                           <p class="text-muted mb-0">Admin quản lý tài khoản học viên.</p>
-                        </div>
-                        <span class="compact-badge" id="studentCountBadge">0 học viên</span>
-                        <button class="btn btn-outline-primary btn-sm" type="button" id="openStudentModalButton">
-                        <i class="fa-solid fa-plus"></i> Thêm học viên
-                        </button>
-                     </div>
-                     <div class="table-filter-grid mb-3">
-                        <div>
-                           <label for="studentSearchInput" class="form-label">Tìm nhanh</label>
-                           <input class="form-control" type="search" id="studentSearchInput" placeholder="Tên hoặc email">
-                        </div>
-                        <div>
-                           <label for="studentCourseFilterLocal" class="form-label">Khóa học</label>
-                           <select class="form-select" id="studentCourseFilterLocal">
-                              <option value="">Tất cả</option>
-                              <option value="A1">A1</option>
-                              <option value="A2">A2</option>
-                              <option value="B1">B1</option>
-                              <option value="B2">B2</option>
-                              <option value="C1">C1</option>
-                           </select>
-                        </div>
-                     </div>
-                     <div class="table-shell">
-                        <table class="table align-middle admin-table">
-                           <thead>
-                              <tr>
-                                 <th>Tên</th>
-                                 <th>Email</th>
-                                 <th>Khóa học</th>
-                                 <th>Ngày tạo</th>
-                                 <th>Ghi chú</th>
-                              </tr>
-                           </thead>
-                           <tbody id="studentTable"></tbody>
-                        </table>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-xl-7">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Form Đăng ký tư vấn</h2>
-                           <p class="text-muted mb-0">Lead từ landing page đổ về đây.</p>
-                        </div>
-                        <span class="compact-badge" id="registrationCountBadge">0 lead</span>
-                     </div>
-                     <div class="table-filter-grid mb-3">
-                        <div>
-                           <label for="registrationSearchInput" class="form-label">Tìm nhanh</label>
-                           <input class="form-control" type="search" id="registrationSearchInput" placeholder="Tên, số điện thoại hoặc email">
-                        </div>
-                        <div>
-                           <label for="registrationCourseFilterLocal" class="form-label">Lọc Khóa học</label>
-                           <select class="form-select" id="registrationCourseFilterLocal">
-                              <option value="">Tất cả</option>
-                              <option value="A1">A1</option>
-                              <option value="A2">A2</option>
-                              <option value="B1">B1</option>
-                              <option value="B2">B2</option>
-                              <option value="C1">C1</option>
-                           </select>
-                        </div>
-                     </div>
-                     <div class="table-shell">
-                        <table class="table align-middle admin-table">
-                           <thead>
-                              <tr>
-                                 <th>Tên</th>
-                                 <th>Điện thoại</th>
-                                 <th>Email</th>
-                                 <th>Khóa học</th>
-                                 <th>Ngày tạo</th>
-                                 <th>Ghi chú</th>
-                              </tr>
-                           </thead>
-                           <tbody id="registrationTable"></tbody>
-                        </table>
-                     </div>
-                  </div>
-               </div>
-            </section>
-            <section class="dashboard-card">
-               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                  <div>
-                     <h2 class="h4 mb-1">Kết quả thi 3rd-party</h2>
-                     <p class="text-muted mb-0">Học viên tự gửi kết quả sau khi thi lý thuyết và mô phỏng.</p>
-                  </div>
-                  <span class="compact-badge" id="thirdPartyCountBadge">0 kết quả</span>
-               </div>
-               <div class="table-filter-grid mb-3">
-                  <div>
-                     <label for="thirdPartySearchInput" class="form-label">Tìm nhanh</label>
-                     <input class="form-control" type="search" id="thirdPartySearchInput" placeholder="Học viên, loại thi hoặc nền tảng">
-                  </div>
-                  <div>
-                     <label for="thirdPartyCourseFilterLocal" class="form-label">Lọc Khóa học</label>
-                     <select class="form-select" id="thirdPartyCourseFilterLocal">
-                        <option value="">Tất cả</option>
-                        <option value="A1">A1</option>
-                        <option value="A2">A2</option>
-                        <option value="B1">B1</option>
-                        <option value="B2">B2</option>
-                        <option value="C1">C1</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label for="thirdPartyStatusFilter" class="form-label">Lọc trạng thái</label>
-                     <select class="form-select" id="thirdPartyStatusFilter">
-                        <option value="">Tất cả</option>
-                        <option value="passed">Đạt</option>
-                        <option value="failed">Chưa đạt</option>
-                     </select>
-                  </div>
-               </div>
-               <div class="table-shell">
-                  <table class="table align-middle admin-table">
-                     <thead>
-                        <tr>
-                           <th>Học viên</th>
-                           <th>Khóa học</th>
-                           <th>Loại thi</th>
-                           <th>Nền tảng</th>
-                           <th>Điểm</th>
-                           <th>Trạng thái</th>
-                           <th>Thời gian</th>
-                           <th>Minh chứng</th>
-                        </tr>
-                     </thead>
-                     <tbody id="thirdPartyTable"></tbody>
-                  </table>
-               </div>
-            </section>
-         </div>
-      </main>
-      <div class="modal fade" id="studentModal" tabindex="-1" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content admin-modal">
-               <div class="modal-header border-0 pb-0">
-                  <div>
-                     <h2 class="modal-title h4 mb-1">Thêm học viên</h2>
-                     <p class="text-muted mb-0">Thêm học viên mới vào hệ thống.</p>
-                  </div>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-               </div>
-               <div class="modal-body">
-                  <form id="createStudentForm" class="row g-3">
-                     <div class="col-12"><label for="studentName" class="form-label">Tên học viên</label><input class="form-control" type="text" id="studentName" name="name" required></div>
-                     <div class="col-12"><label for="studentEmail" class="form-label">Email</label><input class="form-control" type="email" id="studentEmail" name="email" required></div>
-                     <div class="col-md-6"><label for="studentPassword" class="form-label">Mật khẩu</label><input class="form-control" type="text" id="studentPassword" name="password" required></div>
-                     <div class="col-md-6">
-                        <label for="studentCourseType" class="form-label">Loại bằng</label>
-                        <select class="form-select" id="studentCourseType" name="course_type" required>
-                           <option value="A1">A1</option>
-                           <option value="A2">A2</option>
-                           <option value="B1">B1</option>
-                           <option value="B2">B2</option>
-                           <option value="C1">C1</option>
-                        </select>
-                     </div>
-                     <div class="col-12 text-end">
-                        <button class="btn btn-primary" type="submit">Tạo tài khoản</button>
-                     </div>
-                  </form>
-               </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Dashboard admin quan ly hoc vien, de thi ly thuyet, mo phong va ket qua thi thu.">
+  <title>Trung tam day lai xe | Dashboard Admin</title>
+  <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+  <link href="/src/css/main.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+  <main class="page-shell">
+    <div class="container">
+      <section class="admin-hero mb-4">
+        <div class="admin-hero-content">
+          <div>
+            <span class="section-badge mb-3 text-dark bg-white">Trung tam dieu hanh admin</span>
+            <h1 class="admin-hero-title">Xin chao, <span id="adminName"></span></h1>
+            <p class="admin-hero-copy mb-0">Quan ly hoc vien, de thi noi bo, bai thi mo phong, ket qua va thong ke cho trung tam day lai xe.</p>
+          </div>
+          <div class="admin-hero-actions">
+            <a class="btn btn-outline-light" href="/index.html">Trang chu</a>
+            <button class="btn btn-light" id="logoutButton" type="button">Dang xuat</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-card mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+          <div>
+            <h2 class="h4 mb-1">Bo loc dashboard</h2>
+            <p class="text-muted mb-0">Loc nhanh theo ngay va loai bang de xem bieu do, hoc vien va ket qua thi.</p>
+          </div>
+          <span class="compact-badge" id="dashboardFilterBadge">Toan bo du lieu</span>
+        </div>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label" for="filterDate">Tu ngay</label>
+            <input class="form-control" type="date" id="filterDate">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="filterCourse">Loai bang</label>
+            <select class="form-select" id="filterCourse">
+              <option value="">Tat ca</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary w-100" id="filterButton" type="button">Cap nhat dashboard</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-blue">
+            <div class="admin-stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="text-muted">Luot truy cap</div>
+            <div class="stat-value" id="statVisits">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-orange">
+            <div class="admin-stat-icon"><i class="fa-solid fa-file-signature"></i></div>
+            <div class="text-muted">Lead dang ky</div>
+            <div class="stat-value" id="statRegistrations">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-sky">
+            <div class="admin-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
+            <div class="text-muted">Hoc vien</div>
+            <div class="stat-value" id="statStudents">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-green">
+            <div class="admin-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="text-muted">Dat</div>
+            <div class="stat-value" id="statPassed">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-red">
+            <div class="admin-stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+            <div class="text-muted">Chua dat</div>
+            <div class="stat-value" id="statFailed">0</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-xl-6">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h4 mb-1">Tong quan hien tai</h2>
+                <p class="text-muted mb-0">Chi so tu lead, hoc vien va ket qua thi.</p>
+              </div>
             </div>
-         </div>
-      </div>
-      <div class="modal fade" id="proofPreviewModal" tabindex="-1" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content admin-modal">
-               <div class="modal-header border-0 pb-0">
-                  <div>
-                     <h2 class="modal-title h4 mb-1">Ảnh minh chứng</h2>
-                     <p class="text-muted mb-0" id="proofPreviewMeta">Xem nhanh ảnh học viên gửi cho admin.</p>
-                  </div>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-               </div>
-               <div class="modal-body">
-                  <div class="proof-preview-shell">
-                     <img id="proofPreviewImage" class="img-fluid rounded d-none" alt="Ảnh minh chứng" loading="eager">
-                     <div class="text-center text-muted" id="proofPreviewFallback">Ảnh minh chứng sẽ hiển thị tại đây.</div>
-                  </div>
-                   <div class="mt-3 d-none" id="proofPreviewUrlGroup">
-                      <label class="form-label small text-muted" for="proofPreviewUrl">URL ảnh</label>
-                      <input class="form-control form-control-sm" id="proofPreviewUrl" type="url" readonly>
-                   </div>
-                   <div class="d-flex justify-content-end mt-3">
-                     <a class="btn btn-outline-primary d-none" id="proofPreviewExternalLink" target="_blank" rel="noopener noreferrer">Mở trong tab mới</a>
-                  </div>
-               </div>
+            <div class="chart-shell">
+              <canvas id="adminOverviewChart"></canvas>
             </div>
-         </div>
-      </div>
-      <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
-      <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <script defer src="./assets/vendor/chartjs/chart.umd.min.js"></script>
-      <script defer src="./assets/aos/js/aos.js"></script>
-      <script defer src="/src/js/common.js"></script>
-      <script defer src="/src/js/i18n.js"></script>
-      <script defer src="/src/js/admin.js"></script>
-   </body>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h4 mb-1">Nguon ket qua</h2>
+                <p class="text-muted mb-0">So sanh thi ly thuyet noi bo, mo phong va 3rd-party.</p>
+              </div>
+            </div>
+            <div class="chart-shell">
+              <canvas id="adminChannelChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-xl-5">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Hoc vien</h2>
+                <p class="text-muted mb-0">Tao tai khoan hoc vien va gan loai bang thi.</p>
+              </div>
+              <span class="compact-badge" id="studentCountBadge">0 hoc vien</span>
+            </div>
+            <form id="createStudentForm" class="row g-3 mb-4">
+              <div class="col-12">
+                <label class="form-label" for="studentName">Ten hoc vien</label>
+                <input class="form-control" id="studentName" name="name" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="studentEmail">Email</label>
+                <input class="form-control" id="studentEmail" name="email" type="email" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="studentPassword">Mat khau</label>
+                <input class="form-control" id="studentPassword" name="password" value="Student@123" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="studentCourseType">Loai bang</label>
+                <select class="form-select" id="studentCourseType" name="course_type" required>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2" selected>B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+              <div class="col-12 text-end">
+                <button class="btn btn-primary" type="submit">Them hoc vien</button>
+              </div>
+            </form>
+            <div class="table-filter-grid mb-3">
+              <div>
+                <label class="form-label" for="studentSearchInput">Tim nhanh</label>
+                <input class="form-control" id="studentSearchInput" type="search" placeholder="Ten hoac email">
+              </div>
+              <div>
+                <label class="form-label" for="studentCourseFilterLocal">Loc loai bang</label>
+                <select class="form-select" id="studentCourseFilterLocal">
+                  <option value="">Tat ca</option>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-shell">
+              <table class="table align-middle admin-table">
+                <thead>
+                  <tr>
+                    <th>Ten</th>
+                    <th>Email</th>
+                    <th>Loai bang</th>
+                    <th>Ngay tao</th>
+                  </tr>
+                </thead>
+                <tbody id="studentTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-7">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Lead dang ky tu van</h2>
+                <p class="text-muted mb-0">Theo doi lead tu website va loc theo loai bang.</p>
+              </div>
+              <span class="compact-badge" id="registrationCountBadge">0 lead</span>
+            </div>
+            <div class="table-filter-grid mb-3">
+              <div>
+                <label class="form-label" for="registrationSearchInput">Tim nhanh</label>
+                <input class="form-control" id="registrationSearchInput" type="search" placeholder="Ten, so dien thoai, email">
+              </div>
+              <div>
+                <label class="form-label" for="registrationCourseFilterLocal">Loc loai bang</label>
+                <select class="form-select" id="registrationCourseFilterLocal">
+                  <option value="">Tat ca</option>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-shell">
+              <table class="table align-middle admin-table">
+                <thead>
+                  <tr>
+                    <th>Ten</th>
+                    <th>Dien thoai</th>
+                    <th>Email</th>
+                    <th>Loai bang</th>
+                    <th>Ngay tao</th>
+                    <th>Ghi chu</th>
+                  </tr>
+                </thead>
+                <tbody id="registrationTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-xl-5">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h4 mb-1">Quan ly de ly thuyet</h2>
+                <p class="text-muted mb-0">Tao de theo loai bang va cau hinh diem dat.</p>
+              </div>
+              <span class="compact-badge" id="examCountBadge">0 de</span>
+            </div>
+            <form id="examForm" class="row g-3 mb-4">
+              <input id="examId" name="id" type="hidden">
+              <div class="col-md-4">
+                <label class="form-label" for="examCourseType">Loai bang</label>
+                <select class="form-select" id="examCourseType" name="course_type" required>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2" selected>B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label" for="examTitle">Ten de</label>
+                <input class="form-control" id="examTitle" name="title" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="examPassScore">Diem dat</label>
+                <input class="form-control" id="examPassScore" name="pass_score" type="number" min="1" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="examTotalQuestions">Tong cau</label>
+                <input class="form-control" id="examTotalQuestions" name="total_questions" type="number" min="1" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="examDurationMinutes">So phut</label>
+                <input class="form-control" id="examDurationMinutes" name="duration_minutes" type="number" min="1" value="20" required>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" id="examActive" name="active" type="checkbox" checked>
+                  <label class="form-check-label" for="examActive">Dang kich hoat</label>
+                </div>
+              </div>
+              <div class="col-12 d-flex gap-2 justify-content-end">
+                <button class="btn btn-outline-secondary" id="resetExamFormButton" type="button">Lam moi</button>
+                <button class="btn btn-primary" type="submit">Luu de</button>
+              </div>
+            </form>
+            <div class="admin-list-shell" id="examList"></div>
+          </div>
+        </div>
+
+        <div class="col-xl-7">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Ngan hang cau hoi</h2>
+                <p class="text-muted mb-0">Them dap an, cau diem liet va giai thich sau khi nop bai.</p>
+              </div>
+              <span class="compact-badge" id="questionCountBadge">0 cau</span>
+            </div>
+            <form id="questionForm" class="row g-3 mb-4">
+              <input id="questionId" name="id" type="hidden">
+              <div class="col-md-5">
+                <label class="form-label" for="questionExamId">De thi</label>
+                <select class="form-select" id="questionExamId" name="exam_id" required></select>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label" for="questionCorrectAnswer">Dap an dung</label>
+                <select class="form-select" id="questionCorrectAnswer" name="correct_answer" required>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                </select>
+              </div>
+              <div class="col-md-5 d-flex align-items-end">
+                <div class="form-check">
+                  <input class="form-check-input" id="questionCritical" name="is_critical" type="checkbox">
+                  <label class="form-check-label" for="questionCritical">La cau diem liet</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="questionText">Noi dung cau hoi</label>
+                <textarea class="form-control" id="questionText" name="question" rows="2" required></textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionA">Dap an A</label>
+                <input class="form-control" id="optionA" name="option_a" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionB">Dap an B</label>
+                <input class="form-control" id="optionB" name="option_b" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionC">Dap an C</label>
+                <input class="form-control" id="optionC" name="option_c" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionD">Dap an D</label>
+                <input class="form-control" id="optionD" name="option_d" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="questionExplanation">Giai thich hien sau khi nop</label>
+                <textarea class="form-control" id="questionExplanation" name="explanation" rows="2"></textarea>
+              </div>
+              <div class="col-12 d-flex gap-2 justify-content-end">
+                <button class="btn btn-outline-secondary" id="resetQuestionFormButton" type="button">Lam moi</button>
+                <button class="btn btn-primary" type="submit">Luu cau hoi</button>
+              </div>
+            </form>
+            <div class="table-shell">
+              <table class="table align-middle admin-table">
+                <thead>
+                  <tr>
+                    <th>De thi</th>
+                    <th>Cau hoi</th>
+                    <th>Dung</th>
+                    <th>Diem liet</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="questionTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-xl-5">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h4 mb-1">De thi mo phong</h2>
+                <p class="text-muted mb-0">Tao bai thi mo phong cho tung loai bang.</p>
+              </div>
+              <span class="compact-badge" id="simulationExamCountBadge">0 de</span>
+            </div>
+            <form id="simulationExamForm" class="row g-3 mb-4">
+              <input id="simulationExamId" name="id" type="hidden">
+              <div class="col-md-4">
+                <label class="form-label" for="simulationExamCourseType">Loai bang</label>
+                <select class="form-select" id="simulationExamCourseType" name="course_type" required>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2" selected>B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label" for="simulationExamTitle">Ten bai mo phong</label>
+                <input class="form-control" id="simulationExamTitle" name="title" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="simulationExamDescription">Mo ta</label>
+                <textarea class="form-control" id="simulationExamDescription" name="description" rows="2"></textarea>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="simulationExamPassScore">Diem dat</label>
+                <input class="form-control" id="simulationExamPassScore" name="pass_score" type="number" min="1" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="simulationExamTotalClips">Tong clip</label>
+                <input class="form-control" id="simulationExamTotalClips" name="total_clips" type="number" min="1" required>
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <div class="form-check">
+                  <input class="form-check-input" id="simulationExamActive" name="active" type="checkbox" checked>
+                  <label class="form-check-label" for="simulationExamActive">Dang kich hoat</label>
+                </div>
+              </div>
+              <div class="col-12 d-flex gap-2 justify-content-end">
+                <button class="btn btn-outline-secondary" id="resetSimulationExamFormButton" type="button">Lam moi</button>
+                <button class="btn btn-primary" type="submit">Luu bai mo phong</button>
+              </div>
+            </form>
+            <div class="admin-list-shell" id="simulationExamList"></div>
+          </div>
+        </div>
+
+        <div class="col-xl-7">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Clip mo phong</h2>
+                <p class="text-muted mb-0">Gan video, thu tu va cua so tinh diem cho moi clip.</p>
+              </div>
+              <span class="compact-badge" id="simulationClipCountBadge">0 clip</span>
+            </div>
+            <form id="simulationClipForm" class="row g-3 mb-4">
+              <input id="simulationClipId" name="id" type="hidden">
+              <div class="col-md-5">
+                <label class="form-label" for="simulationClipExamId">Bai mo phong</label>
+                <select class="form-select" id="simulationClipExamId" name="exam_id" required></select>
+              </div>
+              <div class="col-md-7">
+                <label class="form-label" for="simulationClipTitle">Ten clip</label>
+                <input class="form-control" id="simulationClipTitle" name="title" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="simulationClipVideoUrl">URL video</label>
+                <input class="form-control" id="simulationClipVideoUrl" name="video_url" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="simulationClipOrderNo">Thu tu</label>
+                <input class="form-control" id="simulationClipOrderNo" name="order_no" type="number" min="1" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="simulationClipTriggerStart">Bat dau tinh diem</label>
+                <input class="form-control" id="simulationClipTriggerStart" name="trigger_start_sec" type="number" step="0.1" min="0" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="simulationClipTriggerEnd">Ket thuc tinh diem</label>
+                <input class="form-control" id="simulationClipTriggerEnd" name="trigger_end_sec" type="number" step="0.1" min="0" required>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" id="simulationClipActive" name="active" type="checkbox" checked>
+                  <label class="form-check-label" for="simulationClipActive">Dang kich hoat</label>
+                </div>
+              </div>
+              <div class="col-12 d-flex gap-2 justify-content-end">
+                <button class="btn btn-outline-secondary" id="resetSimulationClipFormButton" type="button">Lam moi</button>
+                <button class="btn btn-primary" type="submit">Luu clip</button>
+              </div>
+            </form>
+            <div class="table-shell">
+              <table class="table align-middle admin-table">
+                <thead>
+                  <tr>
+                    <th>Bai thi</th>
+                    <th>Clip</th>
+                    <th>Cua so tinh diem</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="simulationClipTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div>
+            <h2 class="h4 mb-1">Trung tam ket qua thi</h2>
+            <p class="text-muted mb-0">Xem so lan thi, diem so, kenh thi va loc theo hoc vien, loai bang, trang thai.</p>
+          </div>
+          <span class="compact-badge" id="resultCountBadge">0 ket qua</span>
+        </div>
+        <div class="table-filter-grid mb-3">
+          <div>
+            <label class="form-label" for="resultSearchInput">Tim nhanh</label>
+            <input class="form-control" id="resultSearchInput" type="search" placeholder="Hoc vien, de thi, nen tang">
+          </div>
+          <div>
+            <label class="form-label" for="resultCourseFilter">Loai bang</label>
+            <select class="form-select" id="resultCourseFilter">
+              <option value="">Tat ca</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label" for="resultTypeFilter">Kenh thi</label>
+            <select class="form-select" id="resultTypeFilter">
+              <option value="">Tat ca</option>
+              <option value="theory">Ly thuyet noi bo</option>
+              <option value="simulation">Mo phong</option>
+              <option value="third_party">3rd-party</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label" for="resultStatusFilter">Trang thai</label>
+            <select class="form-select" id="resultStatusFilter">
+              <option value="">Tat ca</option>
+              <option value="passed">Dat</option>
+              <option value="failed">Chua dat</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-shell">
+          <table class="table align-middle admin-table">
+            <thead>
+              <tr>
+                <th>Hoc vien</th>
+                <th>Loai bang</th>
+                <th>Kenh thi</th>
+                <th>De thi / Nen tang</th>
+                <th>Lan thi</th>
+                <th>Diem</th>
+                <th>Trang thai</th>
+                <th>Thoi gian</th>
+              </tr>
+            </thead>
+            <tbody id="resultTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+  <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="./assets/vendor/chartjs/chart.umd.min.js"></script>
+  <script defer src="/src/js/common.js"></script>
+  <script defer src="/src/js/i18n.js"></script>
+  <script defer src="/src/js/admin.js"></script>
+</body>
 </html>

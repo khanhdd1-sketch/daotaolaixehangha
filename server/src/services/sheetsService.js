@@ -25,6 +25,7 @@ function normalizeExam(exam) {
   if (!exam) return exam;
   return {
     ...exam,
+    course_type: normalizeCourseType(exam.course_type || ""),
     pass_score: Number(exam.pass_score || 0),
     total_questions: Number(exam.total_questions || 0),
     duration_minutes: Number(exam.duration_minutes || 20),
@@ -256,13 +257,25 @@ const sheetsService = {
     return callAppsScript("createUser", payload);
   },
 
-  async getExams() {
+  async getExams(filters = {}) {
+    const courseType = normalizeCourseType(filters.course_type || "");
+
     if (this.useMock) {
-      return { success: true, data: mockStore.exams.map(normalizeExam) };
+      return {
+        success: true,
+        data: mockStore.exams
+          .map(normalizeExam)
+          .filter((item) => !courseType || !item.course_type || item.course_type === courseType)
+      };
     }
 
     const response = await callAppsScript("getExams", {}, "GET");
-    return { success: true, data: (response.data || []).map(normalizeExam) };
+    return {
+      success: true,
+      data: (response.data || [])
+        .map(normalizeExam)
+        .filter((item) => !courseType || !item.course_type || item.course_type === courseType)
+    };
   },
 
   async getExamById(examId) {
@@ -353,6 +366,7 @@ const sheetsService = {
   async upsertExam(data) {
     const payload = {
       id: data.id || createId("exam"),
+      course_type: normalizeCourseType(data.course_type || ""),
       title: data.title,
       pass_score: Number(data.pass_score),
       total_questions: Number(data.total_questions),

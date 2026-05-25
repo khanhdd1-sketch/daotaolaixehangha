@@ -13,7 +13,7 @@
     },
     "exams": {
       "name": "exams",
-      "headers": ["id", "title", "pass_score", "total_questions", "duration_minutes", "active"]
+      "headers": ["id", "course_type", "title", "pass_score", "total_questions", "duration_minutes", "active"]
     },
     "questions": {
       "name": "questions",

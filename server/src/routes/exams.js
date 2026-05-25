@@ -8,17 +8,71 @@
 const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
-const { normalizeChoice } = require("../utils/helpers");
+const { normalizeChoice, normalizeCourseType } = require("../utils/helpers");
 
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const response = await sheetsService.getExams();
+    const response = await sheetsService.getExams({
+      course_type: normalizeCourseType(req.query.course_type || "")
+    });
     const activeExams = (response.data || []).filter((item) => item.active !== false);
     res.json({ success: true, data: activeExams });
   } catch (error) {
     next(error);
+  }
+});
+
+router.get("/workspace", requireAuth, requireRole("student"), async (req, res, next) => {
+  try {
+    const [usersResponse, examsResponse, resultsResponse] = await Promise.all([
+      sheetsService.getUsers(),
+      sheetsService.getExams(),
+      sheetsService.getResults()
+    ]);
+
+    const currentUser = (usersResponse.data || []).find((item) => item.id === req.user.sub);
+    if (!currentUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const courseType = normalizeCourseType(currentUser.course_type || "");
+    const exams = (examsResponse.data || [])
+      .filter((item) => item.active !== false)
+      .filter((item) => !item.course_type || item.course_type === courseType);
+    const allResults = (resultsResponse.data || []).filter((item) => item.user_id === req.user.sub);
+
+    const items = exams.map((exam) => {
+      const attempts = allResults
+        .filter((item) => item.exam_id === exam.id)
+        .sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0));
+      const bestScore = attempts.reduce((max, item) => Math.max(max, Number(item.score || 0)), 0);
+
+      return {
+        ...exam,
+        attempt_count: attempts.length,
+        best_score: bestScore,
+        latest_attempt: attempts[0] || null,
+        passed: attempts.some((item) => item.passed)
+      };
+    });
+
+    return res.json({
+      success: true,
+      data: {
+        student: {
+          id: currentUser.id,
+          name: currentUser.name,
+          course_type: courseType
+        },
+        exams: items,
+        results: allResults
+          .sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0))
+      }
+    });
+  } catch (error) {
+    return next(error);
   }
 });
 
