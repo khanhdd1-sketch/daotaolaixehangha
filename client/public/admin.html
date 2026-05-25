@@ -569,5 +569,56 @@
   <script defer src="/src/js/common.js"></script>
   <script defer src="/src/js/i18n.js"></script>
   <script defer src="/src/js/admin.js"></script>
+  <!-- ✅ Modal preview ảnh -->
+  <div class="modal fade" id="proofPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="proofPreviewMeta">
+            Xem ảnh minh chứng
+          </h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body text-center">
+
+          <!-- Ảnh -->
+          <img
+            id="proofPreviewImage"
+            class="img-fluid d-none"
+            style="max-height: 500px;"
+          />
+
+          <!-- Fallback -->
+          <div id="proofPreviewFallback">
+            Ảnh minh chứng sẽ hiển thị tại đây.
+          </div>
+
+          <!-- URL -->
+          <div id="proofPreviewUrlGroup" class="mt-3 d-none">
+            <input
+              id="proofPreviewUrl"
+              class="form-control"
+              readonly
+            />
+          </div>
+
+          <!-- Link mở ngoài -->
+          <a
+            id="proofPreviewExternalLink"
+            target="_blank"
+            class="btn btn-outline-primary mt-3 d-none"
+          >
+            Mở ảnh trong tab mới
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
 </body>
 </html>

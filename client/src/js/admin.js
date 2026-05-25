@@ -29,6 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     globalThis.DriveSchoolCommon.redirectWithLang("/exam.html");
     return;
   }
+  // ✅ ✅ ✅ THÊM ĐOẠN NÀY NGAY ĐÂY
+  adminState.proofPreviewModal = new bootstrap.Modal(
+    document.getElementById("proofPreviewModal")
+  );
 
   document.getElementById("adminName").textContent = currentUser.name;
   bindAdminEvents();
@@ -289,7 +293,7 @@ function renderResultTable() {
     ], searchTerm);
     return matchesCourse && matchesType && matchesStatus && matchesKeyword;
   }).sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0));
-
+  adminState.filteredResults = filtered;
   document.getElementById("resultCountBadge").textContent = `${filtered.length} kết quả`;
   document.getElementById("resultTable").innerHTML = filtered.length
     ? filtered.map((item, index) => `
@@ -812,7 +816,7 @@ function handleThirdPartyTableClick(event) {
 }
 
 function openProofPreview(index) {
-  const item = adminState.filteredThirdPartyAttempts[index];
+  const item = adminState.filteredResults[index];
   const proofUrl = item ? getSafeLink(item.proof_url, { allowDataImage: true }) : "";
   const previewImage = document.getElementById("proofPreviewImage");
   const previewFallback = document.getElementById("proofPreviewFallback");
