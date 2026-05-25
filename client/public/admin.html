@@ -17,13 +17,13 @@
       <section class="admin-hero mb-4">
         <div class="admin-hero-content">
           <div>
-            <span class="section-badge mb-3 text-dark bg-white">Trung tam dieu hanh admin</span>
-            <h1 class="admin-hero-title">Xin chao, <span id="adminName"></span></h1>
-            <p class="admin-hero-copy mb-0">Quan ly hoc vien, de thi noi bo, bai thi mo phong, ket qua va thong ke cho trung tam day lai xe.</p>
+            <span class="section-badge mb-3 text-dark bg-white">Trung tâm điều hành admin</span>
+            <h1 class="admin-hero-title">Xin chào, <span id="adminName"></span></h1>
+            <p class="admin-hero-copy mb-0">Quản lý học viên, đề thi nội bộ, bài thi mô phỏng, kết quả và thống kê cho trung tâm dạy lái xe.</p>
           </div>
           <div class="admin-hero-actions">
-            <a class="btn btn-outline-light" href="/index.html">Trang chu</a>
-            <button class="btn btn-light" id="logoutButton" type="button">Dang xuat</button>
+            <a class="btn btn-outline-light" href="/index.html">Trang chủ</a>
+            <button class="btn btn-light" id="logoutButton" type="button">Đăng xuất</button>
           </div>
         </div>
       </section>
@@ -31,20 +31,20 @@
       <section class="dashboard-card mb-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
           <div>
-            <h2 class="h4 mb-1">Bo loc dashboard</h2>
-            <p class="text-muted mb-0">Loc nhanh theo ngay va loai bang de xem bieu do, hoc vien va ket qua thi.</p>
+            <h2 class="h4 mb-1">Bộ lọc dashboard</h2>
+            <p class="text-muted mb-0">ọc nhanh theo ngày và loại bằng để xem biểu đồ, học viên và kết quả thi.</p>
           </div>
           <span class="compact-badge" id="dashboardFilterBadge">Toan bo du lieu</span>
         </div>
         <div class="row g-3 align-items-end">
           <div class="col-md-4">
-            <label class="form-label" for="filterDate">Tu ngay</label>
+            <label class="form-label" for="filterDate">Từ ngày</label>
             <input class="form-control" type="date" id="filterDate">
           </div>
           <div class="col-md-4">
-            <label class="form-label" for="filterCourse">Loai bang</label>
+            <label class="form-label" for="filterCourse">Loại bằng</label>
             <select class="form-select" id="filterCourse">
-              <option value="">Tat ca</option>
+              <option value="">Tất cả</option>
               <option value="A1">A1</option>
               <option value="A2">A2</option>
               <option value="B1">B1</option>
@@ -53,7 +53,7 @@
             </select>
           </div>
           <div class="col-md-4">
-            <button class="btn btn-primary w-100" id="filterButton" type="button">Cap nhat dashboard</button>
+            <button class="btn btn-primary w-100" id="filterButton" type="button">Cập nhật dashboard</button>
           </div>
         </div>
       </section>
@@ -62,35 +62,35 @@
         <div class="col-sm-6 col-xl">
           <article class="admin-stat-card accent-blue">
             <div class="admin-stat-icon"><i class="fa-solid fa-chart-line"></i></div>
-            <div class="text-muted">Luot truy cap</div>
+            <div class="text-muted">Lượt truy cập</div>
             <div class="stat-value" id="statVisits">0</div>
           </article>
         </div>
         <div class="col-sm-6 col-xl">
           <article class="admin-stat-card accent-orange">
             <div class="admin-stat-icon"><i class="fa-solid fa-file-signature"></i></div>
-            <div class="text-muted">Lead dang ky</div>
+            <div class="text-muted">Lead đăng ký</div>
             <div class="stat-value" id="statRegistrations">0</div>
           </article>
         </div>
         <div class="col-sm-6 col-xl">
           <article class="admin-stat-card accent-sky">
             <div class="admin-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
-            <div class="text-muted">Hoc vien</div>
+            <div class="text-muted">Học viên</div>
             <div class="stat-value" id="statStudents">0</div>
           </article>
         </div>
         <div class="col-sm-6 col-xl">
           <article class="admin-stat-card accent-green">
             <div class="admin-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-            <div class="text-muted">Dat</div>
+            <div class="text-muted">Đạt</div>
             <div class="stat-value" id="statPassed">0</div>
           </article>
         </div>
         <div class="col-sm-6 col-xl">
           <article class="admin-stat-card accent-red">
             <div class="admin-stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
-            <div class="text-muted">Chua dat</div>
+            <div class="text-muted">Chưa đạt</div>
             <div class="stat-value" id="statFailed">0</div>
           </article>
         </div>
@@ -101,8 +101,8 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
-                <h2 class="h4 mb-1">Tong quan hien tai</h2>
-                <p class="text-muted mb-0">Chi so tu lead, hoc vien va ket qua thi.</p>
+                <h2 class="h4 mb-1">Tổng quan hiện tại</h2>
+                <p class="text-muted mb-0">Chỉ số từ lead, học viên và kết quả thi.</p>
               </div>
             </div>
             <div class="chart-shell">
@@ -114,8 +114,8 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
-                <h2 class="h4 mb-1">Nguon ket qua</h2>
-                <p class="text-muted mb-0">So sanh thi ly thuyet noi bo, mo phong va 3rd-party.</p>
+                <h2 class="h4 mb-1">Nguồn kết quả</h2>
+                <p class="text-muted mb-0">So sánh thi lý thuyết nội bộ, mô phỏng và 3rd-party.</p>
               </div>
             </div>
             <div class="chart-shell">
@@ -130,14 +130,14 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">Hoc vien</h2>
-                <p class="text-muted mb-0">Tao tai khoan hoc vien va gan loai bang thi.</p>
+                <h2 class="h4 mb-1">Học viên</h2>
+                <p class="text-muted mb-0">Tạo tài khoản học viên và gắn loại bằng thi.</p>
               </div>
-              <span class="compact-badge" id="studentCountBadge">0 hoc vien</span>
+              <span class="compact-badge" id="studentCountBadge">0 học viên</span>
             </div>
             <form id="createStudentForm" class="row g-3 mb-4">
               <div class="col-12">
-                <label class="form-label" for="studentName">Ten hoc vien</label>
+                <label class="form-label" for="studentName">Tên học viên</label>
                 <input class="form-control" id="studentName" name="name" required>
               </div>
               <div class="col-12">
@@ -145,11 +145,11 @@
                 <input class="form-control" id="studentEmail" name="email" type="email" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="studentPassword">Mat khau</label>
+                <label class="form-label" for="studentPassword">Mật khẩu</label>
                 <input class="form-control" id="studentPassword" name="password" value="Student@123" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="studentCourseType">Loai bang</label>
+                <label class="form-label" for="studentCourseType">Loại bằng</label>
                 <select class="form-select" id="studentCourseType" name="course_type" required>
                   <option value="A1">A1</option>
                   <option value="A2">A2</option>
@@ -159,18 +159,18 @@
                 </select>
               </div>
               <div class="col-12 text-end">
-                <button class="btn btn-primary" type="submit">Them hoc vien</button>
+                <button class="btn btn-primary" type="submit">Thêm học viên</button>
               </div>
             </form>
             <div class="table-filter-grid mb-3">
               <div>
-                <label class="form-label" for="studentSearchInput">Tim nhanh</label>
-                <input class="form-control" id="studentSearchInput" type="search" placeholder="Ten hoac email">
+                <label class="form-label" for="studentSearchInput">Tìm nhanh</label>
+                <input class="form-control" id="studentSearchInput" type="search" placeholder="Tên hoặc email">
               </div>
               <div>
-                <label class="form-label" for="studentCourseFilterLocal">Loc loai bang</label>
+                <label class="form-label" for="studentCourseFilterLocal">Lọc loại bằng</label>
                 <select class="form-select" id="studentCourseFilterLocal">
-                  <option value="">Tat ca</option>
+                  <option value="">Tất cả</option>
                   <option value="A1">A1</option>
                   <option value="A2">A2</option>
                   <option value="B1">B1</option>
@@ -183,10 +183,10 @@
               <table class="table align-middle admin-table">
                 <thead>
                   <tr>
-                    <th>Ten</th>
+                    <th>Tên</th>
                     <th>Email</th>
-                    <th>Loai bang</th>
-                    <th>Ngay tao</th>
+                    <th>Loại bằng</th>
+                    <th>Ngày tạo</th>
                   </tr>
                 </thead>
                 <tbody id="studentTable"></tbody>
@@ -199,20 +199,20 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">Lead dang ky tu van</h2>
-                <p class="text-muted mb-0">Theo doi lead tu website va loc theo loai bang.</p>
+                <h2 class="h4 mb-1">Lead đăng ký từ website</h2>
+                <p class="text-muted mb-0">Theo dõi lead từ website và lọc theo loại bằng.</p>
               </div>
               <span class="compact-badge" id="registrationCountBadge">0 lead</span>
             </div>
             <div class="table-filter-grid mb-3">
               <div>
-                <label class="form-label" for="registrationSearchInput">Tim nhanh</label>
-                <input class="form-control" id="registrationSearchInput" type="search" placeholder="Ten, so dien thoai, email">
+                <label class="form-label" for="registrationSearchInput">Tìm nhanh</label>
+                <input class="form-control" id="registrationSearchInput" type="search" placeholder="Tên, số điện thoại, email">
               </div>
               <div>
-                <label class="form-label" for="registrationCourseFilterLocal">Loc loai bang</label>
+                <label class="form-label" for="registrationCourseFilterLocal">Lọc loại bằng</label>
                 <select class="form-select" id="registrationCourseFilterLocal">
-                  <option value="">Tat ca</option>
+                  <option value="">Tất cả</option>
                   <option value="A1">A1</option>
                   <option value="A2">A2</option>
                   <option value="B1">B1</option>
@@ -225,12 +225,12 @@
               <table class="table align-middle admin-table">
                 <thead>
                   <tr>
-                    <th>Ten</th>
-                    <th>Dien thoai</th>
+                    <th>Tên</th>
+                    <th>Điện thoại</th>
                     <th>Email</th>
-                    <th>Loai bang</th>
-                    <th>Ngay tao</th>
-                    <th>Ghi chu</th>
+                    <th>Loại bằng</th>
+                    <th>Ngày tạo</th>
+                    <th>Ghi chú</th>
                   </tr>
                 </thead>
                 <tbody id="registrationTable"></tbody>
@@ -245,15 +245,15 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
-                <h2 class="h4 mb-1">Quan ly de ly thuyet</h2>
-                <p class="text-muted mb-0">Tao de theo loai bang va cau hinh diem dat.</p>
+                <h2 class="h4 mb-1">Quản lý đề lý thuyết</h2>
+                <p class="text-muted mb-0">Tạo đề theo loại bằng và cấu hình điểm đạt.</p>
               </div>
-              <span class="compact-badge" id="examCountBadge">0 de</span>
+              <span class="compact-badge" id="examCountBadge">0 đề</span>
             </div>
             <form id="examForm" class="row g-3 mb-4">
               <input id="examId" name="id" type="hidden">
               <div class="col-md-4">
-                <label class="form-label" for="examCourseType">Loai bang</label>
+                <label class="form-label" for="examCourseType">Loại bằng</label>
                 <select class="form-select" id="examCourseType" name="course_type" required>
                   <option value="A1">A1</option>
                   <option value="A2">A2</option>
@@ -263,30 +263,30 @@
                 </select>
               </div>
               <div class="col-md-8">
-                <label class="form-label" for="examTitle">Ten de</label>
+                <label class="form-label" for="examTitle">Tên đề</label>
                 <input class="form-control" id="examTitle" name="title" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="examPassScore">Diem dat</label>
+                <label class="form-label" for="examPassScore">Điểm đạt</label>
                 <input class="form-control" id="examPassScore" name="pass_score" type="number" min="1" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="examTotalQuestions">Tong cau</label>
+                <label class="form-label" for="examTotalQuestions">Tổng câu</label>
                 <input class="form-control" id="examTotalQuestions" name="total_questions" type="number" min="1" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="examDurationMinutes">So phut</label>
+                <label class="form-label" for="examDurationMinutes">Số phút</label>
                 <input class="form-control" id="examDurationMinutes" name="duration_minutes" type="number" min="1" value="20" required>
               </div>
               <div class="col-12">
                 <div class="form-check">
                   <input class="form-check-input" id="examActive" name="active" type="checkbox" checked>
-                  <label class="form-check-label" for="examActive">Dang kich hoat</label>
+                  <label class="form-check-label" for="examActive">Đang kích hoạt</label>
                 </div>
               </div>
               <div class="col-12 d-flex gap-2 justify-content-end">
-                <button class="btn btn-outline-secondary" id="resetExamFormButton" type="button">Lam moi</button>
-                <button class="btn btn-primary" type="submit">Luu de</button>
+                <button class="btn btn-outline-secondary" id="resetExamFormButton" type="button">Làm mới</button>
+                <button class="btn btn-primary" type="submit">Lưu đề</button>
               </div>
             </form>
             <div class="admin-list-shell" id="examList"></div>
@@ -297,19 +297,19 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">Ngan hang cau hoi</h2>
-                <p class="text-muted mb-0">Them dap an, cau diem liet va giai thich sau khi nop bai.</p>
+                <h2 class="h4 mb-1">Ngân hàng câu hỏi</h2>
+                <p class="text-muted mb-0">Thêm đáp án, câu điểm liệt và giải thích sau khi nộp bài.</p>
               </div>
-              <span class="compact-badge" id="questionCountBadge">0 cau</span>
+              <span class="compact-badge" id="questionCountBadge">0 câu</span>
             </div>
             <form id="questionForm" class="row g-3 mb-4">
               <input id="questionId" name="id" type="hidden">
               <div class="col-md-5">
-                <label class="form-label" for="questionExamId">De thi</label>
+                <label class="form-label" for="questionExamId">Đề thi</label>
                 <select class="form-select" id="questionExamId" name="exam_id" required></select>
               </div>
               <div class="col-md-2">
-                <label class="form-label" for="questionCorrectAnswer">Dap an dung</label>
+                <label class="form-label" for="questionCorrectAnswer">Đáp án đúng</label>
                 <select class="form-select" id="questionCorrectAnswer" name="correct_answer" required>
                   <option value="A">A</option>
                   <option value="B">B</option>
@@ -320,59 +320,59 @@
               <div class="col-md-5 d-flex align-items-end">
                 <div class="form-check">
                   <input class="form-check-input" id="questionCritical" name="is_critical" type="checkbox">
-                  <label class="form-check-label" for="questionCritical">La cau diem liet</label>
+                  <label class="form-check-label" for="questionCritical">Là câu điểm liệt</label>
                 </div>
               </div>
               <div class="col-12">
-                <label class="form-label" for="questionText">Noi dung cau hoi</label>
+                <label class="form-label" for="questionText">Nội dung câu hỏi</label>
                 <textarea class="form-control" id="questionText" name="question" rows="2" required></textarea>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="optionA">Dap an A</label>
+                <label class="form-label" for="optionA">Đáp án A</label>
                 <input class="form-control" id="optionA" name="option_a" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="optionB">Dap an B</label>
+                <label class="form-label" for="optionB">Đáp án B</label>
                 <input class="form-control" id="optionB" name="option_b" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="optionC">Dap an C</label>
+                <label class="form-label" for="optionC">Đáp án C</label>
                 <input class="form-control" id="optionC" name="option_c" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="optionD">Dap an D</label>
+                <label class="form-label" for="optionD">Đáp án D</label>
                 <input class="form-control" id="optionD" name="option_d" required>
               </div>
               <div class="col-12">
-                <label class="form-label" for="questionExplanation">Giai thich hien sau khi nop</label>
+                <label class="form-label" for="questionExplanation">Giải thích hiện sau khi nộp</label>
                 <textarea class="form-control" id="questionExplanation" name="explanation" rows="2"></textarea>
               </div>
               <div class="col-md-7">
-                <label class="form-label" for="questionImageFile">Anh cau hoi (co the bo trong)</label>
+                <label class="form-label" for="questionImageFile">Ảnh câu hỏi (có thể bỏ trống)</label>
                 <input class="form-control" id="questionImageFile" type="file" accept="image/*">
-                <div class="form-text" id="questionImageHelp">Anh se duoc upload len folder Cloudinary rieng cho cau hoi.</div>
+                <div class="form-text" id="questionImageHelp">Ảnh sẽ được upload lên folder Cloudinary riêng cho câu hỏi.</div>
               </div>
               <div class="col-md-5">
-                <label class="form-label" for="questionImageUrl">URL anh da luu</label>
+                <label class="form-label" for="questionImageUrl">URL ảnh đã lưu</label>
                 <input class="form-control" id="questionImageUrl" name="image_url" readonly>
               </div>
               <div class="col-12 d-none" id="questionImagePreviewWrap">
-                <img id="questionImagePreview" class="img-fluid rounded border" style="max-height:220px;" alt="Anh cau hoi">
+                <img id="questionImagePreview" class="img-fluid rounded border" style="max-height:220px;" alt="Ảnh câu hỏi">
               </div>
               <div class="col-12 d-flex gap-2 justify-content-end">
-                <button class="btn btn-outline-secondary" id="resetQuestionFormButton" type="button">Lam moi</button>
-                <button class="btn btn-primary" type="submit">Luu cau hoi</button>
+                <button class="btn btn-outline-secondary" id="resetQuestionFormButton" type="button">Làm mới</button>
+                <button class="btn btn-primary" type="submit">Lưu câu hỏi</button>
               </div>
             </form>
             <div class="table-shell">
               <table class="table align-middle admin-table">
                 <thead>
                   <tr>
-                    <th>De thi</th>
-                    <th>Cau hoi</th>
-                    <th>Anh</th>
-                    <th>Dung</th>
-                    <th>Diem liet</th>
+                    <th>Đề thi</th>
+                    <th>Câu hỏi</th>
+                    <th>Ảnh</th>
+                    <th>Đúng</th>
+                    <th>Điểm liệt</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -388,15 +388,15 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
-                <h2 class="h4 mb-1">De thi mo phong</h2>
-                <p class="text-muted mb-0">Tao bai thi mo phong cho tung loai bang.</p>
+                <h2 class="h4 mb-1">Đề thi mô phỏng</h2>
+                <p class="text-muted mb-0">Tạo bài thi mô phỏng cho từng loại bằng.</p>
               </div>
-              <span class="compact-badge" id="simulationExamCountBadge">0 de</span>
+              <span class="compact-badge" id="simulationExamCountBadge">0 đề</span>
             </div>
             <form id="simulationExamForm" class="row g-3 mb-4">
               <input id="simulationExamId" name="id" type="hidden">
               <div class="col-md-4">
-                <label class="form-label" for="simulationExamCourseType">Loai bang</label>
+                <label class="form-label" for="simulationExamCourseType">Loại bằng</label>
                 <select class="form-select" id="simulationExamCourseType" name="course_type" required>
                   <option value="A1">A1</option>
                   <option value="A2">A2</option>
@@ -406,30 +406,30 @@
                 </select>
               </div>
               <div class="col-md-8">
-                <label class="form-label" for="simulationExamTitle">Ten bai mo phong</label>
+                <label class="form-label" for="simulationExamTitle">Tên bài mô phỏng</label>
                 <input class="form-control" id="simulationExamTitle" name="title" required>
               </div>
               <div class="col-12">
-                <label class="form-label" for="simulationExamDescription">Mo ta</label>
+                <label class="form-label" for="simulationExamDescription">Mô tả</label>
                 <textarea class="form-control" id="simulationExamDescription" name="description" rows="2"></textarea>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="simulationExamPassScore">Diem dat</label>
+                <label class="form-label" for="simulationExamPassScore">Điểm đạt</label>
                 <input class="form-control" id="simulationExamPassScore" name="pass_score" type="number" min="1" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="simulationExamTotalClips">Tong clip</label>
+                <label class="form-label" for="simulationExamTotalClips">Tổng clip</label>
                 <input class="form-control" id="simulationExamTotalClips" name="total_clips" type="number" min="1" required>
               </div>
               <div class="col-md-4 d-flex align-items-end">
                 <div class="form-check">
                   <input class="form-check-input" id="simulationExamActive" name="active" type="checkbox" checked>
-                  <label class="form-check-label" for="simulationExamActive">Dang kich hoat</label>
+                  <label class="form-check-label" for="simulationExamActive">Đang kích hoạt</label>
                 </div>
               </div>
               <div class="col-12 d-flex gap-2 justify-content-end">
-                <button class="btn btn-outline-secondary" id="resetSimulationExamFormButton" type="button">Lam moi</button>
-                <button class="btn btn-primary" type="submit">Luu bai mo phong</button>
+                <button class="btn btn-outline-secondary" id="resetSimulationExamFormButton" type="button">Làm mới</button>
+                <button class="btn btn-primary" type="submit">Lưu bài mô phỏng</button>
               </div>
             </form>
             <div class="admin-list-shell" id="simulationExamList"></div>
@@ -440,19 +440,19 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">Clip mo phong</h2>
-                <p class="text-muted mb-0">Gan video, thu tu va cua so tinh diem cho moi clip.</p>
+                <h2 class="h4 mb-1">Clip mô phỏng</h2>
+                <p class="text-muted mb-0">Gắn video, thứ tự và cửa sổ tính điểm cho mỗi clip.</p>
               </div>
               <span class="compact-badge" id="simulationClipCountBadge">0 clip</span>
             </div>
             <form id="simulationClipForm" class="row g-3 mb-4">
               <input id="simulationClipId" name="id" type="hidden">
               <div class="col-md-5">
-                <label class="form-label" for="simulationClipExamId">Bai mo phong</label>
+                <label class="form-label" for="simulationClipExamId">Bài mô phỏng</label>
                 <select class="form-select" id="simulationClipExamId" name="exam_id" required></select>
               </div>
               <div class="col-md-7">
-                <label class="form-label" for="simulationClipTitle">Ten clip</label>
+                <label class="form-label" for="simulationClipTitle">Tên clip</label>
                 <input class="form-control" id="simulationClipTitle" name="title" required>
               </div>
               <div class="col-12">
@@ -460,35 +460,35 @@
                 <input class="form-control" id="simulationClipVideoUrl" name="video_url" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="simulationClipOrderNo">Thu tu</label>
+                <label class="form-label" for="simulationClipOrderNo">Thứ tự</label>
                 <input class="form-control" id="simulationClipOrderNo" name="order_no" type="number" min="1" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="simulationClipTriggerStart">Bat dau tinh diem</label>
+                <label class="form-label" for="simulationClipTriggerStart">Bắt đầu tính điểm</label>
                 <input class="form-control" id="simulationClipTriggerStart" name="trigger_start_sec" type="number" step="0.1" min="0" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label" for="simulationClipTriggerEnd">Ket thuc tinh diem</label>
+                <label class="form-label" for="simulationClipTriggerEnd">Kết thúc tính điểm</label>
                 <input class="form-control" id="simulationClipTriggerEnd" name="trigger_end_sec" type="number" step="0.1" min="0" required>
               </div>
               <div class="col-12">
                 <div class="form-check">
                   <input class="form-check-input" id="simulationClipActive" name="active" type="checkbox" checked>
-                  <label class="form-check-label" for="simulationClipActive">Dang kich hoat</label>
+                  <label class="form-check-label" for="simulationClipActive">Đang kích hoạt</label>
                 </div>
               </div>
               <div class="col-12 d-flex gap-2 justify-content-end">
-                <button class="btn btn-outline-secondary" id="resetSimulationClipFormButton" type="button">Lam moi</button>
-                <button class="btn btn-primary" type="submit">Luu clip</button>
+                <button class="btn btn-outline-secondary" id="resetSimulationClipFormButton" type="button">Làm mới</button>
+                <button class="btn btn-primary" type="submit">Lưu clip</button>
               </div>
             </form>
             <div class="table-shell">
               <table class="table align-middle admin-table">
                 <thead>
                   <tr>
-                    <th>Bai thi</th>
+                    <th>Bài thi</th>
                     <th>Clip</th>
-                    <th>Cua so tinh diem</th>
+                    <th>Cửa sổ tính điểm</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -502,20 +502,20 @@
       <section class="dashboard-card">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div>
-            <h2 class="h4 mb-1">Trung tam ket qua thi</h2>
-            <p class="text-muted mb-0">Xem so lan thi, diem so, kenh thi va loc theo hoc vien, loai bang, trang thai.</p>
+            <h2 class="h4 mb-1">Trung tâm kết quả thi</h2>
+            <p class="text-muted mb-0">Xem số lần thi, điểm số, kênh thi và lọc theo học viên, loại bằng, trạng thái.</p>
           </div>
-          <span class="compact-badge" id="resultCountBadge">0 ket qua</span>
+          <span class="compact-badge" id="resultCountBadge">0 kết quả</span>
         </div>
         <div class="table-filter-grid mb-3">
           <div>
-            <label class="form-label" for="resultSearchInput">Tim nhanh</label>
-            <input class="form-control" id="resultSearchInput" type="search" placeholder="Hoc vien, de thi, nen tang">
+            <label class="form-label" for="resultSearchInput">Tìm nhanh</label>
+            <input class="form-control" id="resultSearchInput" type="search" placeholder="Học viên, đề thi, nền tảng">
           </div>
           <div>
-            <label class="form-label" for="resultCourseFilter">Loai bang</label>
+            <label class="form-label" for="resultCourseFilter">Loại bằng</label>
             <select class="form-select" id="resultCourseFilter">
-              <option value="">Tat ca</option>
+              <option value="">Tất cả</option>
               <option value="A1">A1</option>
               <option value="A2">A2</option>
               <option value="B1">B1</option>
@@ -526,18 +526,18 @@
           <div>
             <label class="form-label" for="resultTypeFilter">Kenh thi</label>
             <select class="form-select" id="resultTypeFilter">
-              <option value="">Tat ca</option>
-              <option value="theory">Ly thuyet noi bo</option>
-              <option value="simulation">Mo phong</option>
+              <option value="">Tất cả</option>
+              <option value="theory">Lý thuyết nội bộ</option>
+              <option value="simulation">Mô phỏng</option>
               <option value="third_party">3rd-party</option>
             </select>
           </div>
           <div>
-            <label class="form-label" for="resultStatusFilter">Trang thai</label>
+            <label class="form-label" for="resultStatusFilter">Trạng thái</label>
             <select class="form-select" id="resultStatusFilter">
-              <option value="">Tat ca</option>
-              <option value="passed">Dat</option>
-              <option value="failed">Chua dat</option>
+              <option value="">Tất cả</option>
+              <option value="passed">Đạt</option>
+              <option value="failed">Chưa đạt</option>
             </select>
           </div>
         </div>
@@ -545,14 +545,15 @@
           <table class="table align-middle admin-table">
             <thead>
               <tr>
-                <th>Hoc vien</th>
-                <th>Loai bang</th>
-                <th>Kenh thi</th>
-                <th>De thi / Nen tang</th>
-                <th>Lan thi</th>
-                <th>Diem</th>
-                <th>Trang thai</th>
-                <th>Thoi gian</th>
+                <th>Học viên</th>
+                <th>Loại bằng</th>
+                <th>Kênh thi</th>
+                <th>Đề thi / Nền tảng</th>
+                <th>Lần thi</th>
+                <th>Điểm</th>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
+                <th>Link 3rd-party</th>
               </tr>
             </thead>
             <tbody id="resultTable"></tbody>

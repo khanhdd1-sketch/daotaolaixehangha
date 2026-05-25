@@ -290,7 +290,7 @@ function renderResultTable() {
     return matchesCourse && matchesType && matchesStatus && matchesKeyword;
   }).sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0));
 
-  document.getElementById("resultCountBadge").textContent = `${filtered.length} ket qua`;
+  document.getElementById("resultCountBadge").textContent = `${filtered.length} kết quả`;
   document.getElementById("resultTable").innerHTML = filtered.length
     ? filtered.map((item) => `
       <tr>
@@ -300,11 +300,12 @@ function renderResultTable() {
         <td>${escape(item.display_name || "-")}</td>
         <td>#${escape(String(item.attempt_no || 1))}</td>
         <td>${escape(String(item.score || 0))}</td>
-        <td>${item.passed ? '<span class="badge text-bg-success">Dat</span>' : '<span class="badge text-bg-danger">Chua dat</span>'}</td>
+        <td>${item.passed ? '<span class="badge text-bg-success">Đạt</span>' : '<span class="badge text-bg-danger">Chưa đạt</span>'}</td>
         <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
+        <td>${escape(item.third_party_link || "-")}</td>
       </tr>
     `).join("")
-    : buildEmptyRow(8, "Chua co ket qua phu hop.");
+    : buildEmptyRow(8, "Chưa có kết quả phù hợp.");
 }
 
 function renderCharts() {
@@ -312,10 +313,10 @@ function renderCharts() {
   upsertChart("overview", "adminOverviewChart", {
     type: "bar",
     data: {
-      labels: ["Luot truy cap", "Lead", "Hoc vien", "Dat", "Chua dat"],
+      labels: ["Lượt truy cập", "Lead", "Học viên", "Đạt", "Chưa đạt"],
       datasets: [
         {
-          label: "So luong",
+          label: "Số lượng",
           data: [
             Number(stats.totalVisits || 0),
             Number(stats.totalRegistrations || 0),
@@ -335,7 +336,7 @@ function renderCharts() {
   upsertChart("channels", "adminChannelChart", {
     type: "doughnut",
     data: {
-      labels: ["Ly thuyet noi bo", "Mo phong", "3rd-party"],
+      labels: ["Lý thuyết nội bộ", "Mô phỏng", "3rd-party"],
       datasets: [
         {
           data: [
@@ -361,7 +362,7 @@ async function handleStudentSubmit(event) {
   });
   event.currentTarget.reset();
   document.getElementById("studentPassword").value = "Student@123";
-  globalThis.DriveSchoolCommon.showToast("Da tao hoc vien.", "success");
+  globalThis.DriveSchoolCommon.showToast("Đã tạo học viên.", "success");
   await refreshAdminApp();
 }
 
@@ -377,7 +378,7 @@ async function handleExamSubmit(event) {
     body: JSON.stringify(payload)
   });
   resetExamForm();
-  globalThis.DriveSchoolCommon.showToast("Da luu de ly thuyet.", "success");
+  globalThis.DriveSchoolCommon.showToast("Đã lưu đề lý thuyết.", "success");
   await refreshAdminApp();
 }
 
@@ -401,7 +402,7 @@ async function handleQuestionSubmit(event) {
       body: JSON.stringify(payload)
     });
     resetQuestionForm();
-    globalThis.DriveSchoolCommon.showToast("Da luu cau hoi.", "success");
+    globalThis.DriveSchoolCommon.showToast("Đã lưu câu hỏi.", "success");
     await refreshAdminApp();
   } finally {
     submitButton.disabled = false;
@@ -422,7 +423,7 @@ async function handleSimulationExamSubmit(event) {
     body: JSON.stringify(payload)
   });
   resetSimulationExamForm();
-  globalThis.DriveSchoolCommon.showToast("Da luu de mo phong.", "success");
+  globalThis.DriveSchoolCommon.showToast("Đã lưu đề mô phỏng.", "success");
   await refreshAdminApp();
 }
 
@@ -440,7 +441,7 @@ async function handleSimulationClipSubmit(event) {
     body: JSON.stringify(payload)
   });
   resetSimulationClipForm();
-  globalThis.DriveSchoolCommon.showToast("Da luu clip mo phong.", "success");
+  globalThis.DriveSchoolCommon.showToast("Đã lưu clip mô phỏng.", "success");
   await refreshAdminApp();
 }
 
@@ -471,7 +472,7 @@ async function handleQuestionTableClick(event) {
   await globalThis.DriveSchoolCommon.apiFetch(`/api/admin/questions/${encodeURIComponent(deleteButton.dataset.questionId)}`, {
     method: "DELETE"
   });
-  globalThis.DriveSchoolCommon.showToast("Da xoa cau hoi.", "success");
+  globalThis.DriveSchoolCommon.showToast("Đã xóa câu hỏi.", "success");
   await refreshAdminApp();
 }
 
@@ -496,7 +497,7 @@ async function handleSimulationClipTableClick(event) {
   await globalThis.DriveSchoolCommon.apiFetch(`/api/admin/simulation-clips/${encodeURIComponent(deleteButton.dataset.simulationClipId)}`, {
     method: "DELETE"
   });
-  globalThis.DriveSchoolCommon.showToast("Da xoa clip mo phong.", "success");
+  globalThis.DriveSchoolCommon.showToast("Đã xóa clip mô phỏng.", "success");
   await refreshAdminApp();
 }
 
@@ -725,12 +726,12 @@ async function uploadQuestionImage(file, examId) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.error?.message || "Khong the tai anh cau hoi.");
+    throw new Error(data.error?.message || "Không thể tải ảnh câu hỏi.");
   }
 
   const secureUrl = String(data.secure_url || "").trim();
   document.getElementById("questionImageUrl").value = secureUrl;
-  document.getElementById("questionImageHelp").textContent = "Anh cau hoi da duoc upload.";
+  document.getElementById("questionImageHelp").textContent = "Ảnh câu hỏi đã được upload.";
   return secureUrl;
 }
 
@@ -749,7 +750,7 @@ function setQuestionImagePreview(url, isObjectUrl = false) {
   if (!url) {
     image.removeAttribute("src");
     wrap.classList.add("d-none");
-    help.textContent = "Anh se duoc upload len folder Cloudinary rieng cho cau hoi.";
+    help.textContent = "Ảnh sẽ được upload lên folder Cloudinary riêng cho câu hỏi.";
     return;
   }
 

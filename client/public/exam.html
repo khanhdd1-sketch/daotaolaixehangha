@@ -18,21 +18,21 @@
     <div class="container">
       <section class="student-shell mb-4">
         <div class="student-shell-topbar">
-          <a class="navbar-brand text-decoration-none" href="/index.html">Trung tam day lai xe</a>
+          <a class="navbar-brand text-decoration-none" href="/index.html">Trung tâm dạy lái xe</a>
           <div class="student-top-actions">
-            <a class="btn btn-outline-secondary" href="/index.html">Trang chu</a>
-            <button class="btn btn-primary" type="button" id="studentLogoutButton">Dang xuat</button>
+            <a class="btn btn-outline-secondary" href="/index.html">Trang chủ</a>
+            <button class="btn btn-primary" type="button" id="studentLogoutButton">Đăng xuất</button>
           </div>
         </div>
         <div class="student-hero mt-4">
           <div>
-            <span class="section-badge mb-3">Ung dung hoc vien</span>
-            <h1 class="admin-hero-title mb-2">Xin chao, <span id="welcomeStudent"></span></h1>
-            <p class="admin-hero-copy mb-0 text-dark">Thi thu ly thuyet noi bo, mo phong, on bai va theo doi lich su diem ngay trong mot dashboard.</p>
+            <span class="section-badge mb-3">Ứng dụng học viên</span>
+            <h1 class="admin-hero-title mb-2">Xin chào, <span id="welcomeStudent"></span></h1>
+            <p class="admin-hero-copy mb-0 text-dark">Thi thử lý thuyết nội bộ, mô phỏng, ôn bài và theo dõi lịch sử điểm ngày trong một dashboard.</p>
           </div>
           <div class="student-pill-group">
             <span class="compact-badge"><i class="fa-solid fa-id-card"></i> <span id="studentCourseBadge">-</span></span>
-            <span class="compact-badge"><i class="fa-solid fa-book-open"></i> <span id="lessonProgressBadge">0/0 bai hoc</span></span>
+            <span class="compact-badge"><i class="fa-solid fa-book-open"></i> <span id="lessonProgressBadge">0/0 bài học</span></span>
           </div>
         </div>
       </section>
@@ -41,28 +41,28 @@
         <div class="col-md-3">
           <article class="admin-stat-card accent-blue">
             <div class="admin-stat-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-            <div class="text-muted">Loai bang</div>
+            <div class="text-muted">Loại bằng</div>
             <div class="stat-value" id="studentCourseType">-</div>
           </article>
         </div>
         <div class="col-md-3">
           <article class="admin-stat-card accent-green">
             <div class="admin-stat-icon"><i class="fa-solid fa-file-circle-check"></i></div>
-            <div class="text-muted">De ly thuyet da dat</div>
+            <div class="text-muted">Đề lý thuyết đã đạt</div>
             <div class="stat-value" id="theoryPassedCount">0</div>
           </article>
         </div>
         <div class="col-md-3">
           <article class="admin-stat-card accent-orange">
             <div class="admin-stat-icon"><i class="fa-solid fa-road"></i></div>
-            <div class="text-muted">Lan mo phong</div>
+            <div class="text-muted">Số lần mô phỏng</div>
             <div class="stat-value" id="simulationAttemptCount">0</div>
           </article>
         </div>
         <div class="col-md-3">
           <article class="admin-stat-card accent-sky">
             <div class="admin-stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
-            <div class="text-muted">Tong lan nop</div>
+            <div class="text-muted">Tổng lần nộp</div>
             <div class="stat-value" id="submissionCount">0</div>
           </article>
         </div>
@@ -73,10 +73,10 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">Bieu do tien do</h2>
-                <p class="text-muted mb-0">Tong hop diem so qua cac lan thi noi bo va 3rd-party.</p>
+                <h2 class="h4 mb-1">Biểu đồ tiến độ</h2>
+                <p class="text-muted mb-0">Tổng hợp điểm số qua các lần thi nội bộ và 3rd-party.</p>
               </div>
-              <span class="compact-badge" id="studentProgressBadge">0 lan nop</span>
+              <span class="compact-badge" id="studentProgressBadge">0 lần nộp</span>
             </div>
             <div class="chart-shell">
               <canvas id="studentProgressChart"></canvas>
@@ -87,10 +87,10 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">Ti le ket qua</h2>
-                <p class="text-muted mb-0">Nhan nhanh so lan dat va chua dat.</p>
+                <h2 class="h4 mb-1">Tỷ lệ kết quả</h2>
+                <p class="text-muted mb-0">Nhận nhanh số lần đạt và chưa đạt.</p>
               </div>
-              <span class="compact-badge" id="studentStatusBadge">0 ket qua</span>
+              <span class="compact-badge" id="studentStatusBadge">0 kết quả</span>
             </div>
             <div class="chart-shell">
               <canvas id="studentStatusChart"></canvas>
@@ -102,10 +102,9 @@
       <section class="dashboard-card mb-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div>
-            <h2 class="h4 mb-1">Thi thu ly thuyet noi bo</h2>
-            <p class="text-muted mb-0">Chon de phu hop loai bang cua ban, lam bai va xem giai thich sau khi nop.</p>
-          </div>
-          <span class="compact-badge" id="theoryExamBadge">0 de</span>
+            <h2 class="h4 mb-1">Thi thử lý thuyết nội bộ</h2>
+            <p class="text-muted mb-0">Chọn đề phù hợp loại bằng của bạn, làm bài và xem giải thích sau khi nộp.</p>
+          <span class="compact-badge" id="theoryExamBadge">0 đề</span>
         </div>
         <div class="row g-3" id="theoryExamGrid"></div>
       </section>
@@ -113,7 +112,7 @@
       <section class="dashboard-card mb-4 d-none" id="theoryRunnerSection">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div>
-            <h2 class="h4 mb-1" id="theoryRunnerTitle">Lam de thi</h2>
+            <h2 class="h4 mb-1" id="theoryRunnerTitle">Làm đề thi</h2>
             <p class="text-muted mb-0" id="theoryRunnerMeta"></p>
           </div>
           <span class="timer-pill" id="theoryTimerBadge">--:--</span>
@@ -121,8 +120,8 @@
         <form id="theoryExamForm">
           <div id="theoryQuestionList" class="exam-question-list"></div>
           <div class="d-flex justify-content-end gap-2 mt-4">
-            <button class="btn btn-outline-secondary" id="cancelTheoryButton" type="button">Dong de</button>
-            <button class="btn btn-primary" type="submit">Nop bai ly thuyet</button>
+            <button class="btn btn-outline-secondary" id="cancelTheoryButton" type="button">Đóng đề</button>
+            <button class="btn btn-primary" type="submit">Nộp bài lý thuyết</button>
           </div>
         </form>
       </section>
@@ -132,8 +131,8 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">On bai hoc</h2>
-                <p class="text-muted mb-0">Theo doi cac bai hoc can hoan thanh truoc khi thi sat hach.</p>
+                <h2 class="h4 mb-1">Ôn bài học</h2>
+                <p class="text-muted mb-0">Theo dõi các bài học cần hoàn thành trước khi thi sát hạch.</p>
               </div>
             </div>
             <div class="admin-list-shell" id="lessonList"></div>
@@ -144,10 +143,10 @@
           <div class="dashboard-card h-100">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div>
-                <h2 class="h4 mb-1">Thi mo phong</h2>
-                <p class="text-muted mb-0">Mo video, bam ghi nhan nguy hiem dung thoi diem roi nop bai.</p>
+                <h2 class="h4 mb-1">Thi mô phỏng</h2>
+                <p class="text-muted mb-0">Mở video, bấm ghi nhận nguy hiểm đúng thời điểm rồi nộp bài.</p>
               </div>
-              <span class="compact-badge" id="simulationBadge">Mo phong</span>
+              <span class="compact-badge" id="simulationBadge">Mô phỏng</span>
             </div>
             <div id="simulationWorkspace"></div>
           </div>
@@ -157,53 +156,53 @@
       <section class="dashboard-card mb-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div>
-            <h2 class="h4 mb-1">Thi ben thu 3</h2>
-            <p class="text-muted mb-0">Neu trung tam van su dung app ngoai, ban co the mo nhanh va gui diem ve admin.</p>
+            <h2 class="h4 mb-1">Thi bên thứ 3</h2>
+            <p class="text-muted mb-0">Nếu trung tâm vận dụng app ngoài, bạn có thể mở nhanh và gửi điểm về admin.</p>
           </div>
         </div>
         <div class="row g-3 mb-4" id="thirdPartyLinks"></div>
         <form id="thirdPartyResultForm" class="row g-3">
           <div class="col-md-4">
-            <label class="form-label" for="examType">Loai thi</label>
+            <label class="form-label" for="examType">Loại thi</label>
             <select class="form-select" id="examType" name="exam_type" required>
-              <option value="theory">Thi thu ly thuyet</option>
-              <option value="theory_600">Thi 600 cau</option>
-              <option value="simulation">Thi mo phong</option>
+              <option value="theory">Thi thử lý thuyết</option>
+              <option value="theory_600">Thi 600 câu</option>
+              <option value="simulation">Thi mô phỏng</option>
             </select>
           </div>
           <div class="col-md-4">
-            <label class="form-label" for="score">Diem</label>
+            <label class="form-label" for="score">Điểm</label>
             <input class="form-control" id="score" name="score" type="number" step="0.1" min="0" required>
           </div>
           <div class="col-md-4">
-            <label class="form-label" for="passed">Trang thai</label>
+            <label class="form-label" for="passed">Trạng thái</label>
             <select class="form-select" id="passed" name="passed" required>
-              <option value="true">Dat</option>
-              <option value="false">Chua dat</option>
+              <option value="true">Đạt</option>
+              <option value="false">Chưa đạt</option>
             </select>
           </div>
           <div class="col-md-6">
-            <label class="form-label" for="platformName">Nen tang</label>
+            <label class="form-label" for="platformName">Nền tảng</label>
             <input class="form-control" id="platformName" name="platform_name" readonly>
           </div>
           <div class="col-md-6">
-            <label class="form-label" for="examUrl">Link bai thi</label>
+            <label class="form-label" for="examUrl">Link bài thi</label>
             <input class="form-control" id="examUrl" name="exam_url" readonly>
           </div>
           <div class="col-12">
-            <label class="form-label" for="proofImage">Anh minh chung (neu co)</label>
+            <label class="form-label" for="proofImage">Ảnh minh chứng (nếu có)</label>
             <input class="form-control" id="proofImage" name="proof_image" type="file" accept="image/*">
-            <div class="form-text" id="proofImageHelp">Co the chup man hinh ket qua thi tren iPhone, Android hoac may tinh roi gui ve he thong.</div>
+            <div class="form-text" id="proofImageHelp">Có thể chụp màn hình kết quả thi trên iPhone, Android hoặc máy tính rồi gửi về hệ thống.</div>
             <div class="d-none mt-3" id="proofPreviewContainer">
-              <img id="proofPreviewImage" class="img-fluid rounded border" style="max-height: 220px;" alt="Xem truoc anh minh chung">
+              <img id="proofPreviewImage" class="img-fluid rounded border" style="max-height: 220px;" alt="Xem trước ảnh minh chứng">
             </div>
           </div>
           <div class="col-12">
-            <label class="form-label" for="note">Ghi chu</label>
-            <textarea class="form-control" id="note" name="note" rows="2" placeholder="Vi du: Dat 28/30, sai bien bao"></textarea>
+            <label class="form-label" for="note">Ghi chú</label>
+            <textarea class="form-control" id="note" name="note" rows="2" placeholder="Ví dụ: Đạt 28/30, sai biển báo"></textarea>
           </div>
           <div class="col-12 text-end">
-            <button class="btn btn-primary" type="submit">Gui ket qua 3rd-party</button>
+            <button class="btn btn-primary" type="submit">Gửi kết quả 3rd-party</button>
           </div>
         </form>
       </section>
@@ -211,31 +210,31 @@
       <section class="dashboard-card">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div>
-            <h2 class="h4 mb-1">Lich su va bo loc ket qua</h2>
-            <p class="text-muted mb-0">Loc theo kenh thi, trang thai va xem lai bai ly thuyet da nop.</p>
+            <h2 class="h4 mb-1">Lịch sử và bộ lọc kết quả</h2>
+            <p class="text-muted mb-0">Lọc theo kênh thi, trạng thái và xem lại bài lý thuyết đã nộp.</p>
           </div>
           <span class="compact-badge" id="historyBadge">0</span>
         </div>
         <div class="table-filter-grid mb-3">
           <div>
-            <label class="form-label" for="historySearchInput">Tim nhanh</label>
-            <input class="form-control" id="historySearchInput" type="search" placeholder="De thi, nen tang, ghi chu">
+            <label class="form-label" for="historySearchInput">ìm nhanh</label>
+            <input class="form-control" id="historySearchInput" type="search" placeholder="Đề thi, nền tảng, ghi chú...">
           </div>
           <div>
-            <label class="form-label" for="historyTypeFilter">Kenh thi</label>
+            <label class="form-label" for="historyTypeFilter">Kênh thi</label>
             <select class="form-select" id="historyTypeFilter">
-              <option value="">Tat ca</option>
-              <option value="theory">Ly thuyet noi bo</option>
-              <option value="simulation">Mo phong</option>
+              <option value="">Tất cả</option>
+              <option value="theory">Lý thuyết nội bộ</option>
+              <option value="simulation">Mô phỏng</option>
               <option value="third_party">3rd-party</option>
             </select>
           </div>
           <div>
-            <label class="form-label" for="historyStatusFilter">Trang thai</label>
+            <label class="form-label" for="historyStatusFilter">Trạng thái</label>
             <select class="form-select" id="historyStatusFilter">
-              <option value="">Tat ca</option>
-              <option value="passed">Dat</option>
-              <option value="failed">Chua dat</option>
+              <option value="">Tất cả</option>
+              <option value="passed">Đạt</option>
+              <option value="failed">Chưa đạt</option>
             </select>
           </div>
         </div>
@@ -243,12 +242,12 @@
           <table class="table align-middle admin-table">
             <thead>
               <tr>
-                <th>Kenh thi</th>
-                <th>De thi / Nen tang</th>
-                <th>Lan thi</th>
-                <th>Diem</th>
-                <th>Trang thai</th>
-                <th>Thoi gian</th>
+                <th>Kênh thi</th>
+                <th>Đề thi / Nền tảng</th>
+                <th>Lần thi</th>
+                <th>Điểm</th>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
                 <th></th>
               </tr>
             </thead>
