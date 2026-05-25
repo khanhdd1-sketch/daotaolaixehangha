@@ -14,7 +14,7 @@ const adminState = {
     channels: null
   }
 };
-
+document.getElementById("resultTable").addEventListener("click", handleThirdPartyTableClick);
 document.addEventListener("DOMContentLoaded", async () => {
   await globalThis.DriveSchoolI18n.loadTranslations();
   globalThis.DriveSchoolCommon.initZaloBubble();
@@ -292,7 +292,7 @@ function renderResultTable() {
 
   document.getElementById("resultCountBadge").textContent = `${filtered.length} kết quả`;
   document.getElementById("resultTable").innerHTML = filtered.length
-    ? filtered.map((item) => `
+    ? filtered.map((item, index) => `
       <tr>
         <td>${escape(item.student_name || item.user_id)}</td>
         <td>${escape(item.course_type || "-")}</td>
@@ -302,7 +302,7 @@ function renderResultTable() {
         <td>${escape(String(item.score || 0))}</td>
         <td>${item.passed ? '<span class="badge text-bg-success">Đạt</span>' : '<span class="badge text-bg-danger">Chưa đạt</span>'}</td>
         <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
-        <td>${escape(item.third_party_link || "-")}</td>
+        <td>${renderProofCell(item.proof_url, index)}</td>
       </tr>
     `).join("")
     : buildEmptyRow(8, "Chưa có kết quả phù hợp.");
@@ -760,4 +760,119 @@ function setQuestionImagePreview(url, isObjectUrl = false) {
 
   image.src = url;
   wrap.classList.remove("d-none");
+}
+
+function renderThirdPartyLinkCell(value, label) {
+  const safeUrl = getSafeLink(value);
+  if (!safeUrl) {
+    return '<span class="text-muted">Không có</span>';
+  }
+
+  return `<a href="${globalThis.DriveSchoolCommon.escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+}
+
+function renderProofCell(value, index) {
+  const safeUrl = getSafeLink(value, { allowDataImage: true });
+  if (!safeUrl) {
+    return '<span class="text-muted">Không có</span>';
+  }
+
+  return `<button class="btn btn-outline-primary btn-sm" type="button" data-proof-index="${index}">Xem ảnh</button>`;
+}
+
+function getSafeLink(value, { allowDataImage = false } = {}) {
+  const url = String(value || "").trim();
+
+  if (!url) {
+    return "";
+  }
+
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+
+  if (allowDataImage && /^data:image\/[a-z0-9.+-]+;base64,/i.test(url)) {
+    return url;
+  }
+
+  return "";
+}
+function handleThirdPartyTableClick(event) {
+  const previewButton = event.target.closest("[data-proof-index]");
+  if (!previewButton) {
+    return;
+  }
+
+  const index = Number(previewButton.dataset.proofIndex);
+  if (!Number.isInteger(index) || index < 0) {
+    return;
+  }
+
+  openProofPreview(index);
+}
+
+function openProofPreview(index) {
+  const item = adminState.filteredThirdPartyAttempts[index];
+  const proofUrl = item ? getSafeLink(item.proof_url, { allowDataImage: true }) : "";
+  const previewImage = document.getElementById("proofPreviewImage");
+  const previewFallback = document.getElementById("proofPreviewFallback");
+  const previewMeta = document.getElementById("proofPreviewMeta");
+  const previewUrlGroup = document.getElementById("proofPreviewUrlGroup");
+  const previewUrlInput = document.getElementById("proofPreviewUrl");
+  const externalLink = document.getElementById("proofPreviewExternalLink");
+
+  if (!proofUrl) {
+    globalThis.DriveSchoolCommon.showToast("Không có ảnh minh chứng để xem.", "warning");
+    return;
+  }
+
+  previewMeta.textContent = `${item.student_name || item.user_id} | ${item.exam_type || "Minh chứng"}`;
+  previewImage.classList.add("d-none");
+  previewImage.removeAttribute("src");
+  previewFallback.classList.remove("d-none");
+  previewFallback.textContent = "Đang tải ảnh minh chứng...";
+
+  if (/^https?:\/\//i.test(proofUrl)) {
+    previewUrlInput.value = proofUrl;
+    previewUrlGroup.classList.remove("d-none");
+  } else {
+    previewUrlInput.value = "";
+    previewUrlGroup.classList.add("d-none");
+  }
+
+  externalLink.href = proofUrl;
+  externalLink.classList.remove("d-none");
+
+  previewImage.onload = () => {
+    previewFallback.classList.add("d-none");
+    previewImage.classList.remove("d-none");
+  };
+
+  previewImage.onerror = () => {
+    previewImage.classList.add("d-none");
+    previewFallback.classList.remove("d-none");
+    previewFallback.textContent = "Không thể hiển thị trực tiếp. Bạn có thể mở trong tab mới.";
+  };
+
+  previewImage.src = proofUrl;
+  adminState.proofPreviewModal.show();
+}
+
+function resetProofPreviewModal() {
+  const previewImage = document.getElementById("proofPreviewImage");
+  const previewFallback = document.getElementById("proofPreviewFallback");
+  const previewMeta = document.getElementById("proofPreviewMeta");
+  const previewUrlGroup = document.getElementById("proofPreviewUrlGroup");
+  const previewUrlInput = document.getElementById("proofPreviewUrl");
+  const externalLink = document.getElementById("proofPreviewExternalLink");
+
+  previewImage.classList.add("d-none");
+  previewImage.removeAttribute("src");
+  previewFallback.classList.remove("d-none");
+  previewFallback.textContent = "Ảnh minh chứng sẽ hiển thị tại đây.";
+  previewMeta.textContent = "Xem nhanh ảnh học viên gửi cho admin.";
+  previewUrlGroup.classList.add("d-none");
+  previewUrlInput.value = "";
+  externalLink.classList.add("d-none");
+  externalLink.removeAttribute("href");
 }

@@ -200,8 +200,8 @@ function renderThirdPartyLinks() {
       <div class="col-md-4">
         <article class="question-card h-100">
           <h3 class="h5 mb-2">${escape(item.label || examType)}</h3>
-          <p class="text-muted mb-3">Nen tang: ${escape(item.platform_name || "-")}</p>
-          <a class="btn btn-outline-primary" href="${escape(item.url || "#")}" target="_blank" rel="noopener noreferrer">Mo bai thi</a>
+          <p class="text-muted mb-3">Nền tảng: ${escape(item.platform_name || "-")}</p>
+          <a class="btn btn-outline-primary" href="${escape(item.url || "#")}" target="_blank" rel="noopener noreferrer">Mở bài thi</a>
         </article>
       </div>
     `).join("")
