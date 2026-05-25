@@ -8,7 +8,7 @@
 const { verifyToken } = require("../services/authService");
 
 function extractToken(req) {
-  if (req.cookies.auth_token) {
+  if (req.cookies?.auth_token) {
     return { token: req.cookies.auth_token, source: "cookie" };
   }
 
@@ -23,7 +23,7 @@ function extractToken(req) {
 function requireAuth(req, res, next) {
   try {
     const auth = extractToken(req);
-    if (!auth.token) {
+    if (!auth?.token) {
       return res.status(401).json({ success: false, message: "Authentication required" });
     }
 
