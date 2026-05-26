@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest"
+    "test": "jest --config ../jest.config.cjs --selectProjects server"
   },
   "dependencies": {
     "express": "^4.17.1",

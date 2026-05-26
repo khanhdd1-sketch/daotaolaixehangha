@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Admin — Quản lý học viên">
+  <title>Trung tâm dạy lái xe | Admin — Quản lý học viên</title>
+  <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+  <link href="/src/css/main.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+  <main class="page-shell">
+    <div class="container">
+      <div id="adminShellHero"></div>
+      <div id="adminShellNav"></div>
+      <div id="section-students">
+      <section class="row g-4 mb-4">
+        <div class="col-xl-5">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Học viên</h2>
+                <p class="text-muted mb-0">Tạo tài khoản học viên và gắn loại bằng thi.</p>
+              </div>
+              <span class="compact-badge" id="studentCountBadge">0 học viên</span>
+            </div>
+            <form id="createStudentForm" class="row g-3 mb-4">
+              <div class="col-12">
+                <label class="form-label" for="studentName">Tên học viên</label>
+                <input class="form-control" id="studentName" name="name" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="studentEmail">Email</label>
+                <input class="form-control" id="studentEmail" name="email" type="email" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="studentPassword">Mật khẩu</label>
+                <input class="form-control" id="studentPassword" name="password" value="Student@123" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="studentCourseType">Loại bằng</label>
+                <select class="form-select" id="studentCourseType" name="course_type" required>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2" selected>B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+              <div class="col-12 text-end">
+                <button class="btn btn-primary" type="submit">Thêm học viên</button>
+              </div>
+            </form>
+            <div class="table-filter-grid mb-3">
+              <div>
+                <label class="form-label" for="studentSearchInput">Tìm nhanh</label>
+                <input class="form-control" id="studentSearchInput" type="search" placeholder="Tên hoặc email">
+              </div>
+              <div>
+                <label class="form-label" for="studentCourseFilterLocal">Lọc loại bằng</label>
+                <select class="form-select" id="studentCourseFilterLocal">
+                  <option value="">Tất cả</option>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-shell">
+              <table class="table align-middle admin-table">
+                <thead>
+                  <tr>
+                    <th>Tên</th>
+                    <th>Email</th>
+                    <th>Loại bằng</th>
+                    <th>Ngày tạo</th>
+                  </tr>
+                </thead>
+                <tbody id="studentTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-7">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Lead đăng ký từ website</h2>
+                <p class="text-muted mb-0">Theo dõi lead từ website và lọc theo loại bằng.</p>
+              </div>
+              <span class="compact-badge" id="registrationCountBadge">0 lead</span>
+            </div>
+            <div class="table-filter-grid mb-3">
+              <div>
+                <label class="form-label" for="registrationSearchInput">Tìm nhanh</label>
+                <input class="form-control" id="registrationSearchInput" type="search" placeholder="Tên, số điện thoại, email">
+              </div>
+              <div>
+                <label class="form-label" for="registrationCourseFilterLocal">Lọc loại bằng</label>
+                <select class="form-select" id="registrationCourseFilterLocal">
+                  <option value="">Tất cả</option>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-shell">
+              <table class="table align-middle admin-table">
+                <thead>
+                  <tr>
+                    <th>Tên</th>
+                    <th>Điện thoại</th>
+                    <th>Email</th>
+                    <th>Loại bằng</th>
+                    <th>Ngày tạo</th>
+                    <th>Ghi chú</th>
+                  </tr>
+                </thead>
+                <tbody id="registrationTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      </div>
+    </div>
+  </main>
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+  <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/src/js/common.js"></script>
+  <script defer src="/src/js/i18n.js"></script>
+  <script type="module" src="/src/js/entries/admin-students.js"></script>
+  <!-- ✅ Modal preview ảnh -->
+  <div class="modal fade" id="proofPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="proofPreviewMeta">
+            Xem ảnh minh chứng
+          </h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body text-center">
+
+          <!-- Ảnh -->
+          <img
+            id="proofPreviewImage"
+            class="img-fluid d-none"
+            style="max-height: 500px;"
+          />
+
+          <!-- Fallback -->
+          <div id="proofPreviewFallback">
+            Ảnh minh chứng sẽ hiển thị tại đây.
+          </div>
+
+          <!-- URL -->
+          <div id="proofPreviewUrlGroup" class="mt-3 d-none">
+            <input
+              id="proofPreviewUrl"
+              class="form-control"
+              readonly
+            />
+          </div>
+
+          <!-- Link mở ngoài -->
+          <a
+            id="proofPreviewExternalLink"
+            target="_blank"
+            class="btn btn-outline-primary mt-3 d-none"
+          >
+            Mở ảnh trong tab mới
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+</body>
+</html>

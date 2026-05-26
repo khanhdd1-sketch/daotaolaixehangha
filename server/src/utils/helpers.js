@@ -5,7 +5,7 @@
  *
  * All rights reserved.
  */
-const crypto = require("node:crypto");
+const crypto = require("crypto");
 
 function createId(prefix) {
   return `${prefix}_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;

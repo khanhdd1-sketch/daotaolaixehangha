@@ -9,6 +9,7 @@ const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const cloudinaryService = require("../services/cloudinaryService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
+const { ROLES } = require("../constants/roles");
 const { requireCsrfToken } = require("../middleware/csrfMiddleware");
 const { normalizeCourseType, parseBoolean } = require("../utils/helpers");
 const { clampString, isSafeHttpUrl } = require("../utils/validators");
@@ -112,7 +113,7 @@ function sanitizeProofUrl(value) {
   return proofUrl;
 }
 
-router.use(requireAuth, requireRole("student"));
+router.use(requireAuth, requireRole(ROLES.STUDENT));
 router.use(requireCsrfToken);
 
 async function getStudent(userId) {

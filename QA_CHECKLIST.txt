@@ -1,0 +1,75 @@
+# QA CHECKLIST — Driving School Platform
+
+Cập nhật: 2026-05-26
+
+## Unit / integration tests
+
+```bash
+npm install
+cd server && npm install && cd ..
+npm run build:sw-manifest
+npm run test:client
+npm run test:server
+npm test
+```
+
+| Lệnh | Phạm vi |
+|------|---------|
+| `npm run test:client` | Jest client (textUtils, historyUtils, pipelineUtils, resultsUtils) |
+| `npm run test:server` | Jest server (auth, pagination, API smoke) |
+| `npm test` | Cả client + server |
+
+## Typecheck (checkJs shared modules)
+
+```bash
+npm run typecheck:client
+```
+
+Chỉ kiểm tra `client/src/js/modules/shared/**` với `checkJs: true`.
+
+## E2E Playwright
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+| Spec | Flow |
+|------|------|
+| `e2e/admin-flow.spec.js` | Admin login → tạo HV → tạo câu hỏi LT → xem trang kết quả |
+| `e2e/student-flow.spec.js` | Student login → dashboard → mở trang thi lý thuyết |
+
+Biến môi trường (tùy chọn): `E2E_ADMIN_EMAIL`, `E2E_ADMIN_PASSWORD`, `E2E_STUDENT_EMAIL`, `E2E_STUDENT_PASSWORD`, `E2E_BASE_URL`.
+
+## Manual QA — Admin
+
+- [ ] `/admin.html` — hub tổng quan, biểu đồ, link nav sang trang con
+- [ ] `/admin-students.html` — tạo HV, bảng HV + lead
+- [ ] `/admin-theory.html` — CRUD đề + câu hỏi, xóa có modal xác nhận
+- [ ] `/admin-simulation.html` — CRUD đề + clip, xóa có modal
+- [ ] `/admin-lessons.html` — CRUD bài học + quiz, xóa có modal
+- [ ] `/admin-results.html` — lọc + phân trang (Trước/Sau, đổi page size)
+
+## Manual QA — Student
+
+- [ ] `/exam.html` — Learn: nút «Đánh dấu đã xem» cập nhật tiến độ
+- [ ] Pipeline Next Action phản ánh bài học đã xem / hoàn thành
+
+## Service Worker
+
+```bash
+npm run build:sw-manifest   # trước deploy / start
+```
+
+Cache `drive-school-v5` + precache `sw-module-manifest.json`.
+
+## Trang admin mới
+
+| URL | Mô tả |
+|-----|--------|
+| `/admin.html` | Hub tổng quan |
+| `/admin-students.html` | Quản lý học viên |
+| `/admin-theory.html` | Đề lý thuyết + ngân hàng câu |
+| `/admin-simulation.html` | Đề mô phỏng + clip |
+| `/admin-lessons.html` | Bài học |
+| `/admin-results.html` | Kết quả (phân trang server) |
