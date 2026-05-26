@@ -1,26 +1,33 @@
-const CACHE_NAME = "drive-school-v2";
-const APP_SHELL = [
-  "/",
-  "/index.html",
-  "/login.html",
-  "/exam.html",
-  "/admin.html",
-  "/manifest.webmanifest",
-  "/src/css/main.css",
-  "/src/js/common.js",
-  "/src/js/auth.js",
-  "/src/js/exam.js",
-  "/src/js/admin.js",
-  "/assets/bootstrap/css/bootstrap.min.css",
-  "/assets/bootstrap/js/bootstrap.bundle.min.js",
-  "/assets/vendor/chartjs/chart.umd.min.js",
-  "/assets/vendor/fontawesome/css/all.min.css",
-  "/favicon.ico"
-];
+/* eslint-disable no-restricted-globals */
+importScripts("/src/js/constants/swBundle.js");
+
+const SW_MODULE_MANIFEST_URL = "/sw-module-manifest.json";
+
+/**
+ * Precache danh sách module ES từ manifest build.
+ * @param {Cache} cache
+ * @returns {Promise<void>}
+ */
+async function precacheModuleManifest(cache) {
+  try {
+    const response = await fetch(SW_MODULE_MANIFEST_URL);
+    if (!response.ok) return;
+    const manifest = await response.json();
+    const modules = Array.isArray(manifest.modules) ? manifest.modules : [];
+    if (modules.length) {
+      await cache.addAll(modules);
+    }
+  } catch {
+    // Offline install vẫn dùng app shell nếu manifest chưa có
+  }
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).catch(() => undefined)
+    caches.open(SW_CACHE_NAME).then(async (cache) => {
+      await cache.addAll(SW_APP_SHELL).catch(() => undefined);
+      await precacheModuleManifest(cache);
+    })
   );
   self.skipWaiting();
 });
@@ -28,7 +35,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
+      Promise.all(keys.filter((key) => key !== SW_CACHE_NAME).map((key) => caches.delete(key)))
     )
   );
   self.clients.claim();
@@ -65,12 +72,12 @@ self.addEventListener("fetch", (event) => {
         }
 
         const responseClone = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        caches.open(SW_CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
         return networkResponse;
       });
     }).catch(() => {
       if (event.request.mode === "navigate") {
-        return caches.match("/exam.html");
+        return caches.match(SW_OFFLINE_FALLBACK);
       }
 
       return Response.error();

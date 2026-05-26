@@ -3,7 +3,7 @@
  * Copyright (c) 2026 Driving Training Center Hang Ha
  * (Trung tâm đào tạo lái xe Hằng Hà)
  *
- * All rights reserved.
+ * Trang xem kết quả thi và lịch sử các lần thi.
  */
 document.addEventListener("DOMContentLoaded", async () => {
   await globalThis.DriveSchoolI18n.loadTranslations();
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const currentUser = await globalThis.DriveSchoolCommon.getCurrentUser();
   if (!currentUser) {
-    globalThis.DriveSchoolCommon.redirectWithLang("/login.html");
+    globalThis.DriveSchoolCommon.redirectWithLang(PAGE_ROUTES.LOGIN);
     return;
   }
 
@@ -24,13 +24,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(globalThis.location.search);
   const resultId = params.get("id");
   if (!resultId) {
-    globalThis.DriveSchoolCommon.redirectWithLang("/exam.html");
+    globalThis.DriveSchoolCommon.redirectWithLang(PAGE_ROUTES.EXAM_DASHBOARD);
     return;
   }
 
+  const resultUrl = typeof API_PATHS.resultById === "function"
+    ? API_PATHS.resultById(resultId)
+    : `/api/results/${encodeURIComponent(resultId)}`;
+
   const [resultResponse, historyResponse] = await Promise.all([
-    globalThis.DriveSchoolCommon.apiFetch(`/api/results/${resultId}`),
-    globalThis.DriveSchoolCommon.apiFetch("/api/results")
+    globalThis.DriveSchoolCommon.apiFetch(resultUrl),
+    globalThis.DriveSchoolCommon.apiFetch(API_PATHS.RESULTS)
   ]);
 
   renderResult(resultResponse.data);
@@ -38,10 +42,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderAnswerReview(resultResponse.data);
 });
 
+/**
+ * Dịch khóa i18n.
+ * @param {string} key
+ * @param {string} [fallback]
+ * @returns {string}
+ */
 function t(key, fallback = "") {
   return globalThis.DriveSchoolI18n.t(key, fallback);
 }
 
+/**
+ * Hiển thị tóm tắt kết quả một lần thi.
+ * @param {import('./types/domain.js').ExamResult} result
+ * @returns {void}
+ */
 function renderResult(result) {
   const stateEl = document.getElementById("resultState");
   stateEl.textContent = result.passed ? t("result.pass", "PASSED") : t("result.fail", "FAILED");
@@ -54,6 +69,12 @@ function renderResult(result) {
     : t("result.noCriticalFail", "No critical-question failure detected.");
 }
 
+/**
+ * Bảng lịch sử các lần thi.
+ * @param {import('./types/domain.js').ExamResult[]} results
+ * @param {string} activeResultId
+ * @returns {void}
+ */
 function renderHistory(results, activeResultId) {
   document.getElementById("historyCountBadge").textContent = `${results.length} ${t("result.historyCount", "attempts")}`;
   document.getElementById("historyTable").innerHTML = results.length
@@ -66,7 +87,7 @@ function renderHistory(results, activeResultId) {
             <td>${globalThis.DriveSchoolCommon.escapeHtml(String(item.score))}</td>
             <td>${item.passed ? `<span class="badge text-bg-success">${t("result.pass", "PASSED")}</span>` : `<span class="badge text-bg-danger">${t("result.fail", "FAILED")}</span>`}</td>
             <td>${globalThis.DriveSchoolCommon.formatDateTime(item.submitted_at)}</td>
-            <td><a class="btn btn-sm btn-outline-primary" href="${globalThis.DriveSchoolCommon.withLangUrl(`/result.html?id=${item.id}`)}">${t("result.historyView", "View")}</a></td>
+            <td><a class="btn btn-sm btn-outline-primary" href="${globalThis.DriveSchoolCommon.withLangUrl(`${PAGE_ROUTES.RESULT}?id=${item.id}`)}">${t("result.historyView", "View")}</a></td>
           </tr>
         `
       )
@@ -74,6 +95,11 @@ function renderHistory(results, activeResultId) {
     : `<tr><td colspan="6" class="text-center text-muted py-4">${t("result.historyEmpty", "No attempts yet.")}</td></tr>`;
 }
 
+/**
+ * Bảng xem lại từng câu trả lời.
+ * @param {import('./types/domain.js').ExamResult} result
+ * @returns {void}
+ */
 function renderAnswerReview(result) {
   const reviewRows = (result.questions || []).map((question, index) => {
     const selectedAnswer = String(result.answers?.[question.id] || "").trim().toUpperCase();

@@ -10,13 +10,17 @@ const sheetsService = require("../services/sheetsService");
 const { hashPassword } = require("../services/authService");
 const cloudinaryService = require("../services/cloudinaryService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
+const { ROLES } = require("../constants/roles");
 const { requireCsrfToken } = require("../middleware/csrfMiddleware");
 const { normalizeCourseType, sanitizeEmail } = require("../utils/helpers");
 const { clampString, isSafeHttpUrl, isStrongPassword, isValidCourseType, isValidEmail } = require("../utils/validators");
+const { parsePaginationQuery, paginateArray } = require("../utils/pagination");
+const { mergeResultRows, filterResultRows } = require("../utils/adminResultsUtils");
 
 const router = express.Router();
+const DEFAULT_RESULT_PAGE_LIMIT = 20;
 
-router.use(requireAuth, requireRole("admin"));
+router.use(requireAuth, requireRole(ROLES.ADMIN));
 router.use(requireCsrfToken);
 
 function sanitizeQuestionImageUrl(value) {
@@ -55,9 +59,80 @@ router.get("/question-image-upload-config", (req, res) => {
 router.get("/results", async (req, res, next) => {
   try {
     const response = await sheetsService.getResults();
-    res.json({ success: true, data: response.data || [] });
+    const rows = response.data || [];
+    const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
+
+    if (!hasPagination) {
+      return res.json({ success: true, data: rows });
+    }
+
+    const pagination = parsePaginationQuery(req.query, { defaultLimit: DEFAULT_RESULT_PAGE_LIMIT });
+    const envelope = paginateArray(rows, pagination);
+    return res.json({ success: true, ...envelope });
   } catch (error) {
     next(error);
+  }
+});
+
+/**
+ * Kết quả thi gộp (lý thuyết + mô phỏng + 3rd-party) có phân trang và lọc.
+ * Query: page, limit, search, course, type, status
+ * Response: { success, data, total, page, limit, totalPages }
+ */
+router.get("/result-rows", async (req, res, next) => {
+  try {
+    const pagination = parsePaginationQuery(req.query, { defaultLimit: DEFAULT_RESULT_PAGE_LIMIT });
+    const filters = {
+      search: String(req.query.search || ""),
+      course: normalizeCourseType(req.query.course || ""),
+      type: String(req.query.type || ""),
+      status: String(req.query.status || "")
+    };
+
+    const [usersResponse, examsResponse, resultsResponse, simulationExamsResponse, simulationAttemptsResponse, thirdPartyAttemptsResponse] =
+      await Promise.all([
+        sheetsService.getUsers(),
+        sheetsService.getExams(),
+        sheetsService.getResults(),
+        sheetsService.getSimulationExams({ include_inactive: true }),
+        sheetsService.getSimulationAttempts(),
+        sheetsService.getThirdPartyAttempts()
+      ]);
+
+    const users = usersResponse.data || [];
+    const exams = examsResponse.data || [];
+    const simulationExams = simulationExamsResponse.data || [];
+
+    const examResults = (resultsResponse.data || []).map((item) => ({
+      ...item,
+      exam_title: exams.find((exam) => exam.id === item.exam_id)?.title ?? item.exam_id,
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
+    }));
+
+    const simulationAttempts = (simulationAttemptsResponse.data || []).map((item) => ({
+      ...item,
+      exam_title: simulationExams.find((exam) => exam.id === item.exam_id)?.title ?? item.exam_id,
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
+    }));
+
+    const thirdPartyAttempts = (thirdPartyAttemptsResponse.data || []).map((item) => ({
+      ...item,
+      student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
+    }));
+
+    const merged = mergeResultRows({
+      examResults,
+      simulationAttempts,
+      thirdPartyAttempts,
+      exams,
+      simulationExams
+    });
+    const filtered = filterResultRows(merged, filters);
+    const envelope = paginateArray(filtered, pagination);
+
+    return res.json({ success: true, ...envelope });
+  } catch (error) {
+    return next(error);
   }
 });
 
@@ -123,7 +198,7 @@ router.get("/dashboard", async (req, res, next) => {
 
     const stats = statsResponse.data || {};
     const users = usersResponse.data || [];
-    const students = users.filter((item) => item.role === "student");
+    const students = users.filter((item) => item.role === ROLES.STUDENT);
     const exams = examsResponse.data || [];
     const examResults = (resultsResponse.data || []).map((item) => ({
       ...item,
@@ -482,7 +557,15 @@ router.get("/simulation-attempts", async (req, res, next) => {
       student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id,
       exam_title: exams.find((exam) => exam.id === item.exam_id)?.title ?? item.exam_id
     }));
-    res.json({ success: true, data });
+
+    const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
+    if (!hasPagination) {
+      return res.json({ success: true, data });
+    }
+
+    const pagination = parsePaginationQuery(req.query, { defaultLimit: DEFAULT_RESULT_PAGE_LIMIT });
+    const envelope = paginateArray(data, pagination);
+    return res.json({ success: true, ...envelope });
   } catch (error) {
     next(error);
   }
@@ -499,7 +582,15 @@ router.get("/third-party-attempts", async (req, res, next) => {
       ...item,
       student_name: users.find((user) => user.id === item.user_id)?.name ?? item.user_id
     }));
-    res.json({ success: true, data });
+
+    const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
+    if (!hasPagination) {
+      return res.json({ success: true, data });
+    }
+
+    const pagination = parsePaginationQuery(req.query, { defaultLimit: DEFAULT_RESULT_PAGE_LIMIT });
+    const envelope = paginateArray(data, pagination);
+    return res.json({ success: true, ...envelope });
   } catch (error) {
     next(error);
   }

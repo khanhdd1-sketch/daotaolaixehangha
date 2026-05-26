@@ -8,6 +8,7 @@
 const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
+const { ROLES } = require("../constants/roles");
 const { normalizeChoice, normalizeCourseType } = require("../utils/helpers");
 
 const router = express.Router();
@@ -55,7 +56,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/workspace", requireAuth, requireRole("student"), async (req, res, next) => {
+router.get("/workspace", requireAuth, requireRole(ROLES.STUDENT), async (req, res, next) => {
   try {
     const [usersResponse, examsResponse, resultsResponse] = await Promise.all([
       sheetsService.getUsers(),
@@ -107,7 +108,7 @@ router.get("/workspace", requireAuth, requireRole("student"), async (req, res, n
   }
 });
 
-router.get("/:id/questions", requireAuth, requireRole("student"), async (req, res, next) => {
+router.get("/:id/questions", requireAuth, requireRole(ROLES.STUDENT), async (req, res, next) => {
   try {
     const [examResponse, questionResponse, resultResponse] = await Promise.all([
       sheetsService.getExamById(req.params.id),
@@ -142,7 +143,7 @@ router.get("/:id/questions", requireAuth, requireRole("student"), async (req, re
   }
 });
 
-router.post("/:id/submit", requireAuth, requireRole("student"), async (req, res, next) => {
+router.post("/:id/submit", requireAuth, requireRole(ROLES.STUDENT), async (req, res, next) => {
   try {
     const examId = req.params.id;
     const answers = req.body.answers || {};

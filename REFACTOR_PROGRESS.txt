@@ -1,0 +1,77 @@
+# REFACTOR PROGRESS — Driving School Platform
+
+Cập nhật: 2026-05-26
+
+## Cấu trúc thư mục (frontend)
+
+```
+client/
+  public/
+    exam.html, theory-exam.html, simulation-exam.html
+    admin.html                    — Hub tổng quan admin
+    admin-students.html           — Quản lý học viên
+    admin-theory.html             — Đề LT + ngân hàng câu
+    admin-simulation.html         — Đề MP + clip
+    admin-lessons.html            — Bài học
+    admin-results.html            — Kết quả (phân trang server)
+    sw-module-manifest.json       — Manifest precache ES modules (build)
+  src/js/
+    entries/
+      student-dashboard.js, theory-exam.js, simulation-exam.js
+      admin-dashboard.js, admin-students.js, admin-theory.js, …
+    modules/
+      shared/views/confirmModalView.js
+      shared/types/apiTypes.js
+      admin/constants/adminPages.js
+      admin/views/adminShellView.js, resultsPaginationView.js
+      admin/controllers/adminPageController.js, adminPageBootstrap.js
+      student/ …
+```
+
+## Phase 4 — Admin (HOÀN THÀNH + NÂNG CẤP 2026-05-26)
+
+### Đã làm (nâng cấp)
+- Tách **6 trang admin** (hub + 5 trang con) thay tab một file.
+- Shell dùng chung: `adminShellView.js` + `adminPages.js`.
+- **Phân trang server** `GET /api/admin/result-rows` → `{ data, total, page, limit, totalPages }`.
+- Tương thích ngược: `GET /api/admin/results` không query `page`/`limit` vẫn trả mảng `data`.
+- Modal Bootstrap xác nhận xóa (`confirmModalView.js`) thay `confirm()`.
+- Playwright E2E admin + student (`npm run test:e2e`).
+- Service Worker v5 + `npm run build:sw-manifest`.
+- Học viên: nút **Đánh dấu đã xem** → `POST /api/learning/lessons/:id/watched`.
+- `client/jsconfig.json` + `npm run typecheck:client` (checkJs shared).
+
+### Lệnh kiểm thử
+
+```bash
+npm run test:client    # 16 tests (5 suites)
+npm run test:server    # 13 tests (3 suites)
+npm run typecheck:client
+npm run build:sw-manifest
+npm run test:e2e       # Playwright (cần playwright install chromium)
+```
+
+Chi tiết QA: `QA_CHECKLIST.txt`.
+
+## API phân trang kết quả admin
+
+`GET /api/admin/result-rows?page=1&limit=20&search=&course=&type=&status=`
+
+| Field | Mô tả |
+|-------|--------|
+| `data` | Hàng trang hiện tại (đã merge LT/MP/3rd-party) |
+| `total` | Tổng sau lọc |
+| `page`, `limit`, `totalPages` | Meta phân trang |
+
+## IMPROVEMENTS_LOG
+
+- [x] Student dashboard module hóa
+- [x] Tách trang thi LT / MP
+- [x] Admin module hóa
+- [x] Admin trang con riêng
+- [x] Phân trang kết quả server-side
+- [x] Modal xác nhận xóa Bootstrap
+- [x] Playwright E2E
+- [x] SW precache manifest ES modules
+- [x] Đánh dấu bài học đã xem (UI học viên)
+- [x] checkJs shared modules
