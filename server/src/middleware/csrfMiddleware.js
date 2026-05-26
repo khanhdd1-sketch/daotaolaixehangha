@@ -1,36 +1,59 @@
 /**
  * Copyright (c) 2026 Driving Training Center Hang Ha
- * (Trung tam dao tao lai xe Hang Ha)
+ * (Trung tâm đào tạo lái xe Hằng Hà)
  *
  * All rights reserved.
  */
 const crypto = require("node:crypto");
 const { isProduction } = require("../config/security");
+const {
+  HTTP_STATUS,
+  API_MESSAGES,
+  CSRF_COOKIE_NAME,
+  CSRF_HEADER_NAME,
+  CSRF_SAFE_METHODS,
+  CSRF_MAX_AGE_MS
+} = require("../constants");
 
-const CSRF_COOKIE_NAME = "csrf_token";
-const CSRF_HEADER_NAME = "x-csrf-token";
-const CSRF_SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
-
+/**
+ * Tùy chọn cookie CSRF theo môi trường.
+ * @param {import('express').Request} req
+ * @returns {object}
+ */
 function buildCookieOptions(req) {
   return {
     httpOnly: false,
     sameSite: "strict",
     secure: isProduction() || req.secure,
     path: "/",
-    maxAge: 8 * 60 * 60 * 1000
+    maxAge: CSRF_MAX_AGE_MS
   };
 }
 
+/**
+ * Sinh token CSRF ngẫu nhiên.
+ * @returns {string}
+ */
 function createCsrfToken() {
   return crypto.randomBytes(32).toString("hex");
 }
 
+/**
+ * Ghi cookie CSRF mới.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {string} Token vừa tạo
+ */
 function issueCsrfCookie(req, res) {
   const token = createCsrfToken();
   res.cookie(CSRF_COOKIE_NAME, token, buildCookieOptions(req));
   return token;
 }
 
+/**
+ * Đảm bảo mọi phiên cookie-auth có CSRF token.
+ * @type {import('express').RequestHandler}
+ */
 function ensureCsrfCookie(req, res, next) {
   if (!req.cookies[CSRF_COOKIE_NAME]) {
     issueCsrfCookie(req, res);
@@ -39,6 +62,11 @@ function ensureCsrfCookie(req, res, next) {
   return next();
 }
 
+/**
+ * Xóa cookie CSRF khi đăng xuất.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 function clearCsrfCookie(req, res) {
   res.clearCookie(CSRF_COOKIE_NAME, {
     httpOnly: false,
@@ -48,6 +76,10 @@ function clearCsrfCookie(req, res) {
   });
 }
 
+/**
+ * Bắt buộc header CSRF khớp cookie (chỉ auth qua cookie).
+ * @type {import('express').RequestHandler}
+ */
 function requireCsrfToken(req, res, next) {
   if (CSRF_SAFE_METHODS.has(req.method)) {
     return next();
@@ -61,9 +93,9 @@ function requireCsrfToken(req, res, next) {
   const headerToken = String(req.header(CSRF_HEADER_NAME) || "");
 
   if (!cookieToken || !headerToken || cookieToken !== headerToken) {
-    return res.status(403).json({
+    return res.status(HTTP_STATUS.FORBIDDEN).json({
       success: false,
-      message: "CSRF validation failed"
+      message: API_MESSAGES.CSRF_FAILED
     });
   }
 

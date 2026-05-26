@@ -8,12 +8,13 @@
 const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
+const { ROLES } = require("../constants/roles");
 const { requireCsrfToken } = require("../middleware/csrfMiddleware");
 const { normalizeCourseType, normalizeChoice, parseJsonSafe } = require("../utils/helpers");
 
 const router = express.Router();
 
-router.use(requireAuth, requireRole("student"));
+router.use(requireAuth, requireRole(ROLES.STUDENT));
 router.use(requireCsrfToken);
 
 async function getCurrentStudentCourse(userId) {

@@ -8,13 +8,14 @@
 const crypto = require("node:crypto");
 
 const DEFAULT_PROOF_FOLDER = "drive-school/proof-images";
+const DEFAULT_QUESTION_FOLDER = "drive-school/question-images";
 
-function normalizeFolder(value) {
-  const normalized = String(value || DEFAULT_PROOF_FOLDER)
+function normalizeFolder(value, fallback = DEFAULT_PROOF_FOLDER) {
+  const normalized = String(value || fallback)
     .trim()
     .replace(/^\/+|\/+$/g, "");
 
-  return normalized || DEFAULT_PROOF_FOLDER;
+  return normalized || fallback;
 }
 
 function getConfig() {
@@ -22,7 +23,8 @@ function getConfig() {
     cloudName: String(process.env.CLOUDINARY_CLOUD_NAME || "").trim(),
     apiKey: String(process.env.CLOUDINARY_API_KEY || "").trim(),
     apiSecret: String(process.env.CLOUDINARY_API_SECRET || "").trim(),
-    folder: normalizeFolder(process.env.CLOUDINARY_UPLOAD_FOLDER)
+    proofFolder: normalizeFolder(process.env.CLOUDINARY_UPLOAD_FOLDER, DEFAULT_PROOF_FOLDER),
+    questionFolder: normalizeFolder(process.env.CLOUDINARY_QUESTION_UPLOAD_FOLDER, DEFAULT_QUESTION_FOLDER)
   };
 }
 
@@ -50,14 +52,14 @@ function isConfigured() {
   return Boolean(cloudName && apiKey && apiSecret);
 }
 
-function buildProofUploadConfig({ userId }) {
-  const { cloudName, apiKey, apiSecret, folder } = getConfig();
+function buildUploadConfig({ folder, publicIdPrefix, fallbackPrefix }) {
+  const { cloudName, apiKey, apiSecret } = getConfig();
   if (!cloudName || !apiKey || !apiSecret) {
     return null;
   }
 
   const timestamp = Math.floor(Date.now() / 1000);
-  const publicId = `${sanitizeSegment(userId, "student")}-${timestamp}-${crypto.randomBytes(4).toString("hex")}`;
+  const publicId = `${sanitizeSegment(publicIdPrefix, fallbackPrefix)}-${timestamp}-${crypto.randomBytes(4).toString("hex")}`;
   const signedParams = {
     folder,
     public_id: publicId,
@@ -73,6 +75,24 @@ function buildProofUploadConfig({ userId }) {
     signature: signParams(signedParams, apiSecret),
     uploadUrl: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
   };
+}
+
+function buildProofUploadConfig({ userId }) {
+  const { proofFolder } = getConfig();
+  return buildUploadConfig({
+    folder: proofFolder,
+    publicIdPrefix: userId,
+    fallbackPrefix: "student"
+  });
+}
+
+function buildQuestionImageUploadConfig({ userId, examId }) {
+  const { questionFolder } = getConfig();
+  return buildUploadConfig({
+    folder: questionFolder,
+    publicIdPrefix: `${examId || "question"}-${userId || "admin"}`,
+    fallbackPrefix: "question"
+  });
 }
 
 function isOwnedAssetUrl(value) {
@@ -97,6 +117,7 @@ function isOwnedAssetUrl(value) {
 
 module.exports = {
   buildProofUploadConfig,
+  buildQuestionImageUploadConfig,
   isConfigured,
   isOwnedAssetUrl
 };

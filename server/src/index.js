@@ -26,8 +26,13 @@ const simulationRoutes = require("./routes/simulation");
 const thirdPartyRoutes = require("./routes/thirdParty");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || "0.0.0.0";
+const { HTTP_STATUS, API_MESSAGES } = require("./constants");
+const DEFAULT_PORT = 5000;
+const DEFAULT_HOST = "0.0.0.0";
+const REQUEST_BODY_LIMIT_BYTES = 2 * 1024 * 1024;
+
+const PORT = process.env.PORT || DEFAULT_PORT;
+const HOST = process.env.HOST || DEFAULT_HOST;
 const rootDir = path.resolve(__dirname, "..", "..");
 const clientPublic = path.join(rootDir, "client", "public");
 const clientSrc = path.join(rootDir, "client", "src");
@@ -40,7 +45,7 @@ app.set("trust proxy", 1);
 
 app.use(securityHeaders);
 app.use(cors(corsOptionsDelegate));
-app.use(requestSizeGuard(2 * 1024 * 1024));
+app.use(requestSizeGuard(REQUEST_BODY_LIMIT_BYTES));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cookieParser());
@@ -64,7 +69,10 @@ app.use("/api/third-party", thirdPartyRoutes);
 
 app.use((req, res) => {
   if (req.path.startsWith("/api")) {
-    return res.status(404).json({ success: false, message: "API route not found" });
+    return res.status(HTTP_STATUS.NOT_FOUND).json({
+      success: false,
+      message: API_MESSAGES.API_NOT_FOUND
+    });
   }
 
   if (fs.existsSync(clientIndexFile)) {
@@ -79,11 +87,11 @@ app.use((req, res) => {
 
 app.use((error, req, res, next) => {
   console.error(error);
-  res.status(error.status || 500).json({
+  res.status(error.status || HTTP_STATUS.INTERNAL_ERROR).json({
     success: false,
     message: process.env.NODE_ENV === "production"
-      ? "Internal server error"
-      : error.message || "Internal server error"
+      ? API_MESSAGES.INTERNAL_ERROR
+      : error.message || API_MESSAGES.INTERNAL_ERROR
   });
 });
 

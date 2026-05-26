@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "checkJs": true,
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 0,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["src/js/modules/shared/*"]
+    }
+  },
+  "include": ["src/js/modules/shared/**/*.js", "src/js/modules/shared/**/*.d.ts"],
+  "exclude": ["node_modules"]
+}

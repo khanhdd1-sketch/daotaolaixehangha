@@ -5,6 +5,29 @@
  *
  * All rights reserved.
  */
+/** @typedef {import('./types/domain.js').ApiResponse} ApiResponse */
+
+const C = globalThis.DriveSchoolConstants || {};
+const ROLES = C.ROLES || { ADMIN: "admin", STUDENT: "student" };
+const HTTP_STATUS = C.HTTP_STATUS || { UNAUTHORIZED: 401 };
+const SAFE_HTTP_METHODS = C.SAFE_HTTP_METHODS || ["GET", "HEAD", "OPTIONS"];
+const CSRF_HEADER = C.CSRF_HEADER || "X-CSRF-Token";
+const CSRF_COOKIE = C.CSRF_COOKIE || "csrf_token";
+const PROTECTED_PAGE_ROUTES = C.PROTECTED_PAGE_ROUTES || [
+  "/admin.html",
+  "/exam.html",
+  "/theory-exam.html",
+  "/simulation-exam.html",
+  "/result.html"
+];
+const API_PATHS = C.API_PATHS || {
+  AUTH_LOGIN: "/api/auth/login",
+  AUTH_LOGOUT: "/api/auth/logout",
+  AUTH_ME: "/api/auth/me",
+  TRACKING_VISIT: "/api/tracking/visit"
+};
+const PAGE_ROUTES = C.PAGE_ROUTES || { LOGIN: "/login.html" };
+
 // Fill these IDs before running real marketing campaigns.
 // Examples:
 // gtmId: ""
@@ -28,11 +51,20 @@ if (globalThis.__MARKETING_CONFIG__ && typeof globalThis.__MARKETING_CONFIG__ ==
 
 let trackingInitialized = false;
 
+/**
+ * Ngôn ngữ hiện tại (URL ?lang= hoặc localStorage).
+ * @returns {string}
+ */
 function getLang() {
   const params = new URLSearchParams(globalThis.location.search);
   return params.get("lang") || localStorage.getItem("site_lang") || "vi";
 }
 
+/**
+ * Đổi ngôn ngữ và cập nhật URL.
+ * @param {string} lang - Mã ngôn ngữ (vi, en, …)
+ * @sideeffects Ghi localStorage, thay history
+ */
 function setLang(lang) {
   localStorage.setItem("site_lang", lang);
   const url = new URL(globalThis.location.href);
@@ -40,14 +72,21 @@ function setLang(lang) {
   globalThis.history.replaceState({}, "", url);
 }
 
+/**
+ * Gọi API JSON có cookie + CSRF.
+ * @param {string} url - Đường dẫn API
+ * @param {RequestInit} [options]
+ * @returns {Promise<ApiResponse>}
+ * @throws {Error} Khi HTTP lỗi
+ */
 async function apiFetch(url, options = {}) {
   const method = String(options.method || "GET").toUpperCase();
   const csrfHeaders = {};
 
-  if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
-    const csrfToken = getCookie("csrf_token");
+  if (!SAFE_HTTP_METHODS.includes(method)) {
+    const csrfToken = getCookie(CSRF_COOKIE);
     if (csrfToken) {
-      csrfHeaders["X-CSRF-Token"] = csrfToken;
+      csrfHeaders[CSRF_HEADER] = csrfToken;
     }
   }
 
@@ -63,6 +102,16 @@ async function apiFetch(url, options = {}) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
+    if (
+      response.status === HTTP_STATUS.UNAUTHORIZED &&
+      !String(url).includes(API_PATHS.AUTH_LOGIN) &&
+      !String(url).includes(API_PATHS.AUTH_ME)
+    ) {
+      const currentPath = globalThis.location.pathname;
+      if (PROTECTED_PAGE_ROUTES.includes(currentPath)) {
+        globalThis.setTimeout(() => redirectWithLang(PAGE_ROUTES.LOGIN), 0);
+      }
+    }
     throw new Error(data.message || "Request failed");
   }
   return data;
@@ -404,9 +453,20 @@ function initDeferredScripts() {
   globalThis.addEventListener("pointerdown", triggerLoad, { once: true, passive: true });
 }
 
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  }
+}
+
+/**
+ * Ghi nhận lượt xem trang (analytics server).
+ * @returns {Promise<void>}
+ * @sideeffects POST /api/tracking/visit
+ */
 async function trackVisit() {
   try {
-    await apiFetch("/api/tracking/visit", {
+    await apiFetch(API_PATHS.TRACKING_VISIT, {
       method: "POST",
       body: JSON.stringify({
         page: globalThis.location.pathname,
@@ -418,9 +478,13 @@ async function trackVisit() {
   }
 }
 
+/**
+ * Lấy user đang đăng nhập (hoặc null).
+ * @returns {Promise<import('./types/domain.js').Student|null>}
+ */
 async function getCurrentUser() {
   try {
-    const response = await apiFetch("/api/auth/me");
+    const response = await apiFetch(API_PATHS.AUTH_ME);
     return response.data;
   } catch {
     return null;
@@ -454,13 +518,17 @@ function formatDateTime(value) {
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 }
 
+/**
+ * Đăng xuất và chuyển về trang login.
+ * @returns {Promise<void>}
+ */
 async function logoutAndRedirect() {
   try {
-    await apiFetch("/api/auth/logout", { method: "POST" });
+    await apiFetch(API_PATHS.AUTH_LOGOUT, { method: "POST" });
   } catch (error) {
     console.warn("Logout failed", error.message);
   }
-  redirectWithLang("/login.html");
+  redirectWithLang(PAGE_ROUTES.LOGIN);
 }
 
 globalThis.DriveSchoolCommon = {
@@ -489,5 +557,6 @@ document.addEventListener("DOMContentLoaded", () => {
   bindTrackingClicks();
   initLazyMaps();
   initDeferredScripts();
+  registerServiceWorker();
   pushDataLayer("marketing_page_view");
 });

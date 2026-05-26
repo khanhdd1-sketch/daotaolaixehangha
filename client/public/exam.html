@@ -1,35 +1,24 @@
-
-<!--
-  Copyright (c) 2026 Trung tâm đào tạo lái xe Hằng Hà
-  All rights reserved.
--->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-KMF7RN94');</script>
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Cong thi thu GPLX ben thu 3 va gui ket qua cho admin">
-  <title>Trung tâm dạy lái xe Hằng Hà | Khu vực học viên</title>
+  <meta name="description" content="Dashboard hoc vien: tien do, on bai, thi thu va lich su ket qua.">
+  <title>Trung tam day lai xe | Dashboard hoc vien</title>
   <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
   <link href="/src/css/main.css" rel="stylesheet">
-  <!-- ✅ Favicon -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/assets/img/mainpage.webp">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body>
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KMF7RN94"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <main class="page-shell student-page-shell">
     <div class="container">
       <section class="student-shell mb-4">
         <div class="student-shell-topbar">
-          <a class="navbar-brand text-decoration-none" href="/index.html">Trung tâm dạy lái xe Hằng Hà</a>
+          <a class="navbar-brand text-decoration-none" href="/index.html">Trung tâm dạy lái xe</a>
           <div class="student-top-actions">
             <a class="btn btn-outline-secondary" href="/index.html">Trang chủ</a>
             <button class="btn btn-primary" type="button" id="studentLogoutButton">Đăng xuất</button>
@@ -37,166 +26,221 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="student-hero mt-4">
           <div>
-            <span class="section-badge mb-3">Khu vực học viên</span>
+            <span class="section-badge mb-3">Ứng dụng học viên</span>
             <h1 class="admin-hero-title mb-2">Xin chào, <span id="welcomeStudent"></span></h1>
-            <p class="admin-hero-copy mb-0">Thi thử lý thuyết và mô phỏng qua nền tảng bên thứ 3. Sau khi thi xong, gửi kết quả về admin.</p>
+            <p class="admin-hero-copy mb-0 text-dark">Học → Luyện → Thi → Xem kết quả. Dashboard giúp bạn biết bước tiếp theo cần làm.</p>
           </div>
           <div class="student-pill-group">
-            <span class="compact-badge"><i class="fa-solid fa-graduation-cap"></i><span id="studentCourseBadge">-</span></span>
+            <span class="compact-badge"><i class="fa-solid fa-id-card"></i> <span id="studentCourseBadge">-</span></span>
+            <span class="compact-badge"><i class="fa-solid fa-book-open"></i> <span id="lessonProgressBadge">0/0 bài học</span></span>
           </div>
         </div>
+        <nav class="student-nav-pills mt-4" aria-label="Điều hướng dashboard">
+          <a class="student-nav-pill" href="#section-next">Tiếp theo</a>
+          <a class="student-nav-pill" href="#section-progress">Tiến độ</a>
+          <a class="student-nav-pill" href="#section-learn">Học</a>
+          <a class="student-nav-pill" href="#section-practice">Luyện</a>
+          <a class="student-nav-pill" href="#section-test">Thi</a>
+          <a class="student-nav-pill" href="#section-history">Lịch sử</a>
+        </nav>
       </section>
 
-      <section class="row g-4 mb-4">
-        <div class="col-md-4">
-          <article class="admin-stat-card accent-blue">
-            <div class="admin-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
-            <div class="text-muted">Loại bằng</div>
-            <div class="stat-value" id="studentCourseType">-</div>
-          </article>
-        </div>
-        <div class="col-md-4">
-          <article class="admin-stat-card accent-green">
-            <div class="admin-stat-icon"><i class="fa-solid fa-list-check"></i></div>
-            <div class="text-muted">Số lần đã gửi kết quả</div>
-            <div class="stat-value" id="attemptCount">0</div>
-          </article>
-        </div>
-        <div class="col-md-4">
-          <article class="admin-stat-card accent-orange">
-            <div class="admin-stat-icon"><i class="fa-solid fa-flag-checkered"></i></div>
-            <div class="text-muted">Lần gửi gần nhất</div>
-            <div class="stat-value" id="latestStatus">-</div>
-          </article>
-        </div>
-      </section>
+      <div id="dashboardLoadingShell" class="dashboard-card mb-4 p-4 text-center">
+        <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+        <p class="text-muted mt-3 mb-0">Đang tải tiến độ của bạn...</p>
+      </div>
 
-      <section class="row g-4 mb-4">
-        <div class="col-lg-7">
-          <div class="dashboard-card h-100">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-              <div>
-                <h2 class="h4 mb-1">Biểu đồ tiến độ</h2>
-                <p class="text-muted mb-0">Theo dõi điểm số qua từng lần gửi kết quả.</p>
+      <div id="dashboardContentShell" class="d-none">
+        <section id="section-next" class="dashboard-card mb-4">
+          <h2 class="h4 mb-3">Bước tiếp theo</h2>
+          <div id="nextActionCard"></div>
+        </section>
+
+        <section id="section-progress" class="mb-4">
+          <h2 class="h4 mb-3">Tiến độ</h2>
+          <div class="row g-4 mb-4">
+            <div class="col-md-3">
+              <article class="admin-stat-card accent-blue">
+                <div class="admin-stat-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="text-muted">Loại bằng</div>
+                <div class="stat-value" id="studentCourseType">-</div>
+              </article>
+            </div>
+            <div class="col-md-3">
+              <article class="admin-stat-card accent-green">
+                <div class="admin-stat-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+                <div class="text-muted">Đề lý thuyết đã đạt</div>
+                <div class="stat-value" id="theoryPassedCount">0</div>
+              </article>
+            </div>
+            <div class="col-md-3">
+              <article class="admin-stat-card accent-orange">
+                <div class="admin-stat-icon"><i class="fa-solid fa-road"></i></div>
+                <div class="text-muted">Số lần mô phỏng</div>
+                <div class="stat-value" id="simulationAttemptCount">0</div>
+              </article>
+            </div>
+            <div class="col-md-3">
+              <article class="admin-stat-card accent-sky">
+                <div class="admin-stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                <div class="text-muted">Tổng lần nộp</div>
+                <div class="stat-value" id="submissionCount">0</div>
+              </article>
+            </div>
+          </div>
+          <div class="row g-4">
+            <div class="col-xl-7">
+              <div class="dashboard-card h-100">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                  <div>
+                    <h3 class="h5 mb-1">Biểu đồ điểm</h3>
+                    <p class="text-muted mb-0 small">Tổng hợp qua các lần thi nội bộ và 3rd-party.</p>
+                  </div>
+                  <span class="compact-badge" id="studentProgressBadge">0 lần nộp</span>
+                </div>
+                <div class="chart-shell">
+                  <canvas id="studentProgressChart"></canvas>
+                </div>
               </div>
-              <span class="compact-badge" id="studentProgressBadge">0 lần gửi</span>
             </div>
-            <div class="chart-shell">
-              <canvas id="studentProgressChart"></canvas>
-            </div>
-            <p class="text-muted small mb-0 d-none" id="studentProgressChartEmpty">Chưa có dữ liệu để hiển thị biểu đồ tiến độ.</p>
-          </div>
-        </div>
-        <div class="col-lg-5">
-          <div class="dashboard-card h-100">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-              <div>
-                <h2 class="h4 mb-1">Tỷ lệ kết quả</h2>
-                <p class="text-muted mb-0">Nhìn nhận ra số lần đạt và chưa đạt.</p>
+            <div class="col-xl-5">
+              <div class="dashboard-card h-100">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                  <div>
+                    <h3 class="h5 mb-1">Tỷ lệ đạt / chưa đạt</h3>
+                  </div>
+                  <span class="compact-badge" id="studentStatusBadge">0 kết quả</span>
+                </div>
+                <div class="chart-shell">
+                  <canvas id="studentStatusChart"></canvas>
+                </div>
               </div>
-              <span class="compact-badge" id="studentStatusBadge">0 kết quả</span>
-            </div>
-            <div class="chart-shell">
-              <canvas id="studentStatusChart"></canvas>
-            </div>
-            <p class="text-muted small mb-0 d-none" id="studentStatusChartEmpty">Chưa có dữ liệu kết quả để hiển thị biểu đồ.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="dashboard-card mb-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-          <div>
-            <h2 class="h4 mb-1">Thi bên thứ 3</h2>
-            <p class="text-muted mb-0">Chọn loại thi theo nhu cầu. Nếu link không mở được, hãy đổi trình duyệt hoặc tắt chặn popup.</p>
-          </div>
-        </div>
-        <div class="row g-3" id="thirdPartyLinks"></div>
-      </section>
-
-      <section class="dashboard-card mb-4">
-        <h2 class="h4 mb-3">Gửi kết quả cho admin</h2>
-        <form id="thirdPartyResultForm" class="row g-3">
-          <div class="col-md-4">
-            <label for="examType" class="form-label">Loại thi</label>
-            <select class="form-select" id="examType" name="exam_type" required>
-              <option value="theory">Thi thử lý thuyết</option>
-              <option value="theory_600">Thi 600 câu</option>
-              <option value="simulation">Thi mô phỏng</option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <label for="score" class="form-label">Điểm</label>
-            <input class="form-control" type="number" step="0.1" min="0" id="score" name="score" required>
-          </div>
-          <div class="col-md-4">
-            <label for="passed" class="form-label">Trạng thái</label>
-            <select class="form-select" id="passed" name="passed" required>
-              <option value="true">Đạt</option>
-              <option value="false">Chưa đạt</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="platformName" class="form-label">Nền tảng</label>
-            <input class="form-control" type="text" name="platform_name" id="platformName" readonly>
-          </div>
-          <div class="col-md-6">
-            <label for="examUrl" class="form-label">Link bài thi</label>
-            <input class="form-control" type="url" name="exam_url" id="examUrl" readonly>
-          </div>
-          <div class="col-12">
-            <label for="proofImage" class="form-label">Ảnh minh chứng (nếu có)</label>
-            <input class="form-control" type="file" id="proofImage" name="proof_image" accept="image/*">
-            <div class="form-text" id="proofImageHelp">Có thể chọn ảnh chụp màn hình từ điện thoại hoặc máy tính. Ảnh sẽ được upload lên cloud và lưu bằng URL.</div>
-            <div class="d-none mt-3" id="proofPreviewContainer">
-              <img
-                id="proofPreviewImage"
-                class="img-fluid rounded border"
-                style="max-height: 220px;"
-                alt="Anh minh chung xem truoc"
-                loading="lazy"
-              >
             </div>
           </div>
-          <div class="col-12">
-            <label for="note" class="form-label">Ghi chú</label>
-            <textarea class="form-control" id="note" name="note" rows="2" placeholder="Ví dụ: Đạt 35/35, lần đầu"></textarea>
-          </div>
-          <div class="col-12 text-end">
-            <button class="btn btn-primary" type="submit">Gửi kết quả</button>
-          </div>
-        </form>
-      </section>
+        </section>
 
-      <section class="dashboard-card">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-          <h2 class="h4 mb-0">Lịch sử gửi kết quả</h2>
-          <span class="compact-badge" id="historyBadge">0</span>
-        </div>
-        <div class="table-shell">
-          <table class="table align-middle admin-table">
-            <thead>
-              <tr>
-                <th>Loại thi</th>
-                <th>Nền tảng</th>
-                <th>Điểm</th>
-                <th>Trạng thái</th>
-                <th>Thời gian</th>
-              </tr>
-            </thead>
-            <tbody id="historyTable"></tbody>
-          </table>
-        </div>
-      </section>
+        <section id="section-learn" class="dashboard-card mb-4">
+          <h2 class="h4 mb-3">Học</h2>
+          <p class="text-muted">Hoàn thành bài học trước khi thi sát hạch.</p>
+          <div class="admin-list-shell" id="lessonList"></div>
+        </section>
+
+        <section id="section-practice" class="dashboard-card mb-4">
+          <h2 class="h4 mb-3">Luyện</h2>
+          <p class="text-muted mb-3">Xem nhanh đề lý thuyết và mở thi bên thứ 3.</p>
+          <div class="row g-3 mb-4" id="practiceExamPreview"></div>
+          <h3 class="h6 mb-2">Thi bên thứ 3</h3>
+          <div class="row g-3" id="thirdPartyLinks"></div>
+          <hr class="my-4">
+          <h3 class="h6 mb-3">Gửi kết quả thi ngoài về trung tâm</h3>
+          <form id="thirdPartyResultForm" class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label" for="examType">Loại thi</label>
+              <select class="form-select" id="examType" name="exam_type" required>
+                <option value="theory">Thi thử lý thuyết</option>
+                <option value="theory_600">Thi 600 câu</option>
+                <option value="simulation">Thi mô phỏng</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="score">Điểm</label>
+              <input class="form-control" id="score" name="score" type="number" step="0.1" min="0" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="passed">Trạng thái</label>
+              <select class="form-select" id="passed" name="passed" required>
+                <option value="true">Đạt</option>
+                <option value="false">Chưa đạt</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="platformName">Nền tảng</label>
+              <input class="form-control" id="platformName" name="platform_name" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="examUrl">Link bài thi</label>
+              <input class="form-control" id="examUrl" name="exam_url" readonly>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="proofImage">Ảnh minh chứng (nếu có)</label>
+              <input class="form-control" id="proofImage" name="proof_image" type="file" accept="image/*">
+              <div class="form-text" id="proofImageHelp">Có thể chụp màn hình kết quả thi rồi gửi về hệ thống.</div>
+              <div class="d-none mt-3" id="proofPreviewContainer">
+                <img id="proofPreviewImage" class="img-fluid rounded border" style="max-height: 220px;" alt="Xem trước ảnh minh chứng">
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="note">Ghi chú</label>
+              <textarea class="form-control" id="note" name="note" rows="2" placeholder="Ví dụ: Đạt 28/30"></textarea>
+            </div>
+            <div class="col-12 text-end">
+              <button class="btn btn-primary" type="submit">Gửi kết quả</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="section-test" class="mb-4">
+          <h2 class="h4 mb-3">Thi</h2>
+          <p class="text-muted mb-3">Vào phòng thi riêng để làm bài tập trung.</p>
+          <div class="row g-4" id="testSectionCards"></div>
+        </section>
+
+        <section id="section-history" class="dashboard-card">
+          <h2 class="h4 mb-3">Lịch sử</h2>
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <p class="text-muted mb-0">Lọc theo kênh thi và trạng thái.</p>
+            <span class="compact-badge" id="historyBadge">0</span>
+          </div>
+          <div class="table-filter-grid mb-3">
+            <div>
+              <label class="form-label" for="historySearchInput">Tìm nhanh</label>
+              <input class="form-control" id="historySearchInput" type="search" placeholder="Đề thi, nền tảng, ghi chú...">
+            </div>
+            <div>
+              <label class="form-label" for="historyTypeFilter">Kênh thi</label>
+              <select class="form-select" id="historyTypeFilter">
+                <option value="">Tất cả</option>
+                <option value="theory">Lý thuyết nội bộ</option>
+                <option value="simulation">Mô phỏng</option>
+                <option value="third_party">3rd-party</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="historyStatusFilter">Trạng thái</label>
+              <select class="form-select" id="historyStatusFilter">
+                <option value="">Tất cả</option>
+                <option value="passed">Đạt</option>
+                <option value="failed">Chưa đạt</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table class="table align-middle admin-table">
+              <thead>
+                <tr>
+                  <th>Kênh</th>
+                  <th>Đề / Nền tảng</th>
+                  <th>Lần</th>
+                  <th>Điểm</th>
+                  <th>Trạng thái</th>
+                  <th>Thời gian</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </div>
   </main>
 
   <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
   <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script defer src="./assets/vendor/chartjs/chart.umd.min.js"></script>
-  <script defer src="./assets/aos/js/aos.js"></script>
+  <script defer src="/src/js/constants/legacyGlobals.js"></script>
   <script defer src="/src/js/common.js"></script>
   <script defer src="/src/js/i18n.js"></script>
-  <script defer src="/src/js/exam.js"></script>
+  <script type="module" src="/src/js/entries/student-dashboard.js"></script>
 </body>
 </html>

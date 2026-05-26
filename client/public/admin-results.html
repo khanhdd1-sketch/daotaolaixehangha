@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Admin — Kết quả thi">
+  <title>Trung tâm dạy lái xe | Admin — Kết quả thi</title>
+  <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+  <link href="/src/css/main.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+  <main class="page-shell">
+    <div class="container">
+      <div id="adminShellHero"></div>
+      <div id="adminShellNav"></div>
+      <div id="section-results">
+      <section class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div>
+            <h2 class="h4 mb-1">Trung tâm kết quả thi</h2>
+            <p class="text-muted mb-0">Xem số lần thi, điểm số, kênh thi và lọc theo học viên, loại bằng, trạng thái.</p>
+          </div>
+          <span class="compact-badge" id="resultCountBadge">0 kết quả</span>
+        </div>
+        <div class="table-filter-grid mb-3">
+          <div>
+            <label class="form-label" for="resultSearchInput">Tìm nhanh</label>
+            <input class="form-control" id="resultSearchInput" type="search" placeholder="Học viên, đề thi, nền tảng">
+          </div>
+          <div>
+            <label class="form-label" for="resultCourseFilter">Loại bằng</label>
+            <select class="form-select" id="resultCourseFilter">
+              <option value="">Tất cả</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label" for="resultTypeFilter">Kenh thi</label>
+            <select class="form-select" id="resultTypeFilter">
+              <option value="">Tất cả</option>
+              <option value="theory">Lý thuyết nội bộ</option>
+              <option value="simulation">Mô phỏng</option>
+              <option value="third_party">3rd-party</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label" for="resultStatusFilter">Trạng thái</label>
+            <select class="form-select" id="resultStatusFilter">
+              <option value="">Tất cả</option>
+              <option value="passed">Đạt</option>
+              <option value="failed">Chưa đạt</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-shell">
+          <table class="table align-middle admin-table">
+            <thead>
+              <tr>
+                <th>Học viên</th>
+                <th>Loại bằng</th>
+                <th>Kênh thi</th>
+                <th>Đề thi / Nền tảng</th>
+                <th>Lần thi</th>
+                <th>Điểm</th>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
+                <th>Link 3rd-party</th>
+              </tr>
+            </thead>
+            <tbody id="resultTable"></tbody>
+          </table>
+        </div>
+        <div class="mt-3" id="resultPaginationBar" aria-live="polite"></div>
+      </section>
+      </div>
+    </div>
+  </main>
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+  <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/src/js/common.js"></script>
+  <script defer src="/src/js/i18n.js"></script>
+  <script type="module" src="/src/js/entries/admin-results.js"></script>
+  <!-- ✅ Modal preview ảnh -->
+  <div class="modal fade" id="proofPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="proofPreviewMeta">
+            Xem ảnh minh chứng
+          </h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body text-center">
+
+          <!-- Ảnh -->
+          <img
+            id="proofPreviewImage"
+            class="img-fluid d-none"
+            style="max-height: 500px;"
+          />
+
+          <!-- Fallback -->
+          <div id="proofPreviewFallback">
+            Ảnh minh chứng sẽ hiển thị tại đây.
+          </div>
+
+          <!-- URL -->
+          <div id="proofPreviewUrlGroup" class="mt-3 d-none">
+            <input
+              id="proofPreviewUrl"
+              class="form-control"
+              readonly
+            />
+          </div>
+
+          <!-- Link mở ngoài -->
+          <a
+            id="proofPreviewExternalLink"
+            target="_blank"
+            class="btn btn-outline-primary mt-3 d-none"
+          >
+            Mở ảnh trong tab mới
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+</body>
+</html>

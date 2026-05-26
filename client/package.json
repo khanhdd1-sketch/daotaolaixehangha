@@ -6,7 +6,8 @@
   "scripts": {
     "start": "live-server public",
     "build": "echo 'Build process not defined'",
-    "test": "echo 'No tests defined'"
+    "test": "npm run test:client --prefix ..",
+    "test:client": "jest --selectProjects client"
   },
   "dependencies": {
     "bootstrap": "^5.3.0"

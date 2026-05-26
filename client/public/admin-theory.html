@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Admin — Đề lý thuyết">
+  <title>Trung tâm dạy lái xe | Admin — Đề lý thuyết</title>
+  <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+  <link href="/src/css/main.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+  <main class="page-shell">
+    <div class="container">
+      <div id="adminShellHero"></div>
+      <div id="adminShellNav"></div>
+      <div id="section-theory">
+      <section class="row g-4 mb-4">
+        <div class="col-xl-5">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h4 mb-1">Quản lý đề lý thuyết</h2>
+                <p class="text-muted mb-0">Tạo đề theo loại bằng và cấu hình điểm đạt.</p>
+              </div>
+              <span class="compact-badge" id="examCountBadge">0 đề</span>
+            </div>
+            <form id="examForm" class="row g-3 mb-4">
+              <input id="examId" name="id" type="hidden">
+              <div class="col-md-4">
+                <label class="form-label" for="examCourseType">Loại bằng</label>
+                <select class="form-select" id="examCourseType" name="course_type" required>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2" selected>B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label" for="examTitle">Tên đề</label>
+                <input class="form-control" id="examTitle" name="title" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="examPassScore">Điểm đạt</label>
+                <input class="form-control" id="examPassScore" name="pass_score" type="number" min="1" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="examTotalQuestions">Tổng câu</label>
+                <input class="form-control" id="examTotalQuestions" name="total_questions" type="number" min="1" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="examDurationMinutes">Số phút</label>
+                <input class="form-control" id="examDurationMinutes" name="duration_minutes" type="number" min="1" value="20" required>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" id="examActive" name="active" type="checkbox" checked>
+                  <label class="form-check-label" for="examActive">Đang kích hoạt</label>
+                </div>
+              </div>
+              <div class="col-12 d-flex gap-2 justify-content-end">
+                <button class="btn btn-outline-secondary" id="resetExamFormButton" type="button">Làm mới</button>
+                <button class="btn btn-primary" type="submit">Lưu đề</button>
+              </div>
+            </form>
+            <div class="admin-list-shell" id="examList"></div>
+          </div>
+        </div>
+
+        <div class="col-xl-7">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <h2 class="h4 mb-1">Ngân hàng câu hỏi</h2>
+                <p class="text-muted mb-0">Thêm đáp án, câu điểm liệt và giải thích sau khi nộp bài.</p>
+              </div>
+              <span class="compact-badge" id="questionCountBadge">0 câu</span>
+            </div>
+            <form id="questionForm" class="row g-3 mb-4">
+              <input id="questionId" name="id" type="hidden">
+              <div class="col-md-5">
+                <label class="form-label" for="questionExamId">Đề thi</label>
+                <select class="form-select" id="questionExamId" name="exam_id" required></select>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label" for="questionCorrectAnswer">Đáp án đúng</label>
+                <select class="form-select" id="questionCorrectAnswer" name="correct_answer" required>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                </select>
+              </div>
+              <div class="col-md-5 d-flex align-items-end">
+                <div class="form-check">
+                  <input class="form-check-input" id="questionCritical" name="is_critical" type="checkbox">
+                  <label class="form-check-label" for="questionCritical">Là câu điểm liệt</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="questionText">Nội dung câu hỏi</label>
+                <textarea class="form-control" id="questionText" name="question" rows="2" required></textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionA">Đáp án A</label>
+                <input class="form-control" id="optionA" name="option_a" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionB">Đáp án B</label>
+                <input class="form-control" id="optionB" name="option_b" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionC">Đáp án C</label>
+                <input class="form-control" id="optionC" name="option_c" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="optionD">Đáp án D</label>
+                <input class="form-control" id="optionD" name="option_d" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="questionExplanation">Giải thích hiện sau khi nộp</label>
+                <textarea class="form-control" id="questionExplanation" name="explanation" rows="2"></textarea>
+              </div>
+              <div class="col-md-7">
+                <label class="form-label" for="questionImageFile">Ảnh câu hỏi (có thể bỏ trống)</label>
+                <input class="form-control" id="questionImageFile" type="file" accept="image/*">
+                <div class="form-text" id="questionImageHelp">Ảnh sẽ được upload lên folder Cloudinary riêng cho câu hỏi.</div>
+              </div>
+              <div class="col-md-5">
+                <label class="form-label" for="questionImageUrl">URL ảnh đã lưu</label>
+                <input class="form-control" id="questionImageUrl" name="image_url" readonly>
+              </div>
+              <div class="col-12 d-none" id="questionImagePreviewWrap">
+                <img id="questionImagePreview" class="img-fluid rounded border" style="max-height:220px;" alt="Ảnh câu hỏi">
+              </div>
+              <div class="col-12 d-flex gap-2 justify-content-end">
+                <button class="btn btn-outline-secondary" id="resetQuestionFormButton" type="button">Làm mới</button>
+                <button class="btn btn-primary" type="submit">Lưu câu hỏi</button>
+              </div>
+            </form>
+            <div class="table-filter-grid mb-3">
+              <div>
+                <label class="form-label" for="questionSearchInput">Tìm câu hỏi</label>
+                <input class="form-control" id="questionSearchInput" type="search" placeholder="Nội dung, giải thích">
+              </div>
+              <div>
+                <label class="form-label" for="questionExamFilter">Lọc theo đề</label>
+                <select class="form-select" id="questionExamFilter">
+                  <option value="">Tất cả đề</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-shell">
+              <table class="table align-middle admin-table">
+                <thead>
+                  <tr>
+                    <th>Đề thi</th>
+                    <th>Câu hỏi</th>
+                    <th>Ảnh</th>
+                    <th>Đúng</th>
+                    <th>Điểm liệt</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="questionTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      </div>
+    </div>
+  </main>
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+  <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/src/js/common.js"></script>
+  <script defer src="/src/js/i18n.js"></script>
+  <script type="module" src="/src/js/entries/admin-theory.js"></script>
+  <!-- ✅ Modal preview ảnh -->
+  <div class="modal fade" id="proofPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="proofPreviewMeta">
+            Xem ảnh minh chứng
+          </h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body text-center">
+
+          <!-- Ảnh -->
+          <img
+            id="proofPreviewImage"
+            class="img-fluid d-none"
+            style="max-height: 500px;"
+          />
+
+          <!-- Fallback -->
+          <div id="proofPreviewFallback">
+            Ảnh minh chứng sẽ hiển thị tại đây.
+          </div>
+
+          <!-- URL -->
+          <div id="proofPreviewUrlGroup" class="mt-3 d-none">
+            <input
+              id="proofPreviewUrl"
+              class="form-control"
+              readonly
+            />
+          </div>
+
+          <!-- Link mở ngoài -->
+          <a
+            id="proofPreviewExternalLink"
+            target="_blank"
+            class="btn btn-outline-primary mt-3 d-none"
+          >
+            Mở ảnh trong tab mới
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+</body>
+</html>

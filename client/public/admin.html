@@ -1,350 +1,180 @@
-
-<!--
-  Copyright (c) 2026 Trung tâm đào tạo lái xe Hằng Hà
-  All rights reserved.
--->
 <!DOCTYPE html>
 <html lang="vi">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-KMF7RN94');</script>
-      <meta name="robots" content="noindex, nofollow">
-      <meta name="description" content="Dashboard admin quản lý học viên và kết quả thi 3rd-party">
-      <title>Trung tâm dạy lái xe Hằng Hà | Dashboard Admin</title>
-      <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-      <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
-      <link href="/src/css/main.css" rel="stylesheet">
-      <!-- ✅ Favicon -->
-      <link rel="icon" type="image/x-icon" href="/favicon.ico">   
-   </head>
-   <body>
-      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KMF7RN94"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-      <main class="page-shell">
-         <div class="container">
-            <section class="admin-hero mb-4">
-               <div class="admin-hero-content">
-                  <div>
-                     <span class="section-badge mb-3">Trang quản lý của admin</span>
-                     <h1 class="admin-hero-title">Xin chào, <span id="adminName"></span></h1>
-                     <p class="admin-hero-copy mb-0">Quản lý học viên, form đăng ký và kết quả thi thử bên thứ 3.</p>
-                  </div>
-                  <div class="admin-hero-actions">
-                     <a class="btn btn-outline-light" href="/index.html">Trang chủ</a>
-                     <button class="btn btn-light" id="logoutButton">Đăng xuất</button>
-                  </div>
-               </div>
-            </section>
-            <section class="row g-4 mb-4">
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-blue">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-chart-line"></i></div>
-                     <div class="text-muted">Lượt truy cập</div>
-                     <div class="stat-value" id="statVisits">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-orange">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-file-signature"></i></div>
-                     <div class="text-muted">Form Đăng ký</div>
-                     <div class="stat-value" id="statRegistrations">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-sky">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
-                     <div class="text-muted">Học viên</div>
-                     <div class="stat-value" id="statStudents">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-green">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-                     <div class="text-muted">Lượt thi Đạt</div>
-                     <div class="stat-value" id="statPassed">0</div>
-                  </article>
-               </div>
-               <div class="col-sm-6 col-xl">
-                  <article class="admin-stat-card accent-red">
-                     <div class="admin-stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
-                     <div class="text-muted">Lượt thi chưa đạt</div>
-                     <div class="stat-value" id="statFailed">0</div>
-                  </article>
-               </div>
-            </section>
-            <section class="dashboard-card mb-4">
-               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                  <div>
-                     <h2 class="h4 mb-1">Bộ lọc tổng quan</h2>
-                     <p class="text-muted mb-0">Dùng để xem nhanh chỉ số và biểu đồ tổng hợp của dashboard.</p>
-                  </div>
-               </div>
-               <div class="row g-3 align-items-end">
-                  <div class="col-md-4">
-                     <label for="filterDate" class="form-label">Từ ngày</label>
-                     <input class="form-control" type="date" id="filterDate">
-                  </div>
-                  <div class="col-md-4">
-                     <label for="filterCourse" class="form-label">Khóa học</label>
-                     <select class="form-select" id="filterCourse">
-                        <option value="">Tất cả</option>
-                        <option value="A1">A1</option>
-                        <option value="A2">A2</option>
-                        <option value="B1">B1</option>
-                        <option value="B2">B2</option>
-                        <option value="C1">C1</option>
-                     </select>
-                  </div>
-                  <div class="col-md-4">
-                     <button class="btn btn-primary w-100" id="filterButton">Áp dụng bộ lọc</button>
-                  </div>
-               </div>
-            </section>
-            <section class="row g-4 mb-4">
-               <div class="col-xl-7">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Biểu đồ tổng quan</h2>
-                           <p class="text-muted mb-0">Theo bộ lọc tổng quan ở phía trên.</p>
-                        </div>
-                        <span class="compact-badge" id="overviewChartBadge">Toàn bộ dữ liệu</span>
-                     </div>
-                     <div class="chart-shell">
-                        <canvas id="adminOverviewChart"></canvas>
-                     </div>
-                     <p class="text-muted small mb-0 d-none" id="adminOverviewChartEmpty">Chưa có dữ liệu tổng quan để hiển thị biểu đồ.</p>
-                  </div>
-               </div>
-               <div class="col-xl-5">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Biểu đồ kết quả 3rd-party</h2>
-                           <p class="text-muted mb-0">Cập nhật theo bộ lọc riêng của bảng kết quả phía dưới.</p>
-                        </div>
-                        <span class="compact-badge" id="thirdPartyChartBadge">0 kết quả</span>
-                     </div>
-                     <div class="chart-shell">
-                        <canvas id="adminThirdPartyChart"></canvas>
-                     </div>
-                     <p class="text-muted small mb-0 d-none" id="adminThirdPartyChartEmpty">Chưa có dữ liệu kết quả để hiển thị biểu đồ.</p>
-                  </div>
-               </div>
-            </section>
-            <section class="row g-4 mb-4">
-               <div class="col-xl-5">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Danh sách học viên</h2>
-                           <p class="text-muted mb-0">Admin quản lý tài khoản học viên.</p>
-                        </div>
-                        <span class="compact-badge" id="studentCountBadge">0 học viên</span>
-                        <button class="btn btn-outline-primary btn-sm" type="button" id="openStudentModalButton">
-                        <i class="fa-solid fa-plus"></i> Thêm học viên
-                        </button>
-                     </div>
-                     <div class="table-filter-grid mb-3">
-                        <div>
-                           <label for="studentSearchInput" class="form-label">Tìm nhanh</label>
-                           <input class="form-control" type="search" id="studentSearchInput" placeholder="Tên hoặc email">
-                        </div>
-                        <div>
-                           <label for="studentCourseFilterLocal" class="form-label">Khóa học</label>
-                           <select class="form-select" id="studentCourseFilterLocal">
-                              <option value="">Tất cả</option>
-                              <option value="A1">A1</option>
-                              <option value="A2">A2</option>
-                              <option value="B1">B1</option>
-                              <option value="B2">B2</option>
-                              <option value="C1">C1</option>
-                           </select>
-                        </div>
-                     </div>
-                     <div class="table-shell">
-                        <table class="table align-middle admin-table">
-                           <thead>
-                              <tr>
-                                 <th>Tên</th>
-                                 <th>Email</th>
-                                 <th>Khóa học</th>
-                                 <th>Ngày tạo</th>
-                                 <th>Ghi chú</th>
-                              </tr>
-                           </thead>
-                           <tbody id="studentTable"></tbody>
-                        </table>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-xl-7">
-                  <div class="dashboard-card h-100">
-                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <div>
-                           <h2 class="h4 mb-1">Form Đăng ký tư vấn</h2>
-                           <p class="text-muted mb-0">Lead từ landing page đổ về đây.</p>
-                        </div>
-                        <span class="compact-badge" id="registrationCountBadge">0 lead</span>
-                     </div>
-                     <div class="table-filter-grid mb-3">
-                        <div>
-                           <label for="registrationSearchInput" class="form-label">Tìm nhanh</label>
-                           <input class="form-control" type="search" id="registrationSearchInput" placeholder="Tên, số điện thoại hoặc email">
-                        </div>
-                        <div>
-                           <label for="registrationCourseFilterLocal" class="form-label">Lọc Khóa học</label>
-                           <select class="form-select" id="registrationCourseFilterLocal">
-                              <option value="">Tất cả</option>
-                              <option value="A1">A1</option>
-                              <option value="A2">A2</option>
-                              <option value="B1">B1</option>
-                              <option value="B2">B2</option>
-                              <option value="C1">C1</option>
-                           </select>
-                        </div>
-                     </div>
-                     <div class="table-shell">
-                        <table class="table align-middle admin-table">
-                           <thead>
-                              <tr>
-                                 <th>Tên</th>
-                                 <th>Điện thoại</th>
-                                 <th>Email</th>
-                                 <th>Khóa học</th>
-                                 <th>Ngày tạo</th>
-                                 <th>Ghi chú</th>
-                              </tr>
-                           </thead>
-                           <tbody id="registrationTable"></tbody>
-                        </table>
-                     </div>
-                  </div>
-               </div>
-            </section>
-            <section class="dashboard-card">
-               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                  <div>
-                     <h2 class="h4 mb-1">Kết quả thi 3rd-party</h2>
-                     <p class="text-muted mb-0">Học viên tự gửi kết quả sau khi thi lý thuyết và mô phỏng.</p>
-                  </div>
-                  <span class="compact-badge" id="thirdPartyCountBadge">0 kết quả</span>
-               </div>
-               <div class="table-filter-grid mb-3">
-                  <div>
-                     <label for="thirdPartySearchInput" class="form-label">Tìm nhanh</label>
-                     <input class="form-control" type="search" id="thirdPartySearchInput" placeholder="Học viên, loại thi hoặc nền tảng">
-                  </div>
-                  <div>
-                     <label for="thirdPartyCourseFilterLocal" class="form-label">Lọc Khóa học</label>
-                     <select class="form-select" id="thirdPartyCourseFilterLocal">
-                        <option value="">Tất cả</option>
-                        <option value="A1">A1</option>
-                        <option value="A2">A2</option>
-                        <option value="B1">B1</option>
-                        <option value="B2">B2</option>
-                        <option value="C1">C1</option>
-                     </select>
-                  </div>
-                  <div>
-                     <label for="thirdPartyStatusFilter" class="form-label">Lọc trạng thái</label>
-                     <select class="form-select" id="thirdPartyStatusFilter">
-                        <option value="">Tất cả</option>
-                        <option value="passed">Đạt</option>
-                        <option value="failed">Chưa đạt</option>
-                     </select>
-                  </div>
-               </div>
-               <div class="table-shell">
-                  <table class="table align-middle admin-table">
-                     <thead>
-                        <tr>
-                           <th>Học viên</th>
-                           <th>Khóa học</th>
-                           <th>Loại thi</th>
-                           <th>Nền tảng</th>
-                           <th>Điểm</th>
-                           <th>Trạng thái</th>
-                           <th>Thời gian</th>
-                           <th>Minh chứng</th>
-                        </tr>
-                     </thead>
-                     <tbody id="thirdPartyTable"></tbody>
-                  </table>
-               </div>
-            </section>
-         </div>
-      </main>
-      <div class="modal fade" id="studentModal" tabindex="-1" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content admin-modal">
-               <div class="modal-header border-0 pb-0">
-                  <div>
-                     <h2 class="modal-title h4 mb-1">Thêm học viên</h2>
-                     <p class="text-muted mb-0">Thêm học viên mới vào hệ thống.</p>
-                  </div>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-               </div>
-               <div class="modal-body">
-                  <form id="createStudentForm" class="row g-3">
-                     <div class="col-12"><label for="studentName" class="form-label">Tên học viên</label><input class="form-control" type="text" id="studentName" name="name" required></div>
-                     <div class="col-12"><label for="studentEmail" class="form-label">Email</label><input class="form-control" type="email" id="studentEmail" name="email" required></div>
-                     <div class="col-md-6"><label for="studentPassword" class="form-label">Mật khẩu</label><input class="form-control" type="text" id="studentPassword" name="password" required></div>
-                     <div class="col-md-6">
-                        <label for="studentCourseType" class="form-label">Loại bằng</label>
-                        <select class="form-select" id="studentCourseType" name="course_type" required>
-                           <option value="A1">A1</option>
-                           <option value="A2">A2</option>
-                           <option value="B1">B1</option>
-                           <option value="B2">B2</option>
-                           <option value="C1">C1</option>
-                        </select>
-                     </div>
-                     <div class="col-12 text-end">
-                        <button class="btn btn-primary" type="submit">Tạo tài khoản</button>
-                     </div>
-                  </form>
-               </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Dashboard admin quan ly hoc vien, de thi ly thuyet, mo phong va ket qua thi thu.">
+  <title>Trung tam day lai xe | Dashboard Admin</title>
+  <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+  <link href="/src/css/main.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+  <main class="page-shell">
+    <div class="container">
+      <div id="adminShellHero"></div>
+      <div id="adminShellNav"></div>
+
+      <div id="section-overview">
+      <section class="dashboard-card mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+          <div>
+            <h2 class="h4 mb-1">Bộ lọc dashboard</h2>
+            <p class="text-muted mb-0">Lọc nhanh theo ngày và loại bằng để xem biểu đồ, học viên và kết quả thi.</p>
+          </div>
+          <span class="compact-badge" id="dashboardFilterBadge">Toan bo du lieu</span>
+        </div>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label" for="filterDate">Từ ngày</label>
+            <input class="form-control" type="date" id="filterDate">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="filterCourse">Loại bằng</label>
+            <select class="form-select" id="filterCourse">
+              <option value="">Tất cả</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary w-100" id="filterButton" type="button">Cập nhật dashboard</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-blue">
+            <div class="admin-stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="text-muted">Lượt truy cập</div>
+            <div class="stat-value" id="statVisits">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-orange">
+            <div class="admin-stat-icon"><i class="fa-solid fa-file-signature"></i></div>
+            <div class="text-muted">Lead đăng ký</div>
+            <div class="stat-value" id="statRegistrations">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-sky">
+            <div class="admin-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
+            <div class="text-muted">Học viên</div>
+            <div class="stat-value" id="statStudents">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-green">
+            <div class="admin-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="text-muted">Đạt</div>
+            <div class="stat-value" id="statPassed">0</div>
+          </article>
+        </div>
+        <div class="col-sm-6 col-xl">
+          <article class="admin-stat-card accent-red">
+            <div class="admin-stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+            <div class="text-muted">Chưa đạt</div>
+            <div class="stat-value" id="statFailed">0</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="row g-4 mb-4">
+        <div class="col-xl-6">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h4 mb-1">Tổng quan hiện tại</h2>
+                <p class="text-muted mb-0">Chỉ số từ lead, học viên và kết quả thi.</p>
+              </div>
             </div>
-         </div>
-      </div>
-      <div class="modal fade" id="proofPreviewModal" tabindex="-1" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content admin-modal">
-               <div class="modal-header border-0 pb-0">
-                  <div>
-                     <h2 class="modal-title h4 mb-1">Ảnh minh chứng</h2>
-                     <p class="text-muted mb-0" id="proofPreviewMeta">Xem nhanh ảnh học viên gửi cho admin.</p>
-                  </div>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-               </div>
-               <div class="modal-body">
-                  <div class="proof-preview-shell">
-                     <img id="proofPreviewImage" class="img-fluid rounded d-none" alt="Ảnh minh chứng" loading="eager">
-                     <div class="text-center text-muted" id="proofPreviewFallback">Ảnh minh chứng sẽ hiển thị tại đây.</div>
-                  </div>
-                   <div class="mt-3 d-none" id="proofPreviewUrlGroup">
-                      <label class="form-label small text-muted" for="proofPreviewUrl">URL ảnh</label>
-                      <input class="form-control form-control-sm" id="proofPreviewUrl" type="url" readonly>
-                   </div>
-                   <div class="d-flex justify-content-end mt-3">
-                     <a class="btn btn-outline-primary d-none" id="proofPreviewExternalLink" target="_blank" rel="noopener noreferrer">Mở trong tab mới</a>
-                  </div>
-               </div>
+            <div class="chart-shell">
+              <canvas id="adminOverviewChart"></canvas>
             </div>
-         </div>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="dashboard-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h4 mb-1">Nguồn kết quả</h2>
+                <p class="text-muted mb-0">So sánh thi lý thuyết nội bộ, mô phỏng và 3rd-party.</p>
+              </div>
+            </div>
+            <div class="chart-shell">
+              <canvas id="adminChannelChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
       </div>
-      <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
-      <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <script defer src="./assets/vendor/chartjs/chart.umd.min.js"></script>
-      <script defer src="./assets/aos/js/aos.js"></script>
-      <script defer src="/src/js/common.js"></script>
-      <script defer src="/src/js/i18n.js"></script>
-      <script defer src="/src/js/admin.js"></script>
-   </body>
+    </div>
+  </main>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+  <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="./assets/vendor/chartjs/chart.umd.min.js"></script>
+  <script defer src="/src/js/constants/legacyGlobals.js"></script>
+  <script defer src="/src/js/common.js"></script>
+  <script defer src="/src/js/i18n.js"></script>
+  <script type="module" src="/src/js/entries/admin-dashboard.js"></script>
+  <!-- ✅ Modal preview ảnh -->
+  <div class="modal fade" id="proofPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="proofPreviewMeta">
+            Xem ảnh minh chứng
+          </h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body text-center">
+
+          <!-- Ảnh -->
+          <img
+            id="proofPreviewImage"
+            class="img-fluid d-none"
+            style="max-height: 500px;"
+          />
+
+          <!-- Fallback -->
+          <div id="proofPreviewFallback">
+            Ảnh minh chứng sẽ hiển thị tại đây.
+          </div>
+
+          <!-- URL -->
+          <div id="proofPreviewUrlGroup" class="mt-3 d-none">
+            <input
+              id="proofPreviewUrl"
+              class="form-control"
+              readonly
+            />
+          </div>
+
+          <!-- Link mở ngoài -->
+          <a
+            id="proofPreviewExternalLink"
+            target="_blank"
+            class="btn btn-outline-primary mt-3 d-none"
+          >
+            Mở ảnh trong tab mới
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
 </html>

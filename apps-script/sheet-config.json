@@ -13,11 +13,11 @@
     },
     "exams": {
       "name": "exams",
-      "headers": ["id", "title", "pass_score", "total_questions", "duration_minutes", "active"]
+      "headers": ["id", "course_type", "title", "pass_score", "total_questions", "duration_minutes", "active"]
     },
     "questions": {
       "name": "questions",
-      "headers": ["id", "exam_id", "question", "option_a", "option_b", "option_c", "option_d", "correct_answer", "is_critical", "explanation"]
+      "headers": ["id", "exam_id", "question", "option_a", "option_b", "option_c", "option_d", "correct_answer", "is_critical", "explanation", "image_url"]
     },
     "lessons": {
       "name": "lessons",

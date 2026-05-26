@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Thi mo phong - ghi nhan thoi diem nguy hiem tren video.">
+  <title>Trung tam day lai xe | Thi mo phong</title>
+  <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+  <link href="/src/css/main.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+  <main class="page-shell student-page-shell">
+    <div class="container">
+      <section class="student-shell mb-4">
+        <div class="student-shell-topbar">
+          <a class="navbar-brand text-decoration-none" href="/exam.html">← Dashboard</a>
+          <div class="student-top-actions">
+            <a class="btn btn-outline-secondary" href="/exam.html">Về dashboard</a>
+            <button class="btn btn-primary" type="button" id="studentLogoutButton">Đăng xuất</button>
+          </div>
+        </div>
+        <div class="student-hero mt-4">
+          <div>
+            <span class="section-badge mb-3">Thi mô phỏng</span>
+            <h1 class="h3 mb-1">Xin chào, <span id="welcomeStudent"></span></h1>
+            <p class="text-muted mb-0">Xem video, bấm ghi nhận nguy hiểm đúng thời điểm rồi nộp bài.</p>
+          </div>
+          <span class="compact-badge" id="simulationBadge">Mô phỏng</span>
+        </div>
+      </section>
+
+      <div id="simulationLoadingShell" class="dashboard-card mb-4 p-4 text-center">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="text-muted mt-3 mb-0">Đang tải bài mô phỏng...</p>
+      </div>
+
+      <div id="simulationContentShell" class="d-none">
+        <section class="dashboard-card">
+          <div id="simulationWorkspace"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+  <script defer src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/src/js/constants/legacyGlobals.js"></script>
+  <script defer src="/src/js/common.js"></script>
+  <script defer src="/src/js/i18n.js"></script>
+  <script type="module" src="/src/js/entries/simulation-exam.js"></script>
+</body>
+</html>

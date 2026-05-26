@@ -25,6 +25,7 @@ function normalizeExam(exam) {
   if (!exam) return exam;
   return {
     ...exam,
+    course_type: normalizeCourseType(exam.course_type || ""),
     pass_score: Number(exam.pass_score || 0),
     total_questions: Number(exam.total_questions || 0),
     duration_minutes: Number(exam.duration_minutes || 20),
@@ -38,7 +39,8 @@ function normalizeQuestion(question) {
     ...question,
     correct_answer: normalizeChoice(question.correct_answer),
     is_critical: parseBoolean(question.is_critical),
-    explanation: String(question.explanation || "").trim()
+    explanation: String(question.explanation || "").trim(),
+    image_url: String(question.image_url || "").trim()
   };
 }
 
@@ -256,13 +258,25 @@ const sheetsService = {
     return callAppsScript("createUser", payload);
   },
 
-  async getExams() {
+  async getExams(filters = {}) {
+    const courseType = normalizeCourseType(filters.course_type || "");
+
     if (this.useMock) {
-      return { success: true, data: mockStore.exams.map(normalizeExam) };
+      return {
+        success: true,
+        data: mockStore.exams
+          .map(normalizeExam)
+          .filter((item) => !courseType || item.course_type === courseType)
+      };
     }
 
     const response = await callAppsScript("getExams", {}, "GET");
-    return { success: true, data: (response.data || []).map(normalizeExam) };
+    return {
+      success: true,
+      data: (response.data || [])
+        .map(normalizeExam)
+        .filter((item) => !courseType || item.course_type === courseType)
+    };
   },
 
   async getExamById(examId) {
@@ -353,6 +367,7 @@ const sheetsService = {
   async upsertExam(data) {
     const payload = {
       id: data.id || createId("exam"),
+      course_type: normalizeCourseType(data.course_type || ""),
       title: data.title,
       pass_score: Number(data.pass_score),
       total_questions: Number(data.total_questions),
@@ -393,6 +408,7 @@ const sheetsService = {
       option_c: data.option_c,
       option_d: data.option_d,
       explanation: data.explanation || "",
+      image_url: String(data.image_url || "").trim(),
       correct_answer: String(data.correct_answer || "").toUpperCase(),
       is_critical: parseBoolean(data.is_critical)
     };
@@ -504,14 +520,20 @@ const sheetsService = {
     }
 
     const questionsResponse = await this.getQuestionsByExam(result.exam_id);
+    const answers = parseJsonSafe(result.answers_json, {});
+    const servedQuestionIds = Object.keys(answers);
+    const filteredQuestions = servedQuestionIds.length
+      ? (questionsResponse.data || []).filter((item) => servedQuestionIds.includes(item.id))
+      : (questionsResponse.data || []);
+
     return {
       success: true,
       data: {
         ...result,
-        answers: parseJsonSafe(result.answers_json, {}),
+        answers,
         exam: (examsResponse.data || []).find((item) => item.id === result.exam_id) || null,
         user: (usersResponse.data || []).find((item) => item.id === result.user_id) || null,
-        questions: questionsResponse.data || []
+        questions: filteredQuestions
       }
     };
   }

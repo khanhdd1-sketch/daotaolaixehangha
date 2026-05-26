@@ -6,9 +6,16 @@
  * All rights reserved.
  */
 const { verifyToken } = require("../services/authService");
+const { HTTP_STATUS } = require("../constants/httpStatus");
+const { API_MESSAGES } = require("../constants/messages");
 
+/**
+ * Lấy JWT từ cookie hoặc header Authorization.
+ * @param {import('express').Request} req
+ * @returns {{ token: string, source: 'cookie'|'bearer' }|null}
+ */
 function extractToken(req) {
-  if (req.cookies.auth_token) {
+  if (req.cookies?.auth_token) {
     return { token: req.cookies.auth_token, source: "cookie" };
   }
 
@@ -20,11 +27,21 @@ function extractToken(req) {
   return null;
 }
 
+/**
+ * Bắt buộc đăng nhập — gắn `req.user` từ JWT.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {void}
+ */
 function requireAuth(req, res, next) {
   try {
     const auth = extractToken(req);
-    if (!auth.token) {
-      return res.status(401).json({ success: false, message: "Authentication required" });
+    if (!auth?.token) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        success: false,
+        message: API_MESSAGES.AUTH_REQUIRED
+      });
     }
 
     req.user = verifyToken(auth.token);
@@ -32,14 +49,25 @@ function requireAuth(req, res, next) {
     return next();
   } catch (error) {
     console.error("Token verification failed:", error);
-    return res.status(401).json({ success: false, message: "Invalid or expired token" });
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+      success: false,
+      message: API_MESSAGES.INVALID_TOKEN
+    });
   }
 }
 
+/**
+ * Factory middleware — chỉ cho phép một vai trò.
+ * @param {string} role - Ví dụ `admin` hoặc `student`
+ * @returns {import('express').RequestHandler}
+ */
 function requireRole(role) {
   return (req, res, next) => {
     if (!req.user || req.user.role !== role) {
-      return res.status(403).json({ success: false, message: "Access denied" });
+      return res.status(HTTP_STATUS.FORBIDDEN).json({
+        success: false,
+        message: API_MESSAGES.ACCESS_DENIED
+      });
     }
     return next();
   };

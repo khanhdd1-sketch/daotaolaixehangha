@@ -1,0 +1,16 @@
+{
+  "name": "Driving School Student App",
+  "short_name": "DriveSchool",
+  "start_url": "/exam.html",
+  "display": "standalone",
+  "background_color": "#f7f9fc",
+  "theme_color": "#0d47a1",
+  "description": "Ung dung thi thu ly thuyet, mo phong va quan ly hoc vien cho trung tam day lai xe.",
+  "icons": [
+    {
+      "src": "/assets/img/mainpage.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ]
+}
