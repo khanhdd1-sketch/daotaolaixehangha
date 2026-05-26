@@ -5,17 +5,6 @@
  *
  * Trang xem kết quả thi và lịch sử các lần thi.
  */
-const C = globalThis.DriveSchoolConstants || {};
-const PAGE_ROUTES = C.PAGE_ROUTES || {
-  LOGIN: "/login.html",
-  EXAM_DASHBOARD: "/exam.html",
-  RESULT: "/result.html"
-};
-const API_PATHS = C.API_PATHS || {
-  RESULTS: "/api/results",
-  resultById: (id) => `/api/results/${encodeURIComponent(id)}`
-};
-
 document.addEventListener("DOMContentLoaded", async () => {
   await globalThis.DriveSchoolI18n.loadTranslations();
   globalThis.DriveSchoolCommon.initZaloBubble();
