@@ -13,7 +13,7 @@
     "cors": "^2.8.5",
     "cookie-parser": "^1.4.7",
     "dotenv": "^10.0.0",
-    "googleapis": "^39.2.0",
+    "googleapis": "^172.0.0",
     "jsonwebtoken": "^8.5.1",
     "bcryptjs": "^2.4.3"
   },
