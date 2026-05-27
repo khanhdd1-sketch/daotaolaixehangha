@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Học bài</title>
+
+  <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f6f8fb;
+    }
+
+    .lesson-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      padding: 20px;
+    }
+
+    .lesson-title {
+      font-weight: 600;
+      font-size: 1.5rem;
+    }
+
+    .video-wrapper {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    iframe {
+      border-radius: 12px;
+    }
+
+    .quiz-card {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    }
+
+    .question-item {
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background: #f9fafc;
+    }
+
+    .answer-option {
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .answer-option:hover {
+      background: #eef2ff;
+    }
+
+    .sticky-action {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 10px;
+      border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+      .lesson-title {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container py-3">
+
+  <!-- HEADER -->
+  <div class="mb-3">
+    <h2 id="lessonTitle" class="lesson-title"></h2>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- VIDEO -->
+    <div class="col-lg-8">
+      <div class="lesson-card">
+        <div class="video-wrapper mb-3">
+          <iframe id="lessonVideo" width="100%" height="420" allowfullscreen></iframe>
+        </div>
+
+        <button id="markCompleteBtn" class="btn btn-success w-100">
+          ✅ Đã xem xong
+        </button>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="col-lg-4">
+      <div id="quizSection" class="quiz-card d-none">
+
+        <h5 class="mb-3">
+          <i class="fa-solid fa-circle-question"></i>
+          Câu hỏi
+        </h5>
+
+        <form id="quizForm"></form>
+
+        <!-- sticky button mobile -->
+        <div class="sticky-action">
+          <button class="btn btn-primary w-100" id="submitQuizBtn">
+            Nộp bài
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="../src/js/common.js"></script>
+<script type="module" src="../src/js/entries/student-lesson.js"></script>
+
+</body>
+</html>

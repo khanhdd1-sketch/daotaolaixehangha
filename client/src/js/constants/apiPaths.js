@@ -42,5 +42,7 @@ export const API_PATHS = Object.freeze({
   ADMIN_LESSON_QUESTIONS_QUERY: (lessonId) =>
     `/api/admin/lesson-questions?lesson_id=${encodeURIComponent(lessonId)}`,
   ADMIN_QUESTION_IMAGE_UPLOAD: (examId) =>
-    `/api/admin/question-image-upload-config?exam_id=${encodeURIComponent(examId || "")}`
+    `/api/admin/question-image-upload-config?exam_id=${encodeURIComponent(examId || "")}`,
+  SUBMIT_LESSON: (lessonId) =>
+    `/api/learning/lessons/${encodeURIComponent(lessonId)}/submit`
 });

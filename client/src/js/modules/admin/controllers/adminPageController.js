@@ -64,7 +64,6 @@ export async function initAdminSimulationPage() {
   bindSimulationEvents();
   await refreshAdminSimulation();
 }
-
 /**
  * Trang bài học.
  * @returns {Promise<void>}
@@ -75,6 +74,31 @@ export async function initAdminLessonsPage() {
   patchAdminState({ currentUser: user, activePageId: "lessons" });
   bindLessonsEvents();
   await refreshAdminLessons();
+}
+
+/**
+ * Tạo bài học.
+ * @returns {Promise<void>}
+ */
+export async function createLesson() {
+  const lesson = await bootstrapAdminPage("lessons");
+  if (!lesson) return;
+  patchAdminState({ currentLesson: lesson });
+  bindLessonsEvents();
+}
+
+
+/**
+ * Hiển thị bài học.
+ * @returns {Promise<void>}
+ */
+export async function showAdminLesson() {
+  const lesson = getAdminState().currentLesson;
+
+  if (!lesson) return;
+
+  patchAdminState({ activePageId: "lessons" });
+  refreshAdminLessons(lesson);
 }
 
 /**

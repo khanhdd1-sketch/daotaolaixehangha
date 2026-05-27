@@ -75,6 +75,12 @@ export function renderLessonList() {
           <span class="badge ${lesson.active ? "text-bg-success" : "text-bg-secondary"}">${lesson.active ? "Đang mở" : "Tạm ẩn"}</span>
           <button class="btn btn-sm btn-outline-danger" type="button" data-lesson-id="${escapeHtml(lesson.id)}" data-action="delete-lesson">Xóa</button>
         </div>
+        <button 
+          class="btn btn-sm btn-outline-primary"
+          onclick="DriveSchoolCommon.previewLesson('${lesson.id}')"
+        >
+          Học thử
+        </button>
       </div>
     `).join("")
     : '<div class="text-muted">Chưa có bài học phù hợp.</div>';

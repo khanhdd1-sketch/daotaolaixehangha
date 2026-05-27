@@ -129,6 +129,12 @@ export function renderLessonList() {
                 >${lesson.watched ? "Đã đánh dấu xem" : "Đánh dấu đã xem"}</button>`
               : ""
           }
+          <button 
+            class="btn btn-sm btn-outline-primary"
+            onclick="DriveSchoolCommon.previewLesson('${lesson.id}')"
+          >
+            Học thử
+          </button>
         </div>
       </div>
     `
