@@ -927,6 +927,46 @@ const sheetsService = {
     }
 
     return callAppsScript("saveThirdPartyAttempt", payload);
+  },
+
+  async submitLesson(userId, lessonId, answers) {
+    const questionsRes = await this.getLessonQuestions(lessonId);
+    const questions = questionsRes.data || [];
+
+    let correct = 0;
+
+    for (const q of questions) {
+      const userAnswer = answers[q.id];
+
+      if (userAnswer === q.correct_answer) {
+        correct++;
+      }
+    }
+
+    const lessonRes = await this.getLessons({});
+    const lesson = lessonRes.data.find(l => l.id === lessonId);
+
+    const passed = correct >= (lesson?.pass_score || 0);
+
+    // save attempt
+    await this.saveLessonAttempt({
+      user_id: userId,
+      lesson_id: lessonId,
+      score: correct,
+      total: questions.length,
+      pass_score: lesson.pass_score,
+      passed,
+      answers
+    });
+
+    return {
+      success: true,
+      data: {
+        correct,
+        total: questions.length,
+        passed
+      }
+    };
   }
 };
 
