@@ -119,7 +119,8 @@ export function renderLessonList() {
             ${lesson.completed ? "Đã xong" : lesson.watched ? "Đã xem" : lesson.unlocked ? "Đang học" : "Đang khóa"}
           </span>
           <button 
-            class="btn btn-sm btn-outline-primary ${lesson.unlocked ? "" : "is-disabled"}"
+            class="btn btn-sm btn-outline-primary"
+            ${lesson.unlocked ? "" : "disabled"}
             onclick="DriveSchoolCommon.previewLesson('${lesson.id}')"
           >
             Học ngay
