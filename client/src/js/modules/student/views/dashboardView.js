@@ -118,22 +118,11 @@ export function renderLessonList() {
           <span class="badge ${lesson.completed ? "text-bg-success" : lesson.watched ? "text-bg-info" : lesson.unlocked ? "text-bg-warning" : "text-bg-secondary"}">
             ${lesson.completed ? "Đã xong" : lesson.watched ? "Đã xem" : lesson.unlocked ? "Đang học" : "Đang khóa"}
           </span>
-          ${
-            lesson.unlocked && !lesson.completed
-              ? `<button
-                  class="btn btn-outline-primary btn-sm"
-                  type="button"
-                  data-lesson-action="mark-watched"
-                  data-lesson-id="${escapeHtml(lesson.id)}"
-                  ${lesson.watched ? "disabled" : ""}
-                >${lesson.watched ? "Đã đánh dấu xem" : "Đánh dấu đã xem"}</button>`
-              : ""
-          }
           <button 
-            class="btn btn-sm btn-outline-primary"
+            class="btn btn-sm btn-outline-primary ${lesson.unlocked ? "" : "is-disabled"}"
             onclick="DriveSchoolCommon.previewLesson('${lesson.id}')"
           >
-            Học thử
+            Học ngay
           </button>
         </div>
       </div>
