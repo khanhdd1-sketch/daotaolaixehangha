@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Học bài</title>
+
+  <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- LEFT -->
+    <div class="col-lg-9 col-md-12 p-3">
+
+      <!-- HEADER -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 id="lessonTitle" class="fw-bold mb-0"></h6>
+        <button class="btn btn-outline-secondary"
+                onclick="window.location.href='/dashboard'">
+          <i class="fas fa-arrow-left"></i> Quay lại
+        </button>
+      </div>
+
+      <!-- VIDEO -->
+      <div class="card mb-3">
+        <div class="ratio ratio-16x9">
+          <iframe id="lessonVideo" allowfullscreen></iframe>
+        </div>
+
+        <div class="p-3">
+          <button id="markCompleteBtn" class="btn btn-success w-100">
+            ✅ Đã xem xong
+          </button>
+        </div>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quizSection" class="card p-3 d-none">
+        <h5>📘 Câu hỏi</h5>
+        <form id="quizForm"></form>
+
+        <button class="btn btn-primary w-100 mt-3" id="submitQuizBtn">
+          Nộp bài
+        </button>
+      </div>
+      
+      <div class="d-flex justify-content-between mt-3">
+        <button id="prevBtn" class="btn btn-outline-secondary">← Bài trước</button>
+        <button id="nextBtn" class="btn btn-primary">Bài tiếp →</button>
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="col-lg-3 col-md-12 border-start bg-light p-3">
+
+      <h6 class="fw-bold mb-3">📚 Nội dung khóa học</h6>
+
+      <!-- PROGRESS -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span>Tiến độ</span>
+          <span id="progressText">0%</span>
+        </div>
+
+        <div class="progress">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- LESSON LIST -->
+      <div id="lessonList"></div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Kết quả bài học</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <h4 id="resultStatus"></h4>
+        <p id="resultScore" class="mb-3"></p>
+
+        <div id="resultDetails" class="text-start small"></div>
+      </div>
+
+
+      <div class="modal-footer">
+        <button id="retryBtn" class="btn btn-outline-secondary">
+          Làm lại
+        </button>
+
+        <button id="nextLessonBtn" class="btn btn-success d-none">
+          Bài tiếp →
+        </button>
+
+        <button id="backBtn" class="btn btn-primary">
+          Về dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../src/js/common.js"></script>
+<script type="module" src="../src/js/entries/student-lesson.js"></script>
+<script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

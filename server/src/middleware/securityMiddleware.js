@@ -17,7 +17,7 @@ const CONTENT_SECURITY_POLICY = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://stats.g.doubleclick.net https://app.preny.ai https://api.cloudinary.com https://res.cloudinary.com",
-  "frame-src 'self' https://www.googletagmanager.com https://www.google.com",
+  "frame-src 'self' https://www.googletagmanager.com https://www.google.com https://www.youtube.com https://www.youtube-nocookie.com",
   "form-action 'self' https://api.cloudinary.com",
   "media-src 'self' blob: https:"
 ].join("; ");

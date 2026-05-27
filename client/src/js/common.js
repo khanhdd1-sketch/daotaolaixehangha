@@ -530,6 +530,98 @@ async function logoutAndRedirect() {
   }
   redirectWithLang(PAGE_ROUTES.LOGIN);
 }
+/**
+ * =============================
+ * LESSON FUNCTIONS (STUDENT FLOW)
+ * =============================
+ */
+
+/**
+ * Chuyển tới trang học bài
+ * @param {string} lessonId
+ */
+function goToLesson(lessonId) {
+  if (!lessonId) return;
+  globalThis.location.href = `/lesson.html?id=${encodeURIComponent(lessonId)}`;
+}
+
+/**
+ * Mở bài học tab mới (admin preview)
+ */
+function previewLesson(lessonId) {
+  if (!lessonId) return;
+  globalThis.location.href = `/lesson.html?id=${encodeURIComponent(lessonId)}`;
+}
+
+/**
+ * Lấy lessonId từ URL
+ */
+function getLessonIdFromUrl() {
+  const params = new URLSearchParams(globalThis.location.search);
+  return params.get("id");
+}
+
+/**
+ * Kiểm tra bài học có mở không
+ */
+function isLessonUnlocked(lesson, allLessons, progressList = []) {
+  if (!lesson) return false;
+
+  if (lesson.order_no === 1) return true;
+
+  const prevLesson = allLessons.find(
+    l => l.order_no === lesson.order_no - 1
+  );
+
+  return progressList.some(
+    p => p.lesson_id === prevLesson?.id && p.passed
+  );
+}
+
+/**
+ * Tính kết quả quiz
+ */
+function calculateLessonResult(questions, answers) {
+  let correct = 0;
+
+  for (const q of questions) {
+    if (answers[q.id] === q.correct_answer) {
+      correct++;
+    }
+  }
+
+  return {
+    correct,
+    total: questions.length
+  };
+}
+
+/**
+ * Tìm bài tiếp theo
+ */
+function getNextLesson(currentLesson, lessons) {
+  return lessons.find(
+    l => l.order_no === currentLesson.order_no + 1
+  );
+}
+
+/**
+ * Submit progress học viên
+ */
+async function saveLessonProgress({ lessonId, score, passed }) {
+  try {
+    await apiFetch("/api/student-progress", {
+      method: "POST",
+      body: JSON.stringify({
+        lesson_id: lessonId,
+        score,
+        passed
+      })
+    });
+  } catch (error) {
+    console.warn("Save progress failed:", error.message);
+  }
+}
 
 globalThis.DriveSchoolCommon = {
   getLang,
@@ -549,7 +641,14 @@ globalThis.DriveSchoolCommon = {
   withLangUrl,
   escapeHtml,
   formatDateTime,
-  logoutAndRedirect
+  logoutAndRedirect,
+  goToLesson,
+  previewLesson,
+  getLessonIdFromUrl,
+  isLessonUnlocked,
+  calculateLessonResult,
+  getNextLesson,
+  saveLessonProgress
 };
 
 document.addEventListener("DOMContentLoaded", () => {
