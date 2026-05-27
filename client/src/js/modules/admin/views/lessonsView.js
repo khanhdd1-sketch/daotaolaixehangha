@@ -77,7 +77,7 @@ export function renderLessonList() {
         </div>
         <button 
           class="btn btn-sm btn-outline-primary"
-          onclick="DriveSchoolCommon.previewLesson('${lesson.id}')"
+          onclick="${lesson.unlocked ? `window.location.href='/lesson.html?id=${lesson.id}'` : ''}"
         >
           Học thử
         </button>

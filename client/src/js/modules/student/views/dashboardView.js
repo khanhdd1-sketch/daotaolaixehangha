@@ -121,7 +121,7 @@ export function renderLessonList() {
           <button 
             class="btn btn-sm btn-outline-primary"
             ${lesson.unlocked ? "" : "disabled"}
-            onclick="DriveSchoolCommon.previewLesson('${lesson.id}')"
+            onclick="${lesson.unlocked ? `window.location.href='/lesson.html?id=${lesson.id}'` : ''}"
           >
             Học ngay
           </button>

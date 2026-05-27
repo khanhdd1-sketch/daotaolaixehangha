@@ -1,4 +1,6 @@
 import { API_PATHS } from "../constants/apiPaths.js";
+import { renderLessonList } from "../modules/student/views/dashboardView.js";
+import { getDashboardState } from "../modules/student/state/dashboardState.js";
 
 const state = {
   lesson: null,
@@ -13,19 +15,36 @@ async function loadLesson(lessonId) {
     API_PATHS.LEARNING_WORKSPACE
   );
 
-  const lessons = res.data?.lessons || [];
+const dashboardState = getDashboardState();
 
+dashboardState.learningWorkspace = {
+  ...(res.data || {}),
+  currentLessonId: lessonId
+};
+
+  const lessons = res.data?.lessons || [];
   const lesson = lessons.find(l => l.id === lessonId);
+
+    const saved = localStorage.getItem("lesson_answers_" + lessonId);
+    if (saved) {
+    state.answers = JSON.parse(saved);
+    }
 
   if (!lesson) {
     throw new Error("Không tìm thấy bài học");
+  }
+  if (lesson.watched) {
+    document.getElementById("quizSection").classList.remove("d-none");
   }
 
   state.lesson = lesson;
   state.questions = lesson.questions || [];
 
+  renderLessonList();
+  renderProgress(res.data);
   renderLesson();
   renderQuiz();
+  setupPrevNext(lessons, lessonId);
 }
 
 function renderLesson() {
@@ -58,13 +77,28 @@ function renderQuiz() {
       <p><b>${i + 1}. ${q.question}</b></p>
 
       ${["A","B","C","D"].map(opt => `
-        <div>
-          <input type="radio" name="q${q.id}" value="${opt}">
+        <div>        
+            <input 
+            type="radio" 
+            name="q${q.id}" 
+            value="${opt}"
+            onchange="saveAnswer('${q.id}','${opt}')"
+            ${state.answers[q.id] === opt ? "checked" : ""}
+            >
           ${opt}: ${q[`option_${opt.toLowerCase()}`]}
         </div>
       `).join("")}
     </div>
   `).join("");
+}
+
+function saveAnswer(qid, val) {
+  state.answers[qid] = val;
+
+  localStorage.setItem(
+    "lesson_answers_" + state.lesson.id,
+    JSON.stringify(state.answers)
+  );
 }
 
 function bindEvents() {
@@ -103,6 +137,7 @@ function bindEvents() {
 }
 
 async function submitQuiz(e) {
+document.querySelectorAll("#quizForm input").forEach(i => i.disabled = true);
   e.preventDefault();
 
   const answers = {};
@@ -125,18 +160,125 @@ async function submitQuiz(e) {
         }
     );
     const result = res.data;
+    
+    result.details.forEach((d, i) => {
+    const div = document.querySelectorAll("#quizForm > div")[i];
 
-    alert(`Bạn đúng ${result.score}/${result.total}`);
+    div.style.border = d.is_correct
+        ? "2px solid green"
+        : "2px solid red";
 
-    if (result.passed) {
-      alert("✅ Qua bài");
-    } else {
-      alert("❌ Chưa đạt");
-    }
+    div.innerHTML += `
+        <div class="mt-2 small ${d.is_correct ? "text-success" : "text-danger"}">
+        ${d.is_correct ? "✅ Đúng" : "❌ Sai"}
+        </div>
+        <div class="small text-muted">
+        👉 ${d.explanation || ""}
+        </div>
+    `;
+    });
+
+    
+const modalEl = document.getElementById("resultModal");
+const modal = new bootstrap.Modal(modalEl);
+
+document.getElementById("resultStatus").innerHTML =
+  result.passed
+    ? `<span class="text-success">✅ Qua bài</span>`
+    : `<span class="text-danger">❌ Chưa đạt</span>`;
+
+    document.getElementById("resultScore").innerText =
+    `Bạn đúng ${result.score}/${result.total}`;
+
+    // ✅ render chi tiết
+    document.getElementById("resultDetails").innerHTML =
+    result.details.map((d, i) => `
+        <div class="mb-2">
+        <b>Câu ${i + 1}</b>: ${d.question}
+        <br>
+        <span class="${d.is_correct ? "text-success" : "text-danger"}">
+            ${d.is_correct ? "✅ Đúng" : "❌ Sai"}
+        </span>
+        <br>
+        <span class="text-muted">👉 ${d.explanation || ""}</span>
+        </div>
+    `).join("");
+
+    // ✅ gắn event nút
+    document.getElementById("retryBtn").onclick = () => {
+    globalThis.location.reload();
+    };
+
+    document.getElementById("backBtn").onclick = () => {
+    globalThis.location.href = "/dashboard.html";
+    };
+
+    modal.show();
+
+const nextBtn = document.getElementById("nextLessonBtn");
+
+// lấy lesson list
+const lessons = getDashboardState().learningWorkspace.lessons;
+const index = lessons.findIndex(l => l.id === state.lesson.id);
+const next = lessons[index + 1];
+
+if (result.passed && next && next.unlocked) {
+  // ✅ hiện nút bài tiếp
+  nextBtn.classList.remove("d-none");
+
+  nextBtn.onclick = () => {
+    globalThis.location.href = `/lesson.html?id=${next.id}`;
+  };
+
+} else {
+  // ❌ fail hoặc không có bài tiếp
+  nextBtn.classList.add("d-none");
+}
+
 
   } catch (err) {
     console.error(err);
     alert("Lỗi nộp bài");
+  }
+}
+
+function renderProgress(workspace) {
+  const completed = workspace.completed_count || 0;
+  const total = workspace.total_count || 0;
+
+  const percent = total ? Math.round((completed / total) * 100) : 0;
+
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressText").innerText =
+    `${percent}% (${completed}/${total})`;
+}
+function setupPrevNext(lessons, lessonId) {
+  const index = lessons.findIndex(l => l.id === lessonId);
+
+  const prev = lessons[index - 1];
+  const next = lessons[index + 1];
+
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+    
+prevBtn.classList.toggle("opacity-50", !prev);
+nextBtn.classList.toggle("opacity-50", !next || !next.unlocked);
+
+  if (prevBtn) {
+    prevBtn.disabled = !prev;
+    if (prev) {
+      prevBtn.onclick = () =>
+        globalThis.location.href = `/lesson.html?id=${prev.id}`;
+    }
+  }
+
+  if (nextBtn) {
+    nextBtn.disabled = !next || !next.unlocked;
+
+    if (next && next.unlocked) {
+      nextBtn.onclick = () =>
+        globalThis.location.href = `/lesson.html?id=${next.id}`;
+    }
   }
 }
 
