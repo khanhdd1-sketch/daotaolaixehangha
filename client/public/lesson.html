@@ -7,6 +7,46 @@
 
   <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="/assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+  <style>
+    .animate-modal {
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .selected-option {
+      background-color: #e7f1ff;
+      border-radius: 6px;
+      padding: 4px;
+      transition: all 0.25s ease;
+    }
+    
+    .correct {
+      animation: correctPulse 0.4s ease;
+      border: 2px solid #28a745 !important;
+    }
+
+    .wrong {
+      animation: wrongShake 0.4s ease;
+      border: 2px solid #dc3545 !important;
+    }
+
+    @keyframes correctPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes wrongShake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
 </head>
 
 <body>
@@ -14,72 +54,56 @@
 <div class="container-fluid">
   <div class="row">
 
-    <!-- LEFT -->
-    <div class="col-lg-9 col-md-12 p-3">
+    <!-- MAIN -->
+    <div class="col-lg-8 p-4">
 
-      <!-- HEADER -->
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 id="lessonTitle" class="fw-bold mb-0"></h6>
-        <button class="btn btn-outline-secondary"
-                onclick="window.location.href='/dashboard'">
-          <i class="fas fa-arrow-left"></i> Quay lại
-        </button>
-      </div>
+      <h4 id="lessonTitle" class="fw-bold mb-3"></h4>
 
       <!-- VIDEO -->
-      <div class="card mb-3">
+      <div class="card shadow-sm mb-4">
         <div class="ratio ratio-16x9">
           <iframe id="lessonVideo" allowfullscreen></iframe>
         </div>
 
-        <div class="p-3">
-          <button id="markCompleteBtn" class="btn btn-success w-100">
+        <div class="p-3 text-center">
+          <button id="markCompleteBtn" class="btn btn-success px-4">
             ✅ Đã xem xong
           </button>
         </div>
       </div>
 
       <!-- QUIZ -->
-      <div id="quizSection" class="card p-3 d-none">
-        <h5>📘 Câu hỏi</h5>
+      <div id="quizSection" class="card p-4 d-none shadow-sm">
+        <h5 class="mb-3">📘 Trắc nghiệm</h5>
         <form id="quizForm"></form>
 
         <button class="btn btn-primary w-100 mt-3" id="submitQuizBtn">
           Nộp bài
         </button>
       </div>
-      
-      <div class="d-flex justify-content-between mt-3">
-        <button id="prevBtn" class="btn btn-outline-secondary">← Bài trước</button>
-        <button id="nextBtn" class="btn btn-primary">Bài tiếp →</button>
-      </div>
 
     </div>
 
-    <!-- RIGHT SIDEBAR -->
-    <div class="col-lg-3 col-md-12 border-start bg-light p-3">
+    <!-- SIDEBAR -->
+    <div class="col-lg-4 p-4 bg-light border-start sticky-top" style="height:100vh">
 
-      <h6 class="fw-bold mb-3">📚 Nội dung khóa học</h6>
+      <h6 class="fw-bold">📊 Tiến độ</h6>
 
-      <!-- PROGRESS -->
-      <div class="mb-3">
-        <div class="d-flex justify-content-between small mb-1">
-          <span>Tiến độ</span>
-          <span id="progressText">0%</span>
-        </div>
-
-        <div class="progress">
-          <div id="progressBar" class="progress-bar"></div>
-        </div>
+      <div class="progress mb-2">
+        <div id="progressBar" class="progress-bar"></div>
       </div>
 
-      <!-- LESSON LIST -->
+      <small id="progressText"></small>
+
+      <hr>
+
       <div id="lessonList"></div>
 
     </div>
 
   </div>
 </div>
+
 
 <!-- RESULT MODAL -->
 <div class="modal fade" id="resultModal" tabindex="-1">

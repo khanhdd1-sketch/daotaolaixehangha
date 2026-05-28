@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 
 final class DriveSchoolWebViewController: UIViewController, WKNavigationDelegate {
-    private let appURL = URL(string: "https://your-domain.example/exam.html")!
+    private let appURL = URL(string: "https://daotaolaixehangha.vercel.app/")!
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true

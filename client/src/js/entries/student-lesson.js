@@ -56,40 +56,82 @@ function renderLesson() {
 }
 
 function convertYoutube(url) {
-  if (!url) return "";
+  try {
+    const parsed = new URL(url);
 
-  const match = url.match(/v=([^&]+)/);
-  return match
-    ? `https://www.youtube.com/embed/${match[1]}`
-    : url;
+    if (!["http:", "https:"].includes(parsed.protocol)) return "";
+
+    const match = url.match(/v=([^&]+)/);
+    return match
+      ? `https://www.youtube.com/embed/${match[1]}`
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function renderQuiz() {
   const el = document.getElementById("quizForm");
+  el.innerHTML = "";
 
   if (!state.questions.length) {
-    el.innerHTML = "<p>Không có câu hỏi</p>";
+    const p = document.createElement("p");
+    p.textContent = "Không có câu hỏi";
+    el.appendChild(p);
     return;
   }
 
-  el.innerHTML = state.questions.map((q, i) => `
-    <div class="mb-3">
-      <p><b>${i + 1}. ${q.question}</b></p>
+  state.questions.forEach((q, i) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "mb-3";
+    const title = document.createElement("p");
+    const b = document.createElement("b");
+    b.textContent = `${i + 1}. ${q.question}`;
+    title.appendChild(b);
+    wrapper.appendChild(title);
 
-      ${["A","B","C","D"].map(opt => `
-        <div>        
-            <input 
-            type="radio" 
-            name="q${q.id}" 
-            value="${opt}"
-            onchange="saveAnswer('${q.id}','${opt}')"
-            ${state.answers[q.id] === opt ? "checked" : ""}
-            >
-          ${opt}: ${q[`option_${opt.toLowerCase()}`]}
-        </div>
-      `).join("")}
-    </div>
-  `).join("");
+    ["A", "B", "C", "D"].forEach(opt => {
+      const div = document.createElement("div");
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `q${q.id}`;
+      input.value = opt;
+
+      if (state.answers[q.id] === opt) {
+        input.checked = true;
+      }
+
+      input.onchange = () => {
+        saveAnswer(q.id, opt);
+
+        // remove highlight các option khác
+        div.parentElement.querySelectorAll("div").forEach(el => {
+          el.classList.remove("selected-option");
+        });
+
+        div.classList.add("selected-option");
+      };
+
+      const label = document.createElement("label");
+      label.textContent = `${opt}: ${escapeHTML(q[`option_${opt.toLowerCase()}`])}`;
+
+      div.appendChild(input);
+      div.appendChild(label);
+
+      wrapper.appendChild(div);
+    });
+
+    el.appendChild(wrapper);
+  });
 }
 
 function saveAnswer(qid, val) {
@@ -137,8 +179,13 @@ function bindEvents() {
 }
 
 async function submitQuiz(e) {
-document.querySelectorAll("#quizForm input").forEach(i => i.disabled = true);
   e.preventDefault();
+  const submitBtn = document.getElementById("submitQuizBtn");
+  submitBtn.disabled = true;
+  submitBtn.innerText = "⏳ Đang chấm bài...";
+
+  const inputs = document.querySelectorAll("#quizForm input");
+  inputs.forEach(i => i.disabled = true);
 
   const answers = {};
 
@@ -151,90 +198,41 @@ document.querySelectorAll("#quizForm input").forEach(i => i.disabled = true);
 
   try {
     const res = await DriveSchoolCommon.apiFetch(
-        API_PATHS.SUBMIT_LESSON(state.lesson.id),
-        {
-            method: "POST",
-            body: JSON.stringify({
-            answers
-            })
-        }
+      API_PATHS.SUBMIT_LESSON(state.lesson.id),
+      {
+        method: "POST",
+        body: JSON.stringify({ answers })
+      }
     );
+
     const result = res.data;
-    
+
+    const questionDivs = document.querySelectorAll("#quizForm > div");
+
     result.details.forEach((d, i) => {
-    const div = document.querySelectorAll("#quizForm > div")[i];
+      const div = questionDivs[i];
+      div.classList.add(d.is_correct ? "correct" : "wrong");
+      // ✅ border màu
+      div.style.border = d.is_correct
+        ? "2px solid #28a745"
+        : "2px solid #dc3545";
 
-    div.style.border = d.is_correct
-        ? "2px solid green"
-        : "2px solid red";
+      // ✅ tạo element thay vì innerHTML
+      const status = document.createElement("div");
+      status.className = `mt-2 small ${
+        d.is_correct ? "text-success" : "text-danger"
+      }`;
+      status.textContent = d.is_correct ? "✅ Đúng" : "❌ Sai";
 
-    div.innerHTML += `
-        <div class="mt-2 small ${d.is_correct ? "text-success" : "text-danger"}">
-        ${d.is_correct ? "✅ Đúng" : "❌ Sai"}
-        </div>
-        <div class="small text-muted">
-        👉 ${d.explanation || ""}
-        </div>
-    `;
+      const explain = document.createElement("div");
+      explain.className = "small text-muted";
+      explain.textContent = "👉 " + (d.explanation || "");
+
+      div.appendChild(status);
+      div.appendChild(explain);
     });
 
-    
-const modalEl = document.getElementById("resultModal");
-const modal = new bootstrap.Modal(modalEl);
-
-document.getElementById("resultStatus").innerHTML =
-  result.passed
-    ? `<span class="text-success">✅ Qua bài</span>`
-    : `<span class="text-danger">❌ Chưa đạt</span>`;
-
-    document.getElementById("resultScore").innerText =
-    `Bạn đúng ${result.score}/${result.total}`;
-
-    // ✅ render chi tiết
-    document.getElementById("resultDetails").innerHTML =
-    result.details.map((d, i) => `
-        <div class="mb-2">
-        <b>Câu ${i + 1}</b>: ${d.question}
-        <br>
-        <span class="${d.is_correct ? "text-success" : "text-danger"}">
-            ${d.is_correct ? "✅ Đúng" : "❌ Sai"}
-        </span>
-        <br>
-        <span class="text-muted">👉 ${d.explanation || ""}</span>
-        </div>
-    `).join("");
-
-    // ✅ gắn event nút
-    document.getElementById("retryBtn").onclick = () => {
-    globalThis.location.reload();
-    };
-
-    document.getElementById("backBtn").onclick = () => {
-    globalThis.location.href = "/dashboard.html";
-    };
-
-    modal.show();
-
-const nextBtn = document.getElementById("nextLessonBtn");
-
-// lấy lesson list
-const lessons = getDashboardState().learningWorkspace.lessons;
-const index = lessons.findIndex(l => l.id === state.lesson.id);
-const next = lessons[index + 1];
-
-if (result.passed && next && next.unlocked) {
-  // ✅ hiện nút bài tiếp
-  nextBtn.classList.remove("d-none");
-
-  nextBtn.onclick = () => {
-    globalThis.location.href = `/lesson.html?id=${next.id}`;
-  };
-
-} else {
-  // ❌ fail hoặc không có bài tiếp
-  nextBtn.classList.add("d-none");
-}
-
+    showResultModal(result);
 
   } catch (err) {
     console.error(err);
@@ -242,13 +240,87 @@ if (result.passed && next && next.unlocked) {
   }
 }
 
+function showResultModal(result) {
+  const modalEl = document.getElementById("resultModal");
+  const modal = new bootstrap.Modal(modalEl);
+
+  const statusEl = document.getElementById("resultStatus");
+  const scoreEl = document.getElementById("resultScore");
+  const detailsEl = document.getElementById("resultDetails");
+
+  // ✅ clear
+  detailsEl.innerHTML = "";
+
+  // ✅ status (KHÔNG dùng innerHTML dynamic)
+  statusEl.textContent = result.passed ? "✅ Qua bài" : "❌ Chưa đạt";
+  statusEl.className = result.passed ? "text-success" : "text-danger";
+
+  scoreEl.textContent = `Bạn đúng ${result.score}/${result.total}`;
+
+  // ✅ render details safely
+  result.details.forEach((d, i) => {
+    const div = document.createElement("div");
+    div.className = "mb-2";
+
+    const title = document.createElement("b");
+    title.textContent = `Câu ${i + 1}`;
+
+    const status = document.createElement("div");
+    status.className = d.is_correct ? "text-success" : "text-danger";
+    status.textContent = d.is_correct ? "✅ Đúng" : "❌ Sai";
+
+    const explain = document.createElement("div");
+    explain.className = "text-muted small";
+    explain.textContent = "👉 " + (d.explanation || "");
+
+    div.appendChild(title);
+    div.appendChild(status);
+    div.appendChild(explain);
+
+    detailsEl.appendChild(div);
+  });
+
+  // ✅ buttons
+  document.getElementById("retryBtn").onclick = () => {
+    location.reload();
+  };
+
+  document.getElementById("backBtn").onclick = () => {
+    location.href = "/dashboard.html";
+  };
+
+  const nextBtn = document.getElementById("nextLessonBtn");
+
+  const lessons = getDashboardState().learningWorkspace.lessons;
+  const index = lessons.findIndex(l => l.id === state.lesson.id);
+  const next = lessons[index + 1];
+
+  if (result.passed && next && next.unlocked) {
+    nextBtn.classList.remove("d-none");
+    nextBtn.onclick = () => {
+      location.href = `/lesson.html?id=${next.id}`;
+    };
+  } else {
+    nextBtn.classList.add("d-none");
+  }
+
+  modal.show();
+  
+  setTimeout(() => {
+    modalEl.querySelector(".modal-content")
+      ?.classList.add("animate-modal");
+  }, 50);
+}
+
 function renderProgress(workspace) {
   const completed = workspace.completed_count || 0;
   const total = workspace.total_count || 0;
 
   const percent = total ? Math.round((completed / total) * 100) : 0;
+  const bar = document.getElementById("progressBar");
+  bar.style.transition = "width 0.6s ease";
+  bar.style.width = percent + "%";
 
-  document.getElementById("progressBar").style.width = percent + "%";
   document.getElementById("progressText").innerText =
     `${percent}% (${completed}/${total})`;
 }
@@ -261,8 +333,8 @@ function setupPrevNext(lessons, lessonId) {
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
     
-prevBtn.classList.toggle("opacity-50", !prev);
-nextBtn.classList.toggle("opacity-50", !next || !next.unlocked);
+// prevBtn.classList.toggle("opacity-50", !prev);
+// nextBtn.classList.toggle("opacity-50", !next || !next.unlocked);
 
   if (prevBtn) {
     prevBtn.disabled = !prev;
