@@ -9,6 +9,7 @@ const crypto = require("node:crypto");
 
 const DEFAULT_PROOF_FOLDER = "drive-school/proof-images";
 const DEFAULT_QUESTION_FOLDER = "drive-school/question-images";
+const DEFAULT_LESSON_QUESTION_FOLDER = "drive-school/lesson-questions";
 
 function normalizeFolder(value, fallback = DEFAULT_PROOF_FOLDER) {
   const normalized = String(value || fallback)
@@ -24,7 +25,13 @@ function getConfig() {
     apiKey: String(process.env.CLOUDINARY_API_KEY || "").trim(),
     apiSecret: String(process.env.CLOUDINARY_API_SECRET || "").trim(),
     proofFolder: normalizeFolder(process.env.CLOUDINARY_UPLOAD_FOLDER, DEFAULT_PROOF_FOLDER),
-    questionFolder: normalizeFolder(process.env.CLOUDINARY_QUESTION_UPLOAD_FOLDER, DEFAULT_QUESTION_FOLDER)
+    questionFolder: normalizeFolder(process.env.CLOUDINARY_QUESTION_UPLOAD_FOLDER, DEFAULT_QUESTION_FOLDER),
+    
+    // ✅ THÊM DÒNG NÀY
+    lessonQuestionFolder: normalizeFolder(
+      process.env.CLOUDINARY_LESSON_QUESTION_UPLOAD_FOLDER,
+      DEFAULT_LESSON_QUESTION_FOLDER
+    )
   };
 }
 
@@ -115,9 +122,20 @@ function isOwnedAssetUrl(value) {
   }
 }
 
+function buildLessonQuestionImageUploadConfig({ userId, lessonId }) {
+  const { lessonQuestionFolder } = getConfig();
+
+  return buildUploadConfig({
+    folder: lessonQuestionFolder,
+    publicIdPrefix: `${lessonId || "lesson"}-${userId || "admin"}`,
+    fallbackPrefix: "lesson"
+  });
+}
+
 module.exports = {
   buildProofUploadConfig,
   buildQuestionImageUploadConfig,
+  buildLessonQuestionImageUploadConfig,
   isConfigured,
   isOwnedAssetUrl
 };

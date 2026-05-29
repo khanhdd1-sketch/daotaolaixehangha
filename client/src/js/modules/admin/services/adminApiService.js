@@ -167,6 +167,47 @@ export async function uploadQuestionImageToCloudinary(file, uploadConfig) {
   return String(data.secure_url || "").trim();
 }
 
+export async function fetchLessonQuestionImageUploadConfig(lessonId) {
+  const response = await globalThis.DriveSchoolCommon.apiFetch(
+    API_PATHS.ADMIN_LESSON_QUESTION_IMAGE_UPLOAD(lessonId)
+  );
+  return response.data || {};
+}
+
+/**
+ * Upload ảnh câu hỏi bài học lên Cloudinary.
+ * @param {File} file - File ảnh
+ * @param {object} uploadConfig - apiKey, signature, ...
+ * @returns {Promise<string>} secure_url
+ * @throws {Error} Khi Cloudinary trả lỗi
+ */
+export async function uploadLessonQuestionImageToCloudinary(file, uploadConfig) {
+  if (!uploadConfig?.uploadUrl) {
+    throw new Error("Thiếu cấu hình upload Cloudinary.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", String(uploadConfig.apiKey || ""));
+  formData.append("timestamp", String(uploadConfig.timestamp || ""));
+  formData.append("signature", String(uploadConfig.signature || ""));
+  formData.append("folder", String(uploadConfig.folder || ""));
+  formData.append("public_id", String(uploadConfig.publicId || ""));
+
+  const response = await fetch(uploadConfig.uploadUrl, {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || "Không thể tải ảnh câu hỏi bài học.");
+  }
+
+  return String(data.secure_url || "").trim();
+}
+
 /**
  * Lưu đề mô phỏng.
  * @param {object} payload - Dữ liệu đề

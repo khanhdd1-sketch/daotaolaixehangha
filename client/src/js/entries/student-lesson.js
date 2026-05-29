@@ -40,10 +40,14 @@ dashboardState.learningWorkspace = {
   state.lesson = lesson;
   state.questions = lesson.questions || [];
 
+  // ✅ preload ảnh trước khi render để tránh nhấp nháy khi hiển thị quiz
+  preloadImages(state.questions);
+
   renderLessonList();
   renderProgress(res.data);
   renderLesson();
   renderQuiz();
+  setupLazyImages();
   setupPrevNext(lessons, lessonId);
 }
 
@@ -97,6 +101,36 @@ function renderQuiz() {
     b.textContent = `${i + 1}. ${q.question}`;
     title.appendChild(b);
     wrapper.appendChild(title);
+    // ✅ HIỂN THỊ ẢNH NẾU CÓ
+    if (q.image_url) {
+      const img = document.createElement("img");
+
+      img.dataset.src = q.image_url; // ✅ lazy load
+      img.className = "img-fluid mb-2 rounded d-block mx-auto";
+      img.style.maxHeight = "250px";
+      img.style.cursor = "pointer";
+      img.alt = "Ảnh câu hỏi";
+  
+      img.onmouseover = () => img.style.transform = "scale(1.02)";
+      img.onmouseout = () => img.style.transform = "scale(1)";
+      img.style.transition = "0.2s";
+
+      // ✅ chỉ load khi cần (lazy)
+      img.loading = "lazy";
+
+      // ✅ zoom modal
+      img.onclick = () => {
+        const modalEl = document.getElementById("imagePreviewModal");
+        const previewImg = document.getElementById("previewImage");
+
+        previewImg.src = q.image_url;
+
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      };
+
+      wrapper.appendChild(img);
+    }
 
     ["A", "B", "C", "D"].forEach(opt => {
       const div = document.createElement("div");
@@ -352,6 +386,32 @@ function setupPrevNext(lessons, lessonId) {
         globalThis.location.href = `/lesson.html?id=${next.id}`;
     }
   }
+}
+
+function preloadImages(questions) {
+  questions.forEach(q => {
+    if (q.image_url) {
+      const img = new Image();
+      img.src = q.image_url;
+    }
+  });
+}
+
+function setupLazyImages() {
+  const imgs = document.querySelectorAll("img[data-src]");
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+
+        obs.unobserve(img);
+      }
+    });
+  });
+
+  imgs.forEach(img => observer.observe(img));
 }
 
 async function init() {

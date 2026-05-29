@@ -72,7 +72,8 @@ function normalizeLessonQuestion(question) {
   return {
     ...question,
     correct_answer: normalizeChoice(question.correct_answer),
-    explanation: String(question.explanation || "").trim()
+    explanation: String(question.explanation || "").trim(),
+    image_url: String(question.image_url || "").trim() // ✅ thêm
   };
 }
 
@@ -482,7 +483,10 @@ const sheetsService = {
       option_c: data.option_c,
       option_d: data.option_d,
       correct_answer: normalizeChoice(data.correct_answer || ""),
-      explanation: data.explanation || ""
+      explanation: data.explanation || "",
+      
+      // ✅ THÊM DÒNG NÀY
+      image_url: String(data.image_url || "").trim()
     };
 
     if (this.useMock) {
