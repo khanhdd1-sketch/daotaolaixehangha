@@ -103,11 +103,13 @@ function renderQuiz() {
     wrapper.appendChild(title);
     // ✅ HIỂN THỊ ẢNH NẾU CÓ
     if (q.image_url) {
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "question-img-wrap text-center";
+
       const img = document.createElement("img");
 
       img.dataset.src = q.image_url; // ✅ lazy load
-      img.className = "img-fluid mb-2 rounded d-block mx-auto";
-      img.style.maxHeight = "250px";
+      img.className = "question-img img-fluid mb-2 rounded d-block mx-auto";
       img.style.cursor = "pointer";
       img.alt = "Ảnh câu hỏi";
   
@@ -128,8 +130,15 @@ function renderQuiz() {
         const modal = new bootstrap.Modal(modalEl);
         modal.show();
       };
+      imgWrap.appendChild(img);
+      // caption nhỏ (gợi UX tốt hơn)
+      const caption = document.createElement("div");
+      caption.className = "small text-muted";
+      caption.textContent = "Bấm vào ảnh để phóng to";
 
-      wrapper.appendChild(img);
+      imgWrap.appendChild(caption);
+
+      wrapper.appendChild(imgWrap);
     }
 
     ["A", "B", "C", "D"].forEach(opt => {
@@ -146,6 +155,16 @@ function renderQuiz() {
 
       input.onchange = () => {
         saveAnswer(q.id, opt);
+        wrapper.querySelectorAll(".option-item").forEach(el => {
+          el.classList.remove("selected");
+        });
+
+        div.classList.add("selected");
+
+        wrapper.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
 
         // remove highlight các option khác
         div.parentElement.querySelectorAll("div").forEach(el => {
@@ -175,6 +194,7 @@ function saveAnswer(qid, val) {
     "lesson_answers_" + state.lesson.id,
     JSON.stringify(state.answers)
   );
+  updateQuizProgress();
 }
 
 function bindEvents() {
@@ -412,6 +432,15 @@ function setupLazyImages() {
   });
 
   imgs.forEach(img => observer.observe(img));
+}
+
+function updateQuizProgress() {
+  const total = state.questions.length;
+  const answered = Object.keys(state.answers).length;
+
+  const percent = Math.round((answered / total) * 100);
+
+  document.getElementById("quizProgressBar").style.width = percent + "%";
 }
 
 async function init() {

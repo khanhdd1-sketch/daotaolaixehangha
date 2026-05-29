@@ -8,6 +8,93 @@
   <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="/assets/vendor/fontawesome/css/all.min.css" rel="stylesheet">
   <style>
+    /* ✅ Mặc định (desktop) */
+    .question-img {
+      display: block;
+      margin: 12px auto;
+      padding: 6px;
+
+      max-width: 100%;
+      max-height: 340px;
+
+      border-radius: 12px;
+      background: #f8f9fa;
+
+      object-fit: contain;
+
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+      transition: all 0.25s ease;
+    }
+
+    #quizForm > div {
+      padding: 12px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #eee;
+    }
+
+    #quizForm > div:hover {
+      border-color: #0d6efd;
+    }
+    #quizForm input[type="radio"] {
+      margin-right: 8px;
+      accent-color: #0d6efd;
+    }
+
+    #quizForm div div {
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+
+    #quizForm div div:hover {
+      background: #f1f5ff;
+    }
+
+    /* Hover desktop */
+    @media (hover: hover) {
+      .question-img:hover {
+        transform: scale(1.04);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      }
+    }
+
+    /* Tablet */
+    @media (max-width: 992px) {
+      .question-img {
+        max-height: 280px;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 576px) {
+      .question-img {
+        max-height: none;
+        width: 100%;
+        border-radius: 10px;
+      }
+    }
+
+    .question-img-wrap {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .question-img-wrap .small {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    #imagePreviewModal .modal-content {
+      background-color: #000;
+    }
+
+    #previewImage {
+      max-height: 85vh;
+      object-fit: contain;
+    }
     .animate-modal {
       animation: zoomIn 0.3s ease;
     }
@@ -46,6 +133,29 @@
       75% { transform: translateX(4px); }
       100% { transform: translateX(0); }
     }
+    
+    .quiz-question {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp 0.4s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    #quizSection {
+      background: #f9fafb;
+    }
+    
+    #submitQuizBtn {
+      padding: 12px;
+      font-weight: 600;
+      border-radius: 10px;
+    }
   </style>
 </head>
 
@@ -73,12 +183,15 @@
       </div>
 
       <!-- QUIZ -->
+      <div class="mb-3">
+        <div id="quizProgressBar" class="progress-bar bg-primary"></div>
+      </div>
       <div id="quizSection" class="card p-4 d-none shadow-sm">
         <h5 class="mb-3">📘 Trắc nghiệm</h5>
         <form id="quizForm"></form>
 
         <button class="btn btn-primary w-100 mt-3" id="submitQuizBtn">
-          Nộp bài
+          ✅ Nộp bài
         </button>
       </div>
 
