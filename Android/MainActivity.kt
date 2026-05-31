@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
 
     companion object {
-        private const val APP_URL = "https://your-domain.example/exam.html"
+        private const val APP_URL = "https://daotaolaixehangha.vercel.app/"
     }
 
     @SuppressLint("SetJavaScriptEnabled")

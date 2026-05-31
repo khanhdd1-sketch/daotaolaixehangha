@@ -1,3 +1,10 @@
+
+/**
+ * Copyright (c) 2026 Driving Training Center Hang Ha
+ * (Trung tâm đào tạo lái xe Hằng Hà)
+ *
+ * All rights reserved.
+ */
 /**
  * Phân tích query phân trang từ request Express.
  * @param {object} query - req.query

@@ -100,7 +100,7 @@
               </div>
               <span class="compact-badge" id="lessonQuestionCountBadge">0 câu</span>
             </div>
-            <form id="lessonQuestionForm" class="row g-3 mb-4">
+            <form id="lessonQuestionForm" class="row g-3 mb-4" enctype="multipart/form-data">
               <input id="lessonQuestionId" name="id" type="hidden">
               <div class="col-md-6">
                 <label class="form-label" for="lessonQuestionLessonId">Bài học</label>
@@ -119,6 +119,13 @@
                 <label class="form-label" for="lessonQuestionText">Nội dung câu hỏi</label>
                 <textarea class="form-control" id="lessonQuestionText" name="question" rows="2" required></textarea>
               </div>
+              
+              <!-- ✅ Upload ảnh -->
+              <div class="col-md-12">
+                <label class="form-label" for="lessonQuestionImageFile">Upload ảnh</label>
+                <input type="file" class="form-control" id="lessonQuestionImageFile" name="image_file" accept="image/*">
+              </div>
+
               <div class="col-md-6">
                 <label class="form-label" for="lessonOptionA">Đáp án A</label>
                 <input class="form-control" id="lessonOptionA" name="option_a" required>

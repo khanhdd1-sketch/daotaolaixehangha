@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T08:41:03.311Z",
+  "generatedAt": "2026-05-29T08:26:52.983Z",
   "version": 5,
   "modules": [
     "/admin-lessons.html",
@@ -26,6 +26,7 @@
     "/src/js/entries/admin-theory.js",
     "/src/js/entries/simulation-exam.js",
     "/src/js/entries/student-dashboard.js",
+    "/src/js/entries/student-lesson.js",
     "/src/js/entries/theory-exam.js",
     "/src/js/exam.js",
     "/src/js/i18n.js",

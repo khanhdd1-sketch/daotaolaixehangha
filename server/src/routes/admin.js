@@ -56,6 +56,22 @@ router.get("/question-image-upload-config", (req, res) => {
   return res.json({ success: true, data: uploadConfig });
 });
 
+router.get("/lesson-question-image-upload-config", (req, res) => {
+  const uploadConfig = cloudinaryService.buildLessonQuestionImageUploadConfig({
+    userId: req.user.sub,
+    lessonId: String(req.query.lesson_id || "")
+  });
+
+  if (!uploadConfig) {
+    return res.status(503).json({
+      success: false,
+      message: "Cloudinary chưa được cấu hình cho ảnh câu hỏi."
+    });
+  }
+
+  return res.json({ success: true, data: uploadConfig });
+});
+
 router.get("/results", async (req, res, next) => {
   try {
     const response = await sheetsService.getResults();
@@ -439,7 +455,16 @@ router.get("/lesson-questions", async (req, res, next) => {
 
 router.post("/lesson-questions", async (req, res, next) => {
   try {
-    const response = await sheetsService.upsertLessonQuestion(req.body);
+    const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
+    if (imageUrl === null) {
+      return res.status(400).json({ success: false, message: "Anh cau hoi bai hoc khong hop le." });
+    }
+
+    const response = await sheetsService.upsertLessonQuestion({
+      ...req.body,
+      image_url: imageUrl
+    });
+
     res.status(201).json(response);
   } catch (error) {
     next(error);
@@ -448,7 +473,17 @@ router.post("/lesson-questions", async (req, res, next) => {
 
 router.put("/lesson-questions/:id", async (req, res, next) => {
   try {
-    const response = await sheetsService.upsertLessonQuestion({ ...req.body, id: req.params.id });
+    const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
+    if (imageUrl === null) {
+      return res.status(400).json({ success: false, message: "Anh cau hoi bai hoc khong hop le." });
+    }
+
+    const response = await sheetsService.upsertLessonQuestion({
+      ...req.body,
+      id: req.params.id,
+      image_url: imageUrl
+    });
+
     res.json(response);
   } catch (error) {
     next(error);

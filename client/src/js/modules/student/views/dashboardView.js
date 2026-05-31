@@ -109,7 +109,7 @@ export function renderLessonList() {
     ? lessons
         .map(
           (lesson) => `
-      <div class="admin-list-item ${lesson.unlocked ? "" : "is-disabled"}">
+      <div class="admin-list-item d-flex align-items-center justify-content-between p-3 ${lesson.unlocked ? "" : "is-disabled"}">
         <div>
           <div class="fw-semibold">${escapeHtml(lesson.title)}</div>
           <div class="small text-muted">${escapeHtml(lesson.description || "")}</div>

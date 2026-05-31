@@ -8,6 +8,7 @@ import {
   fetchAdminDashboard,
   fetchAllLessonQuestions,
   fetchLessons,
+  fetchLessonQuestionImageUploadConfig,
   fetchPaginatedResultRows,
   fetchQuestionImageUploadConfig,
   fetchSimulationClipsForExams,
@@ -19,7 +20,8 @@ import {
   saveSimulationExam,
   saveTheoryExam,
   saveTheoryQuestion,
-  uploadQuestionImageToCloudinary
+  uploadQuestionImageToCloudinary,
+  uploadLessonQuestionImageToCloudinary
 } from "../services/adminApiService.js";
 import { serializeForm } from "../utils/adminFormUtils.js";
 import { confirmDestructive } from "../../shared/views/confirmModalView.js";
@@ -329,13 +331,39 @@ async function handleLessonSubmit(event) {
   await reloadCurrentPage();
 }
 
+
 async function handleLessonQuestionSubmit(event) {
   event.preventDefault();
-  const payload = serializeForm(event.currentTarget);
-  await saveLessonQuestion(payload);
-  resetLessonQuestionForm();
-  globalThis.DriveSchoolCommon.showToast("Đã lưu câu hỏi bài học.", "success");
-  await reloadCurrentPage();
+  const form = event.currentTarget;
+  const imageFile = document.getElementById("lessonQuestionImageFile").files[0];
+  const payload = serializeForm(form);
+  const submitButton = form.querySelector("button[type='submit']");
+  submitButton.disabled = true;
+
+  try {
+    if (imageFile) {
+      // ✅ Lấy config từ BE
+      const uploadConfig = await fetchLessonQuestionImageUploadConfig(payload.lesson_id);
+
+      // ✅ Upload Cloudinary
+      payload.image_url = await uploadLessonQuestionImageToCloudinary(
+        imageFile,
+        uploadConfig
+      );
+    }
+
+    await saveLessonQuestion(payload);
+    resetLessonQuestionForm();
+
+    globalThis.DriveSchoolCommon.showToast(
+      "Đã lưu câu hỏi bài học.",
+      "success"
+    );
+
+    await reloadCurrentPage();
+  } finally {
+    submitButton.disabled = false;
+  }
 }
 
 function handleExamListClick(event) {
