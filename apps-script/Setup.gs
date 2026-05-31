@@ -8,10 +8,10 @@
 const SHEET_HEADERS = {
   registrations: ['id', 'name', 'phone', 'email', 'course_type', 'note', 'created_at'],
   users: ['id', 'name', 'email', 'password_hash', 'role', 'course_type', 'created_at'],
-  exams: ['id', 'title', 'pass_score', 'total_questions', 'duration_minutes', 'active'],
-  questions: ['id', 'exam_id', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_answer', 'is_critical', 'explanation'],
+  exams: ['id', 'course_type', 'title', 'pass_score', 'total_questions', 'duration_minutes', 'active'],
+  questions: ['id', 'exam_id', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_answer', 'is_critical', 'explanation', 'image_url'],
   lessons: ['id', 'course_type', 'title', 'description', 'order_no', 'video_url', 'pass_score', 'active'],
-  lesson_questions: ['id', 'lesson_id', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_answer', 'explanation'],
+  lesson_questions: ['id', 'lesson_id', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_answer', 'explanation', 'image_url'],
   lesson_watches: ['id', 'user_id', 'lesson_id', 'watched_at'],
   lesson_attempts: ['id', 'user_id', 'lesson_id', 'attempt_no', 'score', 'total', 'pass_score', 'passed', 'submitted_at', 'answers_json', 'details_json'],
   simulation_exams: ['id', 'course_type', 'title', 'description', 'pass_score', 'total_clips', 'active'],
@@ -32,13 +32,13 @@ const SEED_ROWS = {
     ['student_001', 'Nguyen Minh Anh', 'student@drivingschool.vn', 'e74a46decb5ccdade128152d9931f832:ea82eb5b257467872d3a1bc256f5b26e29f098cb36af2623cfc94c5b91095a87cb8bbc840c8a18b1c67b3126513917dc5b18944debb34f82d2229679c1146d80', 'student', 'B2', '2026-03-24T07:15:00.000Z']
   ],
   exams: [
-    ['exam_b2_001', 'De thi B2 mo phong so 01', '26', '30', '20', 'true'],
-    ['exam_a1_001', 'De thi A1 co ban', '21', '25', '18', 'true']
+    ['exam_b2_001', 'B2', 'De thi B2 mo phong so 01', '26', '30', '20', 'true'],
+    ['exam_a1_001', 'A1', 'De thi A1 co ban', '21', '25', '18', 'true']
   ],
   questions: [
-    ['question_001', 'exam_b2_001', 'Den do, nguoi lai xe phai lam gi?', 'Tang toc nhanh de vuot', 'Dung lai truoc vach', 'Bam coi lien tuc', 'Re phai neu duong vang', 'B', 'true', 'Khi gap den do, nguoi lai xe phai dung lai truoc vach dung de bao dam an toan va dung luat.'],
-    ['question_002', 'exam_b2_001', 'Khi chuyen lan can thuc hien thao tac nao?', 'Chi can nhin guong chieu hau', 'Bat xi nhan va quan sat diem mu', 'Tang toc roi tat dau', 'Khong can quan sat', 'B', 'false', 'Bat xi nhan va quan sat diem mu giup tai xe chuyen lan an toan hon va tranh va cham.'],
-    ['question_003', 'exam_a1_001', 'Nguoi dieu khien xe may can mang theo gi?', 'Chi can CCCD', 'Chi can dang ky xe', 'GPLX va giay to lien quan', 'Khong can giay to', 'C', 'false', 'Nguoi lai xe can mang day du giay phep lai xe va giay to lien quan de xuat trinh khi can.']
+    ['question_001', 'exam_b2_001', 'Den do, nguoi lai xe phai lam gi?', 'Tang toc nhanh de vuot', 'Dung lai truoc vach', 'Bam coi lien tuc', 'Re phai neu duong vang', 'B', 'true', 'Khi gap den do, nguoi lai xe phai dung lai truoc vach dung de bao dam an toan va dung luat.', ''],
+    ['question_002', 'exam_b2_001', 'Khi chuyen lan can thuc hien thao tac nao?', 'Chi can nhin guong chieu hau', 'Bat xi nhan va quan sat diem mu', 'Tang toc roi tat dau', 'Khong can quan sat', 'B', 'false', 'Bat xi nhan va quan sat diem mu giup tai xe chuyen lan an toan hon va tranh va cham.', ''],
+    ['question_003', 'exam_a1_001', 'Nguoi dieu khien xe may can mang theo gi?', 'Chi can CCCD', 'Chi can dang ky xe', 'GPLX va giay to lien quan', 'Khong can giay to', 'C', 'false', 'Nguoi lai xe can mang day du giay phep lai xe va giay to lien quan de xuat trinh khi can.', '']
   ],
   lessons: [
     ['lesson_b2_001', 'B2', 'Bai 1: Sa hinh co ban', 'Lam quen thao tac sa hinh co ban.', '1', '/assets/videos/b2-lesson-01.mp4', '2', 'true'],
@@ -46,9 +46,9 @@ const SEED_ROWS = {
     ['lesson_b2_003', 'B2', 'Bai 3: Tinh huong nguy hiem', 'Mo phong xu ly tinh huong nguy hiem.', '3', '/assets/videos/b2-lesson-03.mp4', '2', 'true']
   ],
   lesson_questions: [
-    ['lesson_q_001', 'lesson_b2_001', 'Truoc khi de-pa trong bai sa hinh, ban can?', 'Nhan ga manh', 'Kiem tra guong, day an toan va quan sat', 'Tat den xe', 'Bam coi', 'B', 'Kiem tra guong va day an toan la bat buoc.'],
-    ['lesson_q_002', 'lesson_b2_001', 'Loi pho bien trong bai ghep doc la?', 'Danh lai sai thoi diem', 'Di so 1', 'Nhin guong', 'Di cham', 'A', 'Danh lai sai thoi diem de cham vach va truot bai.'],
-    ['lesson_q_003', 'lesson_b2_002', 'Gap xe phanh gap phia truoc, ban nen?', 'Nhan ga', 'Phanh giam toc va giu khoang cach', 'Re gap', 'Tat den', 'B', 'Phanh co kiem soat va giu khoang cach giup tranh va cham.']
+    ['lesson_q_001', 'lesson_b2_001', 'Truoc khi de-pa trong bai sa hinh, ban can?', 'Nhan ga manh', 'Kiem tra guong, day an toan va quan sat', 'Tat den xe', 'Bam coi', 'B', 'Kiem tra guong va day an toan la bat buoc.', ''],
+    ['lesson_q_002', 'lesson_b2_001', 'Loi pho bien trong bai ghep doc la?', 'Danh lai sai thoi diem', 'Di so 1', 'Nhin guong', 'Di cham', 'A', 'Danh lai sai thoi diem de cham vach va truot bai.', ''],
+    ['lesson_q_003', 'lesson_b2_002', 'Gap xe phanh gap phia truoc, ban nen?', 'Nhan ga', 'Phanh giam toc va giu khoang cach', 'Re gap', 'Tat den', 'B', 'Phanh co kiem soat va giu khoang cach giup tranh va cham.', '']
   ],
   lesson_watches: [],
   lesson_attempts: [],
@@ -95,4 +95,17 @@ function seedDrivingSchoolDemoData() {
     const sheet = ss.getSheetByName(sheetName);
     sheet.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
   });
+}
+
+/**
+ * Lưu shared secret vào Script Properties để backend xác thực Apps Script.
+ * @param {string} secret - Chuỗi bí mật trùng với biến môi trường `APPS_SCRIPT_SECRET` ở backend.
+ * @returns {void}
+ * @edgecase Secret rỗng sẽ bị từ chối để tránh vô tình mở web app công khai.
+ */
+function setDrivingSchoolSharedSecret(secret) {
+  if (!secret) {
+    throw new Error('Secret is required');
+  }
+  PropertiesService.getScriptProperties().setProperty('APPS_SCRIPT_SECRET', secret);
 }

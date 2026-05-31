@@ -5,7 +5,7 @@
  * This script is part of internal system.
  * Unauthorized use, copying or distribution is prohibited.
  */
-const SHARED_SECRET = 'drivemaster-2026-super-secret';
+const SHARED_SECRET_PROPERTY = 'APPS_SCRIPT_SECRET';
 const SHEETS = {
   registrations: 'registrations',
   users: 'users',
@@ -34,7 +34,7 @@ function doPost(e) {
 
 function handleRequest_(payload) {
   try {
-    if ((payload.secret || '') !== SHARED_SECRET) {
+    if (!isAuthorized_(payload)) {
       throw new Error('Unauthorized');
     }
 
@@ -167,8 +167,32 @@ function handleRequest_(payload) {
         return json_({ success: false, message: 'Unknown action' });
     }
   } catch (error) {
-    return json_({ success: false, message: error.message });
+    console.error(error);
+    return json_({
+      success: false,
+      message: error && error.message === 'Unauthorized' ? 'Unauthorized' : 'Internal error'
+    });
   }
+}
+
+/**
+ * Lấy shared secret từ Script Properties.
+ * @returns {string} Secret đã cấu hình cho web app.
+ * @edgecase Nếu chưa cấu hình property, trả chuỗi rỗng để mọi request bị từ chối.
+ */
+function getSharedSecret_() {
+  return PropertiesService.getScriptProperties().getProperty(SHARED_SECRET_PROPERTY) || '';
+}
+
+/**
+ * Kiểm tra request có secret hợp lệ hay không.
+ * @param {object} payload - Payload từ `doGet` hoặc `doPost`.
+ * @returns {boolean} `true` khi secret khớp Script Properties.
+ * @edgecase Không có secret cấu hình hoặc request thiếu secret đều bị từ chối.
+ */
+function isAuthorized_(payload) {
+  const configuredSecret = getSharedSecret_();
+  return Boolean(configuredSecret && (payload.secret || '') === configuredSecret);
 }
 
 function readSheet_(ss, name) {

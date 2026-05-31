@@ -40,6 +40,111 @@ function sanitizeQuestionImageUrl(value) {
   return imageUrl;
 }
 
+/**
+ * Trả lỗi validate chuẩn cho API admin.
+ * @param {import('express').Response} res - Response Express.
+ * @param {string} message - Thông báo lỗi dành cho client.
+ * @returns {import('express').Response} Response JSON 400.
+ * @edgecase Dùng chung để tránh mỗi route tự tạo envelope lỗi khác nhau.
+ */
+function sendBadRequest(res, message) {
+  return res.status(400).json({ success: false, message });
+}
+
+/**
+ * Kiểm tra một giá trị có phải số dương hoặc bằng 0 hay không.
+ * @param {unknown} value - Giá trị từ form/body.
+ * @returns {boolean} `true` khi giá trị chuyển thành số hữu hạn và không âm.
+ * @edgecase Chuỗi rỗng và `NaN` bị xem là không hợp lệ.
+ */
+function isNonNegativeNumber(value) {
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) && numberValue >= 0;
+}
+
+/**
+ * Validate payload đề thi lý thuyết trước khi lưu.
+ * @param {object} payload - Body request từ admin.
+ * @returns {string} Chuỗi rỗng nếu hợp lệ, ngược lại là thông báo lỗi.
+ * @edgecase `id` được phép thiếu khi tạo mới nhưng các trường nghiệp vụ bắt buộc phải có.
+ */
+function validateTheoryExamPayload(payload) {
+  const courseType = normalizeCourseType(payload.course_type || "");
+  if (!courseType || !isValidCourseType(courseType)) return "Invalid course type";
+  if (!clampString(payload.title, 180)) return "Exam title is required";
+  if (!isNonNegativeNumber(payload.pass_score) || Number(payload.pass_score) <= 0) return "Pass score must be greater than 0";
+  if (!isNonNegativeNumber(payload.total_questions) || Number(payload.total_questions) <= 0) return "Total questions must be greater than 0";
+  if (!isNonNegativeNumber(payload.duration_minutes) || Number(payload.duration_minutes) <= 0) return "Duration must be greater than 0";
+  return "";
+}
+
+/**
+ * Validate payload câu hỏi trắc nghiệm trước khi lưu.
+ * @param {object} payload - Body request từ admin.
+ * @returns {string} Chuỗi rỗng nếu hợp lệ, ngược lại là thông báo lỗi.
+ * @edgecase Chỉ chấp nhận đáp án A-D để tránh dữ liệu không thể chấm điểm.
+ */
+function validateQuestionPayload(payload) {
+  if (!clampString(payload.exam_id, 120)) return "Exam is required";
+  if (!clampString(payload.question, 1000)) return "Question text is required";
+  if (!["A", "B", "C", "D"].includes(String(payload.correct_answer || "").trim().toUpperCase())) {
+    return "Correct answer must be A, B, C or D";
+  }
+  const missingOption = ["option_a", "option_b", "option_c", "option_d"].find((field) => !clampString(payload[field], 1000));
+  return missingOption ? "All answer options are required" : "";
+}
+
+/**
+ * Validate payload bài học trước khi lưu.
+ * @param {object} payload - Body request từ admin.
+ * @returns {string} Chuỗi rỗng nếu hợp lệ, ngược lại là thông báo lỗi.
+ * @edgecase `video_url` có thể là đường dẫn nội bộ hoặc URL ngoài nên chỉ bắt buộc không rỗng.
+ */
+function validateLessonPayload(payload) {
+  const courseType = normalizeCourseType(payload.course_type || "");
+  if (!courseType || !isValidCourseType(courseType)) return "Invalid course type";
+  if (!clampString(payload.title, 180)) return "Lesson title is required";
+  if (!isNonNegativeNumber(payload.order_no) || Number(payload.order_no) <= 0) return "Lesson order must be greater than 0";
+  if (!clampString(payload.video_url, 1000)) return "Lesson video URL is required";
+  if (!isNonNegativeNumber(payload.pass_score)) return "Pass score must be a non-negative number";
+  return "";
+}
+
+/**
+ * Validate payload đề thi mô phỏng trước khi lưu.
+ * @param {object} payload - Body request từ admin.
+ * @returns {string} Chuỗi rỗng nếu hợp lệ, ngược lại là thông báo lỗi.
+ * @edgecase `total_clips` có thể được tính lại từ clip nhưng vẫn cần là số hợp lệ nếu gửi lên.
+ */
+function validateSimulationExamPayload(payload) {
+  const courseType = normalizeCourseType(payload.course_type || "");
+  if (!courseType || !isValidCourseType(courseType)) return "Invalid course type";
+  if (!clampString(payload.title, 180)) return "Simulation exam title is required";
+  if (!isNonNegativeNumber(payload.pass_score) || Number(payload.pass_score) <= 0) return "Pass score must be greater than 0";
+  if (!isNonNegativeNumber(payload.total_clips)) return "Total clips must be a non-negative number";
+  return "";
+}
+
+/**
+ * Validate payload clip mô phỏng trước khi lưu.
+ * @param {object} payload - Body request từ admin.
+ * @returns {string} Chuỗi rỗng nếu hợp lệ, ngược lại là thông báo lỗi.
+ * @edgecase Cửa sổ chấm điểm phải có điểm kết thúc lớn hơn hoặc bằng điểm bắt đầu.
+ */
+function validateSimulationClipPayload(payload) {
+  if (!clampString(payload.exam_id, 120)) return "Simulation exam is required";
+  if (!clampString(payload.title, 180)) return "Simulation clip title is required";
+  if (!clampString(payload.video_url, 1000)) return "Simulation clip video URL is required";
+  if (!isNonNegativeNumber(payload.order_no) || Number(payload.order_no) <= 0) return "Clip order must be greater than 0";
+  if (!isNonNegativeNumber(payload.trigger_start_sec) || !isNonNegativeNumber(payload.trigger_end_sec)) {
+    return "Trigger window must be valid seconds";
+  }
+  if (Number(payload.trigger_end_sec) < Number(payload.trigger_start_sec)) {
+    return "Trigger end must be greater than or equal to trigger start";
+  }
+  return "";
+}
+
 router.get("/question-image-upload-config", (req, res) => {
   const uploadConfig = cloudinaryService.buildQuestionImageUploadConfig({
     userId: req.user.sub,
@@ -341,6 +446,10 @@ router.get("/questions", async (req, res, next) => {
 
 router.post("/exams", async (req, res, next) => {
   try {
+    const validationError = validateTheoryExamPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertExam(req.body);
     res.status(201).json(response);
   } catch (error) {
@@ -350,6 +459,10 @@ router.post("/exams", async (req, res, next) => {
 
 router.put("/exams/:id", async (req, res, next) => {
   try {
+    const validationError = validateTheoryExamPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertExam({ ...req.body, id: req.params.id });
     res.json(response);
   } catch (error) {
@@ -368,6 +481,10 @@ router.delete("/exams/:id", async (req, res, next) => {
 
 router.post("/questions", async (req, res, next) => {
   try {
+    const validationError = validateQuestionPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
     if (imageUrl === null) {
       return res.status(400).json({ success: false, message: "Anh cau hoi khong hop le." });
@@ -381,6 +498,10 @@ router.post("/questions", async (req, res, next) => {
 
 router.put("/questions/:id", async (req, res, next) => {
   try {
+    const validationError = validateQuestionPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
     if (imageUrl === null) {
       return res.status(400).json({ success: false, message: "Anh cau hoi khong hop le." });
@@ -415,6 +536,10 @@ router.get("/lessons", async (req, res, next) => {
 
 router.post("/lessons", async (req, res, next) => {
   try {
+    const validationError = validateLessonPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertLesson(req.body);
     res.status(201).json(response);
   } catch (error) {
@@ -424,6 +549,10 @@ router.post("/lessons", async (req, res, next) => {
 
 router.put("/lessons/:id", async (req, res, next) => {
   try {
+    const validationError = validateLessonPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertLesson({ ...req.body, id: req.params.id });
     res.json(response);
   } catch (error) {
@@ -455,6 +584,10 @@ router.get("/lesson-questions", async (req, res, next) => {
 
 router.post("/lesson-questions", async (req, res, next) => {
   try {
+    const validationError = validateQuestionPayload({ ...req.body, exam_id: req.body.lesson_id });
+    if (validationError) {
+      return sendBadRequest(res, validationError.replace("Exam", "Lesson"));
+    }
     const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
     if (imageUrl === null) {
       return res.status(400).json({ success: false, message: "Anh cau hoi bai hoc khong hop le." });
@@ -473,6 +606,10 @@ router.post("/lesson-questions", async (req, res, next) => {
 
 router.put("/lesson-questions/:id", async (req, res, next) => {
   try {
+    const validationError = validateQuestionPayload({ ...req.body, exam_id: req.body.lesson_id });
+    if (validationError) {
+      return sendBadRequest(res, validationError.replace("Exam", "Lesson"));
+    }
     const imageUrl = sanitizeQuestionImageUrl(req.body.image_url);
     if (imageUrl === null) {
       return res.status(400).json({ success: false, message: "Anh cau hoi bai hoc khong hop le." });
@@ -513,6 +650,10 @@ router.get("/simulation-exams", async (req, res, next) => {
 
 router.post("/simulation-exams", async (req, res, next) => {
   try {
+    const validationError = validateSimulationExamPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertSimulationExam(req.body);
     res.status(201).json(response);
   } catch (error) {
@@ -522,6 +663,10 @@ router.post("/simulation-exams", async (req, res, next) => {
 
 router.put("/simulation-exams/:id", async (req, res, next) => {
   try {
+    const validationError = validateSimulationExamPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertSimulationExam({ ...req.body, id: req.params.id });
     res.json(response);
   } catch (error) {
@@ -553,6 +698,10 @@ router.get("/simulation-clips", async (req, res, next) => {
 
 router.post("/simulation-clips", async (req, res, next) => {
   try {
+    const validationError = validateSimulationClipPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertSimulationClip(req.body);
     res.status(201).json(response);
   } catch (error) {
@@ -562,6 +711,10 @@ router.post("/simulation-clips", async (req, res, next) => {
 
 router.put("/simulation-clips/:id", async (req, res, next) => {
   try {
+    const validationError = validateSimulationClipPayload(req.body);
+    if (validationError) {
+      return sendBadRequest(res, validationError);
+    }
     const response = await sheetsService.upsertSimulationClip({ ...req.body, id: req.params.id });
     res.json(response);
   } catch (error) {
