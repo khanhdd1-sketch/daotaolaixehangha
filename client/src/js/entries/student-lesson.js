@@ -153,25 +153,26 @@ function renderQuiz() {
         input.checked = true;
       }
 
-      input.onchange = () => {
+      // ✅ CLICK CẢ DIV
+      div.onclick = () => {
+        input.checked = true;
+
         saveAnswer(q.id, opt);
+
         wrapper.querySelectorAll(".option-item").forEach(el => {
           el.classList.remove("selected");
         });
 
-        div.classList.add("selected");
+        wrapper.querySelectorAll("div").forEach(el => {
+          el.classList.remove("selected-option");
+        });
+
+        div.classList.add("selected-option");
 
         wrapper.scrollIntoView({
           behavior: "smooth",
           block: "center"
         });
-
-        // remove highlight các option khác
-        div.parentElement.querySelectorAll("div").forEach(el => {
-          el.classList.remove("selected-option");
-        });
-
-        div.classList.add("selected-option");
       };
 
       const label = document.createElement("label");
@@ -198,6 +199,9 @@ function saveAnswer(qid, val) {
 }
 
 function bindEvents() {
+  document.getElementById("backDashboard").onclick = () => {
+    location.href = "/exam.html?lang=vi";
+  };
   document
     .getElementById("markCompleteBtn")
     .addEventListener("click", async () => {
@@ -235,6 +239,9 @@ function bindEvents() {
 async function submitQuiz(e) {
   e.preventDefault();
   const submitBtn = document.getElementById("submitQuizBtn");
+  const retryBtn = document.getElementById("retryBtn");
+  const nextLessonBtn = document.getElementById("nextLesson");
+
   submitBtn.disabled = true;
   submitBtn.innerText = "⏳ Đang chấm bài...";
 
@@ -260,6 +267,52 @@ async function submitQuiz(e) {
     );
 
     const result = res.data;
+    
+    // ✅ xử lý sau khi có kết quả
+    if (!result.passed) {
+      submitBtn.classList.add("d-none");
+      retryBtn.classList.remove("d-none");
+      nextLessonBtn.classList.add("d-none");
+      retryBtn.onclick = () => {
+        // reset answers
+        state.answers = {};
+        localStorage.removeItem("lesson_answers_" + state.lesson.id);
+
+        // render lại quiz
+        renderQuiz();
+        setupLazyImages(); // ✅ THÊM DÒNG NÀY
+
+        // reset UI
+        submitBtn.classList.remove("d-none");
+        retryBtn.classList.add("d-none");
+        submitBtn.disabled = false;
+        submitBtn.innerText = "✅ Nộp bài";
+
+        // enable lại input
+        const inputs = document.querySelectorAll("#quizForm input");
+        inputs.forEach(i => i.disabled = false);
+
+        // reset progress
+        document.getElementById("quizProgressBar").style.width = "0%";
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+    }
+
+    if (result.passed) {
+      submitBtn.classList.add("d-none");
+      nextLessonBtn.classList.remove("d-none");
+
+      const lessons = getDashboardState().learningWorkspace.lessons;
+      const index = lessons.findIndex(l => l.id === state.lesson.id);
+      const next = lessons[index + 1];
+
+      if (next && next.unlocked) {
+        nextLessonBtn.onclick = () => {
+          location.href = `/lesson.html?id=${next.id}`;
+        };
+      }
+    }
 
     const questionDivs = document.querySelectorAll("#quizForm > div");
 
@@ -297,10 +350,13 @@ async function submitQuiz(e) {
 function showResultModal(result) {
   const modalEl = document.getElementById("resultModal");
   const modal = new bootstrap.Modal(modalEl);
-
+  const retryBtn = document.getElementById("retryModalBtn");
   const statusEl = document.getElementById("resultStatus");
   const scoreEl = document.getElementById("resultScore");
   const detailsEl = document.getElementById("resultDetails");
+  
+  // ✅ luôn hiện sau khi chấm bài xong
+  retryBtn.classList.remove("d-none");
 
   // ✅ clear
   detailsEl.innerHTML = "";
@@ -335,12 +391,24 @@ function showResultModal(result) {
   });
 
   // ✅ buttons
-  document.getElementById("retryBtn").onclick = () => {
+  document.getElementById("retryModalBtn").onclick = () => {
     location.reload();
   };
 
+  document.getElementById("nextLesson").onclick = () => {
+    const lessons = getDashboardState().learningWorkspace.lessons;
+    const index = lessons.findIndex(l => l.id === state.lesson.id);
+    const next = lessons[index + 1];
+
+    if (next && next.unlocked) {
+      location.href = `/lesson.html?id=${next.id}`;
+    } else {
+      alert("Không có bài tiếp theo");
+    }
+  };
+
   document.getElementById("backBtn").onclick = () => {
-    location.href = "/dashboard.html";
+    location.href = "/exam.html?lang=vi";
   };
 
   const nextBtn = document.getElementById("nextLessonBtn");

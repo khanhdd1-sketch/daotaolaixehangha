@@ -25,7 +25,7 @@
     },
     "lesson_questions": {
       "name": "lesson_questions",
-      "headers": ["id", "lesson_id", "question", "option_a", "option_b", "option_c", "option_d", "correct_answer", "explanation"]
+      "headers": ["id", "lesson_id", "question", "option_a", "option_b", "option_c", "option_d", "correct_answer", "explanation", "image_url"]
     },
     "lesson_watches": {
       "name": "lesson_watches",

@@ -20,6 +20,44 @@ const { isMockModeEnabled } = require("../config/security");
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || "";
 const APPS_SCRIPT_SECRET = process.env.APPS_SCRIPT_SECRET || "";
 const USE_MOCK_DATA = isMockModeEnabled();
+const DEFAULT_APPS_SCRIPT_TIMEOUT_MS = 10000;
+const DEFAULT_APPS_SCRIPT_RETRIES = 1;
+
+/**
+ * Đọc số nguyên dương từ biến môi trường.
+ * @param {unknown} value - Giá trị cần chuyển thành số.
+ * @param {number} fallback - Giá trị mặc định khi đầu vào không hợp lệ.
+ * @returns {number} Số nguyên dương đã chuẩn hóa.
+ * @edgecase Giá trị âm, `NaN`, chuỗi rỗng đều trả về `fallback`.
+ */
+function readPositiveInteger(value, fallback) {
+  const parsed = Number.parseInt(String(value || ""), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+/**
+ * Tạm dừng luồng async trong một khoảng ngắn trước khi retry.
+ * @param {number} ms - Số mili-giây cần chờ.
+ * @returns {Promise<void>} Promise hoàn tất sau khi hết thời gian chờ.
+ * @edgecase `ms <= 0` vẫn resolve ở tick kế tiếp theo hành vi `setTimeout`.
+ */
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+/**
+ * Xác định lỗi upstream có nên thử lại hay không.
+ * @param {Error & { status?: number, name?: string }} error - Lỗi từ `fetch` hoặc HTTP upstream.
+ * @returns {boolean} `true` với timeout, lỗi mạng, hoặc HTTP 5xx/429.
+ * @edgecase Lỗi nghiệp vụ từ Apps Script (`success:false`) không retry để tránh ghi lặp dữ liệu.
+ */
+function isRetryableAppsScriptError(error) {
+  if (error.name === "AbortError") return true;
+  if (!error.status) return true;
+  return error.status === 429 || error.status >= 500;
+}
 
 function normalizeExam(exam) {
   if (!exam) return exam;
@@ -131,42 +169,73 @@ function normalizeThirdPartyAttempt(attempt) {
   };
 }
 
-async function callAppsScript(action, payload = {}, method = "POST") {
+/**
+ * Gọi Google Apps Script bằng JSON POST có timeout và retry có giới hạn.
+ * @param {string} action - Tên action RPC ở Apps Script.
+ * @param {object} [payload={}] - Dữ liệu nghiệp vụ gửi kèm action.
+ * @param {string} [_method="POST"] - Tham số tương thích cũ; luôn dùng POST để tránh lộ secret qua query.
+ * @returns {Promise<object>} Payload JSON trả về từ Apps Script.
+ * @throws {Error} Khi thiếu URL, upstream timeout/lỗi HTTP, hoặc Apps Script trả `success:false`.
+ * @edgecase Các lời gọi cũ truyền `"GET"` vẫn hoạt động nhưng được chuyển sang POST an toàn hơn.
+ */
+async function callAppsScript(action, payload = {}, _method = "POST") {
   if (!APPS_SCRIPT_URL) {
     throw new Error("APPS_SCRIPT_URL is not configured");
   }
 
-  const url = new URL(APPS_SCRIPT_URL);
-  if (method === "GET") {
-    url.searchParams.set("action", action);
-    url.searchParams.set("secret", APPS_SCRIPT_SECRET);
-    Object.entries(payload).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        url.searchParams.set(key, String(value));
+  const timeoutMs = readPositiveInteger(process.env.APPS_SCRIPT_TIMEOUT_MS, DEFAULT_APPS_SCRIPT_TIMEOUT_MS);
+  const maxRetries = readPositiveInteger(process.env.APPS_SCRIPT_RETRIES, DEFAULT_APPS_SCRIPT_RETRIES);
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const request = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          action,
+          secret: APPS_SCRIPT_SECRET,
+          ...payload
+        }),
+        signal: controller.signal
+      });
+
+      const responseBody = await request.json().catch(() => ({}));
+
+      if (!request.ok) {
+        const error = new Error(`Apps Script request failed with status ${request.status}`);
+        error.status = request.status;
+        throw error;
       }
-    });
+
+      if (responseBody.success === false) {
+        const error = new Error(responseBody.message || "Apps Script action failed");
+        error.status = 502;
+        error.businessError = true;
+        throw error;
+      }
+
+      return responseBody;
+    } catch (error) {
+      lastError = error;
+      if (error.businessError || attempt >= maxRetries || !isRetryableAppsScriptError(error)) {
+        break;
+      }
+      await sleep(250 * (attempt + 1));
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
-  const request = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body:
-      method === "GET"
-        ? undefined
-        : JSON.stringify({
-            action,
-            secret: APPS_SCRIPT_SECRET,
-            ...payload
-          })
-  });
-
-  if (!request.ok) {
-    throw new Error(`Apps Script request failed with status ${request.status}`);
-  }
-
-  return request.json();
+  const upstreamError = new Error(`Apps Script action failed: ${action}`);
+  upstreamError.status = 502;
+  upstreamError.cause = lastError;
+  throw upstreamError;
 }
 
 function matchFromDate(value, from) {

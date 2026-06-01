@@ -9,6 +9,7 @@ const express = require("express");
 const sheetsService = require("../services/sheetsService");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 const { ROLES } = require("../constants/roles");
+const { requireCsrfToken } = require("../middleware/csrfMiddleware");
 const { normalizeChoice, normalizeCourseType } = require("../utils/helpers");
 
 const router = express.Router();
@@ -143,7 +144,7 @@ router.get("/:id/questions", requireAuth, requireRole(ROLES.STUDENT), async (req
   }
 });
 
-router.post("/:id/submit", requireAuth, requireRole(ROLES.STUDENT), async (req, res, next) => {
+router.post("/:id/submit", requireAuth, requireRole(ROLES.STUDENT), requireCsrfToken, async (req, res, next) => {
   try {
     const examId = req.params.id;
     const answers = req.body.answers || {};
