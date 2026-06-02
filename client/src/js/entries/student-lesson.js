@@ -280,6 +280,7 @@ async function submitQuiz(e) {
     
     // ✅ xử lý sau khi có kết quả
     if (!result.passed) {
+      showResultModal(result);
       const firstWrong = result.details.findIndex(d => !d.is_correct);
       if (firstWrong !== -1) {
         questionDivs[firstWrong].scrollIntoView({
@@ -361,7 +362,7 @@ async function submitQuiz(e) {
 
   } catch (err) {
     console.error(err);
-    alert("Lỗi nộp bài");
+    // alert("Lỗi nộp bài");
   }
 }
 
