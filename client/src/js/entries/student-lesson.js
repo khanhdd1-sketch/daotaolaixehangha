@@ -41,7 +41,7 @@ dashboardState.learningWorkspace = {
   state.questions = lesson.questions || [];
 
   // ✅ preload ảnh trước khi render để tránh nhấp nháy khi hiển thị quiz
-  preloadImages(state.questions);
+  // preloadImages(state.questions);
 
   renderLessonList();
   renderProgress(res.data);
@@ -143,7 +143,7 @@ function renderQuiz() {
 
     ["A", "B", "C", "D"].forEach(opt => {
       const div = document.createElement("div");
-
+      div.className = "option-item";
       const input = document.createElement("input");
       input.type = "radio";
       input.name = `q${q.id}`;
@@ -151,6 +151,7 @@ function renderQuiz() {
 
       if (state.answers[q.id] === opt) {
         input.checked = true;
+        div.classList.add("selected-option"); // ✅ ADD
       }
 
       // ✅ CLICK CẢ DIV
@@ -196,6 +197,7 @@ function saveAnswer(qid, val) {
     JSON.stringify(state.answers)
   );
   updateQuizProgress();
+  checkAllAnswered(); // ✅ ADD
 }
 
 function bindEvents() {
@@ -257,6 +259,14 @@ async function submitQuiz(e) {
     }
   });
 
+  // ✅ ADD ĐOẠN NÀY
+  if (Object.keys(answers).length < state.questions.length) {
+    alert("⚠️ Bạn cần trả lời tất cả câu hỏi!");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "✅ Nộp bài";
+    return;
+  }
+
   try {
     const res = await DriveSchoolCommon.apiFetch(
       API_PATHS.SUBMIT_LESSON(state.lesson.id),
@@ -270,6 +280,14 @@ async function submitQuiz(e) {
     
     // ✅ xử lý sau khi có kết quả
     if (!result.passed) {
+      const firstWrong = result.details.findIndex(d => !d.is_correct);
+      if (firstWrong !== -1) {
+        questionDivs[firstWrong].scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
+      
       submitBtn.classList.add("d-none");
       retryBtn.classList.remove("d-none");
       nextLessonBtn.classList.add("d-none");
@@ -509,6 +527,13 @@ function updateQuizProgress() {
   const percent = Math.round((answered / total) * 100);
 
   document.getElementById("quizProgressBar").style.width = percent + "%";
+}
+
+function checkAllAnswered() {
+  const total = state.questions.length;
+  const answered = Object.keys(state.answers).length;
+
+  document.getElementById("submitQuizBtn").disabled = answered < total;
 }
 
 async function init() {
