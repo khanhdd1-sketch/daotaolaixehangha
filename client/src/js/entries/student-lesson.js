@@ -280,8 +280,9 @@ async function submitQuiz(e) {
     
     // ✅ xử lý sau khi có kết quả
     if (!result.passed) {
-      showResultModal(result);
+      // showResultModal(result);
       const firstWrong = result.details.findIndex(d => !d.is_correct);
+      const questionDivs = document.querySelectorAll("#quizForm > div");
       if (firstWrong !== -1) {
         questionDivs[firstWrong].scrollIntoView({
           behavior: "smooth",
@@ -333,9 +334,8 @@ async function submitQuiz(e) {
       }
     }
 
-    const questionDivs = document.querySelectorAll("#quizForm > div");
-
     result.details.forEach((d, i) => {
+      const questionDivs = document.querySelectorAll("#quizForm > div");
       const div = questionDivs[i];
       div.classList.add(d.is_correct ? "correct" : "wrong");
       // ✅ border màu
