@@ -5,9 +5,10 @@ import { getDashboardState } from "../modules/student/state/dashboardState.js";
 const state = {
   lesson: null,
   questions: [],
-  answers: {}
+  shuffledQuestions: [], // ✅ ADD
+  answers: {},
+  submitted: false // ✅ ADD
 };
-
 document.addEventListener("DOMContentLoaded", init);
 
 async function loadLesson(lessonId) {
@@ -39,7 +40,6 @@ dashboardState.learningWorkspace = {
 
   state.lesson = lesson;
   state.questions = lesson.questions || [];
-
   // ✅ preload ảnh trước khi render để tránh nhấp nháy khi hiển thị quiz
   // preloadImages(state.questions);
 
@@ -84,8 +84,11 @@ function escapeHTML(str) {
 
 function renderQuiz() {
   const el = document.getElementById("quizForm");
-  el.innerHTML = "";
 
+  // ✅ nếu đã submit thì không clear nữa
+  if (!state.submitted) {
+    el.innerHTML = "";
+  }
   if (!state.questions.length) {
     const p = document.createElement("p");
     p.textContent = "Không có câu hỏi";
@@ -93,9 +96,19 @@ function renderQuiz() {
     return;
   }
 
-  state.questions.forEach((q, i) => {
+  // ✅ chỉ shuffle nếu chưa submit
+  if (!state.submitted) {
+    state.shuffledQuestions = shuffleArray(state.questions);
+  }
+
+  state.shuffledQuestions.forEach((q, i) => {
     const wrapper = document.createElement("div");
+    wrapper.dataset.question = q.question;
     wrapper.className = "mb-3";
+    wrapper.classList.add("quiz-question");
+    // ✅ add dòng này
+    wrapper.dataset.id = String(q.id); // ✅ ensure giống backend key
+    
     const title = document.createElement("p");
     const b = document.createElement("b");
     b.textContent = `${i + 1}. ${q.question}`;
@@ -252,7 +265,7 @@ async function submitQuiz(e) {
 
   const answers = {};
 
-  state.questions.forEach(q => {
+  state.shuffledQuestions.forEach(q => {
     const checked = document.querySelector(`input[name="q${q.id}"]:checked`);
     if (checked) {
       answers[q.id] = checked.value;
@@ -260,7 +273,7 @@ async function submitQuiz(e) {
   });
 
   // ✅ ADD ĐOẠN NÀY
-  if (Object.keys(answers).length < state.questions.length) {
+  if (Object.keys(answers).length < state.shuffledQuestions.length) {
     alert("⚠️ Bạn cần trả lời tất cả câu hỏi!");
     submitBtn.disabled = false;
     submitBtn.innerText = "✅ Nộp bài";
@@ -277,25 +290,36 @@ async function submitQuiz(e) {
     );
 
     const result = res.data;
-    
+    state.submitted = true; // ✅ ADD
     // ✅ xử lý sau khi có kết quả
     if (!result.passed) {
       // showResultModal(result);
-      const firstWrong = result.details.findIndex(d => !d.is_correct);
-      const questionDivs = document.querySelectorAll("#quizForm > div");
-      if (firstWrong !== -1) {
-        questionDivs[firstWrong].scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
+      const questionDivs = document.querySelectorAll("#quizForm .quiz-question");
+      const firstWrong = result.details.find(d => !d.is_correct);
+      if (firstWrong) {
+        const target = Array.from(questionDivs).find(el =>
+          el.dataset.question === firstWrong.question
+        );
+
+        // const el = document.querySelector(
+        //   `#quizForm > div[data-id="${qid}"]`
+        // );
+
+        if (target) {
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+        }
       }
-      
+
       submitBtn.classList.add("d-none");
       retryBtn.classList.remove("d-none");
       nextLessonBtn.classList.add("d-none");
       retryBtn.onclick = () => {
         // reset answers
         state.answers = {};
+        state.submitted = false; // ✅ ADD
         localStorage.removeItem("lesson_answers_" + state.lesson.id);
 
         // render lại quiz
@@ -327,16 +351,27 @@ async function submitQuiz(e) {
       const index = lessons.findIndex(l => l.id === state.lesson.id);
       const next = lessons[index + 1];
 
-      if (next && next.unlocked) {
+      if (next) {
         nextLessonBtn.onclick = () => {
           location.href = `/lesson.html?id=${next.id}`;
         };
       }
     }
+    
+    const questionDivs = document.querySelectorAll("#quizForm .quiz-question");
 
     result.details.forEach((d, i) => {
-      const questionDivs = document.querySelectorAll("#quizForm > div");
-      const div = questionDivs[i];
+      
+      const normalize = (str) =>
+        str?.trim().replace(/\s+/g, " ");
+      // const qid = d.question_id ?? d.id;
+      const div = Array.from(questionDivs).find(el =>
+        normalize(el.dataset.question) === normalize(d.question)
+      );
+
+
+      if (!div) return;
+
       div.classList.add(d.is_correct ? "correct" : "wrong");
       // ✅ border màu
       div.style.border = d.is_correct
@@ -409,17 +444,12 @@ function showResultModal(result) {
     detailsEl.appendChild(div);
   });
 
-  // ✅ buttons
-  document.getElementById("retryModalBtn").onclick = () => {
-    location.reload();
-  };
-
   document.getElementById("nextLesson").onclick = () => {
     const lessons = getDashboardState().learningWorkspace.lessons;
     const index = lessons.findIndex(l => l.id === state.lesson.id);
     const next = lessons[index + 1];
 
-    if (next && next.unlocked) {
+    if (next) {
       location.href = `/lesson.html?id=${next.id}`;
     } else {
       alert("Không có bài tiếp theo");
@@ -436,7 +466,7 @@ function showResultModal(result) {
   const index = lessons.findIndex(l => l.id === state.lesson.id);
   const next = lessons[index + 1];
 
-  if (result.passed && next && next.unlocked) {
+  if (result.passed && next) {
     nextBtn.classList.remove("d-none");
     nextBtn.onclick = () => {
       location.href = `/lesson.html?id=${next.id}`;
@@ -522,7 +552,7 @@ function setupLazyImages() {
 }
 
 function updateQuizProgress() {
-  const total = state.questions.length;
+  const total = state.shuffledQuestions.length;
   const answered = Object.keys(state.answers).length;
 
   const percent = Math.round((answered / total) * 100);
@@ -531,10 +561,19 @@ function updateQuizProgress() {
 }
 
 function checkAllAnswered() {
-  const total = state.questions.length;
+  const total = state.shuffledQuestions.length;
   const answered = Object.keys(state.answers).length;
 
   document.getElementById("submitQuizBtn").disabled = answered < total;
+}
+
+function shuffleArray(arr) {
+  const newArr = [...arr]; // copy tránh phá state gốc
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
 }
 
 async function init() {
@@ -544,6 +583,11 @@ async function init() {
 
         await loadLesson(lessonId);
         bindEvents();
+
+        // ✅ ADD đoạn này ở đây
+        document.getElementById("retryModalBtn").onclick = () => {
+          location.reload();
+        };
     } catch (err) {
         console.error(err);
         alert("Lỗi load bài học");
