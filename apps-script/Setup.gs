@@ -1,6 +1,6 @@
 
 /**
- * Copyright (c) 2026 Trung tâm đào tạo lái xe Hằng Hà
+ * Copyright (c) 2026 Trung tâm đào tạo lái xe Hiếu Khánh
  *
  * This script is part of internal system.
  * Unauthorized use, copying or distribution is prohibited.
