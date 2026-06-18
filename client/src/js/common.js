@@ -50,6 +50,16 @@ if (globalThis.__MARKETING_CONFIG__ && typeof globalThis.__MARKETING_CONFIG__ ==
 }
 
 let trackingInitialized = false;
+let cryptoModulePromise;
+
+async function createEncryptedApiRequest(body) {
+  if (!cryptoModulePromise) {
+    cryptoModulePromise = import("./crypto.js");
+  }
+
+  const cryptoModule = await cryptoModulePromise;
+  return cryptoModule.createEncryptedRequest(body);
+}
 
 /**
  * Ngôn ngữ hiện tại (URL ?lang= hoặc localStorage).
@@ -79,6 +89,7 @@ function setLang(lang) {
  * @returns {Promise<ApiResponse>}
  * @throws {Error} Khi HTTP lỗi
  */
+
 async function apiFetch(url, options = {}) {
   const method = String(options.method || "GET").toUpperCase();
   const csrfHeaders = {};
@@ -90,17 +101,49 @@ async function apiFetch(url, options = {}) {
     }
   }
 
+  const headers = {
+    "Content-Type": "application/json",
+    ...csrfHeaders,
+    ...(options.headers)
+  };
+
+  let body = options.body;
+  let decryptResponse = async (payload) => payload;
+
+  if (headers["Content-Type"] === "application/json" && String(url).startsWith("/api/")) {
+    try {
+      const parsedBody = body === undefined || body === null || body === ""
+        ? undefined
+        : typeof body === "string"
+          ? JSON.parse(body)
+          : body;
+      const encryptedRequest = await createEncryptedApiRequest(parsedBody);
+      decryptResponse = encryptedRequest.decryptResponse;
+      Object.assign(headers, encryptedRequest.headers);
+      body = encryptedRequest.body === undefined ? undefined : JSON.stringify(encryptedRequest.body);
+    } catch (error) {
+      console.warn("Encrypt request failed", error);
+    }
+  }
+
   const response = await fetch(url, {
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...csrfHeaders,
-      ...(options.headers)
-    },
-    ...options
+    ...options,
+    headers,
+    body
   });
 
-  const data = await response.json().catch(() => ({}));
+  let data = await response.json().catch(() => ({}));
+
+  if (data?.__encrypted && data?.iv && data?.data && data?.tag) {
+    try {
+      data = await decryptResponse(data);
+    } catch (error) {
+      console.error("Decrypt response failed", error);
+      throw new Error("Invalid encrypted response");
+    }
+  }
+
   if (!response.ok) {
     if (
       response.status === HTTP_STATUS.UNAUTHORIZED &&
@@ -114,6 +157,7 @@ async function apiFetch(url, options = {}) {
     }
     throw new Error(data.message || "Request failed");
   }
+
   return data;
 }
 

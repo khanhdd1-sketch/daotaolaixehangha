@@ -104,6 +104,10 @@ function assertSecureRuntimeConfig() {
   if (isProduction() && isMockModeEnabled()) {
     throw new Error("USE_MOCK_DATA must be disabled in production");
   }
+
+  if (isProduction() && !String(process.env.PAYLOAD_ENCRYPTION_PRIVATE_KEY || "").trim()) {
+    throw new Error("PAYLOAD_ENCRYPTION_PRIVATE_KEY must be configured in production");
+  }
 }
 
 module.exports = {

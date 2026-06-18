@@ -14,6 +14,10 @@ const fs = require("node:fs");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 const { assertSecureRuntimeConfig } = require("./config/security");
 const { corsOptionsDelegate, requestSizeGuard, securityHeaders } = require("./middleware/securityMiddleware");
+const { getPublicKeyPem, hasPayloadEncryptionKey } = require("./utils/crypto");
+
+const decryptRequest = require("./middleware/decryptMiddleware");
+const encryptResponse = require("./middleware/encryptMiddleware");
 
 const authRoutes = require("./routes/auth");
 const examRoutes = require("./routes/exams");
@@ -50,11 +54,21 @@ app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cookieParser());
 
+app.use("/api", decryptRequest);
+app.use("/api", encryptResponse);
 app.use("/src", express.static(clientSrc));
 app.use(express.static(clientPublic));
 
 app.get("/health", (req, res) => {
   res.json({ success: true, message: "Server is running" });
+});
+
+app.get("/api/crypto/public-key", (req, res) => {
+  res.json({
+    success: true,
+    enabled: hasPayloadEncryptionKey(),
+    publicKey: hasPayloadEncryptionKey() ? getPublicKeyPem() : ""
+  });
 });
 
 app.use("/api/auth", authRoutes);

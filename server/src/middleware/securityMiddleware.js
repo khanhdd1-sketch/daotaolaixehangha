@@ -36,7 +36,7 @@ function corsOptionsDelegate(req, callback) {
     origin: requestOrigin || false,
     credentials: true,
     methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token", "X-Encrypted-Key", "X-Encrypted-Request"],
     optionsSuccessStatus: 204
   });
 }

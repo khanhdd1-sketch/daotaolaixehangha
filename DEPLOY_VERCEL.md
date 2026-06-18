@@ -42,12 +42,22 @@ Them cac bien sau:
 
 ```env
 JWT_SECRET=mot-chuoi-rat-dai-va-kho-doan
-USE_MOCK_DATA=true
-APPS_SCRIPT_URL=
-APPS_SCRIPT_SECRET=
+PAYLOAD_ENCRYPTION_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+USE_MOCK_DATA=false
+ALLOWED_ORIGINS=https://<ten-project>.vercel.app,https://<domain-rieng-cua-ban>
+APPS_SCRIPT_URL=<URL_APPS_SCRIPT>
+APPS_SCRIPT_SECRET=<SECRET_CUA_BAN>
 ```
 
 Khong can tu set `PORT` tren Vercel.
+
+Tao private key cho `PAYLOAD_ENCRYPTION_PRIVATE_KEY`:
+
+```powershell
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048
+```
+
+Copy toan bo output vao Vercel Environment Variable. Neu Vercel o che do mot dong, thay xuong dong bang `\n`.
 
 ## 5. Deploy lan dau
 
@@ -67,13 +77,7 @@ Neu tra ve JSON:
 
 thi app da len.
 
-De tranh loi luc len lan dau, nen de:
-
-```env
-USE_MOCK_DATA=true
-```
-
-Nhu vay app khong phu thuoc Google Sheets ngay trong lan build dau tien.
+Trong production, khong de `USE_MOCK_DATA=true` vi backend se chan boot de tranh chay web that voi du lieu demo.
 
 ## 6. Dat ten de nho
 
@@ -109,13 +113,7 @@ Neu chua muon ton phi domain, dung luon:
 
 ## 8. Google Sheets neu muon luu du lieu that
 
-Ban co the deploy truoc voi:
-
-```env
-USE_MOCK_DATA=true
-```
-
-Sau khi site len on dinh, moi noi them Google Sheets bang cach set:
+De luu du lieu that, set:
 
 ```env
 USE_MOCK_DATA=false
@@ -139,11 +137,11 @@ Nho vay cac link nhu `/src/js/...` va `/src/css/...` van chay binh thuong.
 1. Push code
 2. Import repo vao Vercel
 3. Set `JWT_SECRET`
-4. De `USE_MOCK_DATA=true`
+4. Set `PAYLOAD_ENCRYPTION_PRIVATE_KEY`
 5. Deploy
 6. Test `/health`
 7. Mo trang chu
-8. Test login admin demo
+8. Test login admin/student
 
 ## 11. Checklist test sau deploy
 
@@ -153,12 +151,7 @@ Sau khi deploy xong, test theo thu tu nay:
 2. `https://<ten-project>.vercel.app/`
 3. `https://<ten-project>.vercel.app/login.html`
 4. Gui form dang ky o trang chu
-5. Dang nhap bang tai khoan demo neu dang de `USE_MOCK_DATA=true`
-
-Tai khoan demo:
-
-- Admin: `admin@drivingschool.vn` / `Admin@123`
-- Student: `student@drivingschool.vn` / `Student@123`
+5. Dang nhap bang tai khoan that trong Google Sheets
 
 Neu co loi, vao:
 
@@ -171,5 +164,7 @@ Neu co loi, vao:
 Loi thuong gap:
 
 - Quen set `JWT_SECRET`
+- Quen set `PAYLOAD_ENCRYPTION_PRIVATE_KEY`
 - Dat `USE_MOCK_DATA=false` nhung chua set `APPS_SCRIPT_URL`
 - Nhap sai `APPS_SCRIPT_SECRET`
+- Quen them domain that vao `ALLOWED_ORIGINS`

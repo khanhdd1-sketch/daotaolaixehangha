@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-16T07:04:25.585Z",
+  "generatedAt": "2026-06-18T02:45:21.625Z",
   "version": 5,
   "modules": [
     "/admin-lessons.html",
@@ -18,6 +18,7 @@
     "/src/js/constants/routes.js",
     "/src/js/constants/serviceWorker.js",
     "/src/js/constants/swBundle.js",
+    "/src/js/crypto.js",
     "/src/js/entries/admin-dashboard.js",
     "/src/js/entries/admin-lessons.js",
     "/src/js/entries/admin-results.js",
