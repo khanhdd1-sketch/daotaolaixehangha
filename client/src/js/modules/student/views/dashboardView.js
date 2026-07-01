@@ -173,7 +173,7 @@ export function renderPracticeSection() {
           <article class="question-card h-100">
             <h3 class="h6 mb-2">${escapeHtml(item.label || examType)}</h3>
             <p class="small text-muted mb-3">${escapeHtml(item.platform_name || "-")}</p>
-            <a class="btn btn-outline-primary btn-sm" href="${escapeHtml(item.url || "#")}" target="_blank" rel="noopener noreferrer">Mở bài thi</a>
+            <a class="btn btn-outline-primary btn-sm" data-easy-speak="Bạn cần hoàn thành bài học tiếp theo trước khi mở bài thi" href="${escapeHtml(item.url || "#")}" target="_blank" rel="noopener noreferrer">Mở bài thi</a>
           </article>
         </div>
       `

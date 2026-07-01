@@ -81,10 +81,35 @@ export function openTheoryRunner() {
       .map(
         (question, index) => `
       <article class="question-card mb-3">
-        <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-          <div class="fw-semibold">${index + 1}. ${escapeHtml(question.question)}</div>
-          ${question.is_critical ? '<span class="badge text-bg-danger">Điểm liệt</span>' : ""}
+        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+          <div class="fw-semibold">
+            ${index + 1}. ${escapeHtml(question.question)}
+          </div>
+
+          ${
+            question.is_critical
+              ? '<span class="badge text-bg-danger">Điểm liệt</span>'
+              : ""
+          }
         </div>
+
+        ${
+          globalThis.localStorage?.getItem("student_easy_mode") === "1"
+            ? `
+              <div class="mb-3">
+                <button
+                  type="button"
+                  class="btn btn-warning btn-sm"
+                  data-easy-speak="${escapeHtml(
+                    buildTheoryQuestionSpeech(question, index)
+                  )}">
+                  <i class="fa-solid fa-volume-high me-1"></i>
+                  Nghe câu hỏi
+                </button>
+              </div>
+            `
+            : ""
+        }
         ${question.image_url ? `<div class="mb-3"><img class="img-fluid rounded border" style="max-height:280px;" src="${escapeHtml(question.image_url)}" alt="Ảnh câu ${index + 1}" loading="lazy"></div>` : ""}
         ${["A", "B", "C", "D"]
           .map(
@@ -102,6 +127,25 @@ export function openTheoryRunner() {
       .join("");
   }
   section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+export function buildTheoryQuestionSpeech(question, index) {
+  const parts = [
+    `Câu hỏi số ${index + 1}.`,
+    question.question
+  ];
+
+  ["A", "B", "C", "D"].forEach((option) => {
+    const value = question[`option_${option.toLowerCase()}`];
+
+    if (value) {
+      parts.push(`Đáp án ${option}. ${value}`);
+    }
+  });
+
+  parts.push("Vui lòng chọn đáp án của bạn.");
+
+  return parts.join(" ");
 }
 
 /**

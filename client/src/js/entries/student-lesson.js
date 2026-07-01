@@ -69,11 +69,32 @@ function convertYoutube(url) {
   try {
     const parsed = new URL(url);
 
-    if (!["http:", "https:"].includes(parsed.protocol)) return "";
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      return "";
+    }
 
-    const match = url.match(/v=([^&]+)/);
-    return match
-      ? `https://www.youtube.com/embed/${match[1]}`
+    let videoId = "";
+
+    // youtube.com/watch?v=
+    if (
+      parsed.hostname.includes("youtube.com") &&
+      parsed.searchParams.has("v")
+    ) {
+      videoId = parsed.searchParams.get("v");
+    }
+
+    // youtu.be/xxxx
+    else if (parsed.hostname.includes("youtu.be")) {
+      videoId = parsed.pathname.slice(1);
+    }
+
+    // youtube.com/embed/xxxx
+    else if (parsed.pathname.startsWith("/embed/")) {
+      videoId = parsed.pathname.split("/embed/")[1];
+    }
+
+    return videoId
+      ? `https://www.youtube.com/embed/${videoId}`
       : "";
   } catch {
     return "";
