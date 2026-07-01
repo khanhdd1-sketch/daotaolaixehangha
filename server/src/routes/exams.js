@@ -42,7 +42,7 @@ function buildExamQuestionSet(exam, allQuestions) {
   const rawRequired = exam?.required_critical_questions;
   const requiredCritical =
     rawRequired === "" || rawRequired === null || rawRequired === undefined || Number.isNaN(Number(rawRequired))
-      ? DEFAULT_REQUIRED_CRITICAL_QUESTIONS
+      ? REQUIRED_CRITICAL_QUESTIONS
       : Number(rawRequired);
 
   if (requiredCritical < 0 || requiredCritical > totalQuestions) {

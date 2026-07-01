@@ -589,6 +589,33 @@ function shuffleArray(arr) {
   return newArr;
 }
 
+/**
+ * Tạo nội dung đọc cho câu hỏi.
+ * @param   {object} question
+ * @param   {number} index
+ * @returns {string}
+ */
+function buildQuestionSpeech(question, index) {
+  const parts = [
+    `Câu hỏi số ${index + 1}.`,
+    question.question
+  ];
+
+  ["A", "B", "C", "D"].forEach(option => {
+    const value = question[`option_${option.toLowerCase()}`];
+
+    if (value) {
+      parts.push(
+        `Đáp án ${option}. ${value}`
+      );
+    }
+  });
+
+  parts.push("Vui lòng chọn đáp án của bạn.");
+
+  return parts.join(" ");
+}
+
 async function init() {
     try {
         const params = new URLSearchParams(globalThis.location.search);
