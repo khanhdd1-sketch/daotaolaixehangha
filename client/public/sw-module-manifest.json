@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-16T07:04:25.585Z",
+  "generatedAt": "2026-07-01T05:38:32.401Z",
   "version": 5,
   "modules": [
     "/admin-lessons.html",
@@ -54,6 +54,7 @@
     "/src/js/modules/student/controllers/dashboardController.js",
     "/src/js/modules/student/controllers/simulationController.js",
     "/src/js/modules/student/controllers/theoryController.js",
+    "/src/js/modules/student/easyMode.js",
     "/src/js/modules/student/pipelineUtils.js",
     "/src/js/modules/student/services/studentApiService.js",
     "/src/js/modules/student/services/theoryTimerService.js",

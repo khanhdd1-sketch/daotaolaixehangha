@@ -13,6 +13,7 @@ const { requireCsrfToken } = require("../middleware/csrfMiddleware");
 const { normalizeChoice, normalizeCourseType } = require("../utils/helpers");
 
 const router = express.Router();
+// Dùng khi đề (dòng cũ trong Sheet) chưa có cột required_critical_questions.
 const REQUIRED_CRITICAL_QUESTIONS = 5;
 
 function shuffle(items) {
@@ -24,25 +25,57 @@ function shuffle(items) {
   return cloned;
 }
 
+class ExamConfigError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ExamConfigError";
+    this.status = 400;
+  }
+}
+
 function buildExamQuestionSet(exam, allQuestions) {
-  const totalQuestions = Math.max(1, Number(exam?.total_questions || allQuestions.length || 0));
-  const criticalTarget = Math.min(REQUIRED_CRITICAL_QUESTIONS, totalQuestions);
-  const criticalQuestions = shuffle(allQuestions.filter((item) => item.is_critical));
-  const normalQuestions = shuffle(allQuestions.filter((item) => !item.is_critical));
+  const totalQuestions = Number(exam?.total_questions || 0);
+  if (!Number.isFinite(totalQuestions) || totalQuestions <= 0) {
+    throw new ExamConfigError("Đề thi chưa cấu hình total_questions hợp lệ.");
+  }
 
-  const selectedCritical = criticalQuestions.slice(0, criticalTarget);
+  const rawRequired = exam?.required_critical_questions;
+  const requiredCritical =
+    rawRequired === "" || rawRequired === null || rawRequired === undefined || Number.isNaN(Number(rawRequired))
+      ? REQUIRED_CRITICAL_QUESTIONS
+      : Number(rawRequired);
+
+  if (requiredCritical < 0 || requiredCritical > totalQuestions) {
+    throw new ExamConfigError(
+      `required_critical_questions (${requiredCritical}) không hợp lệ so với total_questions (${totalQuestions}).`
+    );
+  }
+
+  const criticalPool = allQuestions.filter((item) => item.is_critical);
+  const normalPool = allQuestions.filter((item) => !item.is_critical);
+
+  if (criticalPool.length < requiredCritical) {
+    throw new ExamConfigError(
+      `Ngân hàng chỉ có ${criticalPool.length} câu điểm liệt, không đủ ${requiredCritical} câu theo cấu hình đề.`
+    );
+  }
+  if (allQuestions.length < totalQuestions) {
+    throw new ExamConfigError(
+      `Ngân hàng chỉ có ${allQuestions.length} câu hỏi, không đủ ${totalQuestions} câu theo cấu hình đề.`
+    );
+  }
+
+  const selectedCritical = shuffle(criticalPool).slice(0, requiredCritical);
   const selectedIds = new Set(selectedCritical.map((item) => item.id));
-  const remainingPool = [
-    ...criticalQuestions.filter((item) => !selectedIds.has(item.id)),
-    ...normalQuestions
-  ];
+  const remainingPool = shuffle([
+    ...criticalPool.filter((item) => !selectedIds.has(item.id)),
+    ...normalPool
+  ]);
 
-  const selected = [
-    ...selectedCritical,
-    ...remainingPool.slice(0, Math.max(0, totalQuestions - selectedCritical.length))
-  ];
+  const normalNeeded = totalQuestions - selectedCritical.length;
+  const selected = [...selectedCritical, ...remainingPool.slice(0, Math.max(0, normalNeeded))];
 
-  return shuffle(selected).slice(0, Math.min(totalQuestions, allQuestions.length));
+  return shuffle(selected);
 }
 
 router.get("/", async (req, res, next) => {
@@ -127,7 +160,15 @@ router.get("/:id/questions", requireAuth, requireRole(ROLES.STUDENT), async (req
     const latestAttempt =
       attempts.sort((left, right) => new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0))[0] || null;
 
-    const selectedQuestions = buildExamQuestionSet(examResponse.data, questionResponse.data || []);
+    let selectedQuestions;
+    try {
+      selectedQuestions = buildExamQuestionSet(examResponse.data, questionResponse.data || []);
+    } catch (buildError) {
+      if (buildError instanceof ExamConfigError) {
+        return res.status(400).json({ success: false, message: buildError.message });
+      }
+      throw buildError;
+    }
 
     return res.json({
       success: true,
@@ -136,7 +177,8 @@ router.get("/:id/questions", requireAuth, requireRole(ROLES.STUDENT), async (req
         questions: selectedQuestions.map(({ correct_answer, ...question }) => question),
         attempt_count: attempts.length,
         latest_attempt: latestAttempt,
-        critical_count: selectedQuestions.filter((item) => item.is_critical).length
+        critical_count: selectedQuestions.filter((item) => item.is_critical).length,
+        total_questions: selectedQuestions.length
       }
     });
   } catch (error) {
@@ -216,7 +258,10 @@ router.post("/:id/submit", requireAuth, requireRole(ROLES.STUDENT), requireCsrfT
         score,
         passed,
         failed_due_critical: failedDueCritical,
-        pass_score: Number(exam.pass_score || 0)
+        pass_score: Number(exam.pass_score || 0),
+        failedCriticalQuestion: failedDueCritical,
+        totalQuestions: questions.length,
+        correctAnswers: score
       }
     });
   } catch (error) {

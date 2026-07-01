@@ -1,4 +1,5 @@
 import { API_PATHS } from "../constants/apiPaths.js";
+import { initStudentEasyMode, speakText } from "../modules/student/easyMode.js";
 import { renderLessonList } from "../modules/student/views/dashboardView.js";
 import { getDashboardState } from "../modules/student/state/dashboardState.js";
 
@@ -57,6 +58,11 @@ function renderLesson() {
   const videoUrl = convertYoutube(state.lesson.video_url);
 
   document.getElementById("lessonVideo").src = videoUrl;
+
+  const lessonIntro = document.getElementById("lessonEasyIntro");
+  if (lessonIntro) {
+    lessonIntro.dataset.easySpeak = `Bài học ${state.lesson.title}. Xem video trước. Khi xem xong hãy bấm Đã xem xong để mở phần trắc nghiệm.`;
+  }
 }
 
 function convertYoutube(url) {
@@ -114,6 +120,13 @@ function renderQuiz() {
     b.textContent = `${i + 1}. ${q.question}`;
     title.appendChild(b);
     wrapper.appendChild(title);
+
+    const speakButton = document.createElement("button");
+    speakButton.type = "button";
+    speakButton.className = "btn btn-outline-primary btn-sm mb-2";
+    speakButton.innerHTML = '<i class="fa-solid fa-volume-high me-1"></i>Nghe câu hỏi';
+    speakButton.onclick = () => speakText(buildQuestionSpeech(q, i));
+    wrapper.appendChild(speakButton);
     // ✅ HIỂN THỊ ẢNH NẾU CÓ
     if (q.image_url) {
       const imgWrap = document.createElement("div");
@@ -574,6 +587,33 @@ function shuffleArray(arr) {
     [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
   }
   return newArr;
+}
+
+/**
+ * Tạo nội dung đọc cho câu hỏi.
+ * @param   {object} question
+ * @param   {number} index
+ * @returns {string}
+ */
+function buildQuestionSpeech(question, index) {
+  const parts = [
+    `Câu hỏi số ${index + 1}.`,
+    question.question
+  ];
+
+  ["A", "B", "C", "D"].forEach(option => {
+    const value = question[`option_${option.toLowerCase()}`];
+
+    if (value) {
+      parts.push(
+        `Đáp án ${option}. ${value}`
+      );
+    }
+  });
+
+  parts.push("Vui lòng chọn đáp án của bạn.");
+
+  return parts.join(" ");
 }
 
 async function init() {
