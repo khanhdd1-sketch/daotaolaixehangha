@@ -23,7 +23,7 @@ export function renderTheoryExamList() {
       <button class="admin-list-item" type="button" data-exam-id="${escapeHtml(exam.id)}" data-action="edit-exam">
         <div>
           <div class="fw-semibold">${escapeHtml(exam.title)}</div>
-          <div class="small text-muted">${escapeHtml(exam.course_type || "-")} | ${exam.pass_score}/${exam.total_questions} | ${exam.duration_minutes} phút</div>
+          <div class="small text-muted">${escapeHtml(exam.course_type || "-")} | ${exam.pass_score}/${exam.total_questions} | ${exam.duration_minutes} phút | ${exam.required_critical_questions || 5} câu liệt</div>
         </div>
         <span class="badge ${exam.active ? "text-bg-success" : "text-bg-secondary"}">${exam.active ? "Đang mở" : "Tạm ẩn"}</span>
       </button>
@@ -118,6 +118,10 @@ export function fillTheoryExamForm(exam) {
   document.getElementById("examPassScore").value = exam.pass_score || "";
   document.getElementById("examTotalQuestions").value = exam.total_questions || "";
   document.getElementById("examDurationMinutes").value = exam.duration_minutes || 20;
+  document.getElementById("examRequiredCriticalQuestions").value =
+    exam.required_critical_questions === "" || exam.required_critical_questions == null
+      ? 5
+      : exam.required_critical_questions;
   document.getElementById("examActive").checked = exam.active !== false;
 }
 
@@ -129,6 +133,7 @@ export function resetTheoryExamForm() {
   document.getElementById("examId").value = "";
   document.getElementById("examCourseType").value = "B2";
   document.getElementById("examDurationMinutes").value = 20;
+  document.getElementById("examRequiredCriticalQuestions").value = 5;
   document.getElementById("examActive").checked = true;
 }
 
