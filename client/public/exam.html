@@ -121,12 +121,47 @@
 
         <section id="section-learn" class="dashboard-card mb-4">
           <h2 class="h4 mb-3">Học</h2>
+          <div class="mb-3" id="easyModeLearnGuide" hidden>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              data-easy-speak="
+                Hướng dẫn học bài.
+                Hãy học theo thứ tự từ trên xuống dưới.
+                Bấm nút Học ngay để mở bài học.
+                Trạng thái Đã xong nghĩa là bạn đã hoàn thành bài học.
+                Trạng thái Đang học nghĩa là bạn đang thực hiện bài học đó.
+                Trạng thái Đang khóa nghĩa là cần hoàn thành bài trước để mở bài tiếp theo.
+                Sau khi xem xong bài học, hãy làm câu hỏi luyện tập nếu có.
+              ">
+              <i class="fa-solid fa-volume-high"></i>
+              Nghe hướng dẫn học bài
+            </button>
+          </div>
           <p class="text-muted">Hoàn thành bài học trước khi thi sát hạch.</p>
           <div class="admin-list-shell" id="lessonList"></div>
         </section>
 
         <section id="section-practice" class="dashboard-card mb-4">
           <h2 class="h4 mb-3">Luyện</h2>
+          <div class="mb-3" id="easyModeResultGuide" style="display:none;">
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              data-easy-speak="
+                Hướng dẫn gửi kết quả thi.
+                Trước tiên, chọn loại bài thi.
+                Tiếp theo, nhập điểm của bạn.
+                Sau đó, chọn đạt hoặc chưa đạt.
+                Chọn nơi bạn đã làm bài thi.
+                Nếu có ảnh kết quả, hãy tải ảnh lên.
+                Bạn có thể ghi thêm thông tin nếu cần.
+                Cuối cùng, bấm nút Gửi kết quả.
+              ">
+              <i class="fa-solid fa-volume-high"></i>
+              Nghe hướng dẫn gửi kết quả
+            </button>
+          </div>
           <p class="text-muted mb-3">Xem nhanh đề lý thuyết và mở thi bên thứ 3.</p>
           <div class="row g-3 mb-4" id="practiceExamPreview"></div>
           <h3 class="h6 mb-2">Thi bên thứ 3</h3>
@@ -181,6 +216,23 @@
 
         <section id="section-test" class="mb-4">
           <h2 class="h4 mb-3">Thi</h2>
+          <div class="mb-3 easy-mode-only" hidden id="easyModeTestGuide">
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              data-easy-speak="
+                Hướng dẫn làm bài thi.
+                Có hai loại bài thi.
+                Thi lý thuyết là trả lời các câu hỏi về luật giao thông.
+                Thi mô phỏng là xem video và nhận biết tình huống nguy hiểm.
+                Nếu bạn mới học, nên làm bài thi lý thuyết trước.
+                Sau đó có thể chuyển sang thi mô phỏng.
+                Hãy bấm vào nút màu cam để bắt đầu làm bài.
+              ">
+              <i class="fa-solid fa-volume-high"></i>
+              Nghe hướng dẫn làm bài thi
+            </button>
+          </div>
           <p class="text-muted mb-3">Vào phòng thi riêng để làm bài tập trung.</p>
           <div class="row g-4" id="testSectionCards"></div>
         </section>

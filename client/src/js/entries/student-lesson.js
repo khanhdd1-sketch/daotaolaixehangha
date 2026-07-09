@@ -58,10 +58,13 @@ function renderLesson() {
   const videoUrl = convertYoutube(state.lesson.video_url);
 
   document.getElementById("lessonVideo").src = videoUrl;
+  const lessonIntroButton = document.querySelector(
+    "#lessonEasyIntro [data-easy-speak]"
+  );
 
-  const lessonIntro = document.getElementById("lessonEasyIntro");
-  if (lessonIntro) {
-    lessonIntro.dataset.easySpeak = `Bài học ${state.lesson.title}. Xem video trước. Khi xem xong hãy bấm Đã xem xong để mở phần trắc nghiệm.`;
+  if (lessonIntroButton) {
+    lessonIntroButton.dataset.easySpeak =
+      `Bài học ${state.lesson.title}. Xem video trước. Khi xem xong hãy bấm Đã xem xong để mở phần trắc nghiệm.`;
   }
 }
 
@@ -255,6 +258,11 @@ function bindEvents() {
     .getElementById("markCompleteBtn")
     .addEventListener("click", async () => {
       try {
+        if (globalThis?.localStorage?.student_easy_mode === "1") {
+          speakText(
+            "Phần trắc nghiệm đã được mở. Hãy trả lời tất cả các câu hỏi trước khi nộp bài."
+          );
+        }
         // ✅ GỌI API MARK WATCHED
         await DriveSchoolCommon.apiFetch(
           API_PATHS.LEARNING_LESSON_WATCHED(state.lesson.id),
@@ -395,9 +403,10 @@ async function submitQuiz(e) {
     const questionDivs = document.querySelectorAll("#quizForm .quiz-question");
 
     result.details.forEach((d, i) => {
-      
       const normalize = (str) =>
-        str?.trim().replace(/\s+/g, " ");
+        String(str ?? "")
+          .trim()
+          .replace(/\s+/g, " ");
       // const qid = d.question_id ?? d.id;
       const div = Array.from(questionDivs).find(el =>
         normalize(el.dataset.question) === normalize(d.question)
@@ -499,13 +508,29 @@ function showResultModal(result) {
   const lessons = getDashboardState().learningWorkspace.lessons;
   const index = lessons.findIndex(l => l.id === state.lesson.id);
   const next = lessons[index + 1];
-
+  
+  if (globalThis?.localStorage?.student_easy_mode === "1") {
+    speakText(
+      `Chúc mừng. Bạn đã đạt ${result.score} trên ${result.total} câu.`
+    );
+  }
   if (result.passed && next) {
+    if (globalThis?.localStorage?.student_easy_mode === "1") {
+      speakText(
+        `Chúc mừng. Bạn đã đạt ${result.score} trên ${result.total} câu.`
+      );
+    }
     nextBtn.classList.remove("d-none");
     nextBtn.onclick = () => {
       location.href = `/lesson.html?id=${next.id}`;
     };
   } else {
+    if (getEasyMode()) {
+      speakText(
+        `Bạn đúng ${result.score} trên ${result.total} câu.
+        Hãy xem lại các câu sai và làm lại bài học.`
+      );
+    }
     nextBtn.classList.add("d-none");
   }
 
@@ -592,6 +617,16 @@ function updateQuizProgress() {
   const percent = Math.round((answered / total) * 100);
 
   document.getElementById("quizProgressBar").style.width = percent + "%";
+  if (globalThis?.localStorage?.student_easy_mode === "1") {
+    if (
+      answered > 0 &&
+      answered < total
+    ) {
+      speakText(
+        `Bạn đã trả lời ${answered} trên ${total} câu.`
+      );
+    }
+  }
 }
 
 function checkAllAnswered() {
@@ -639,6 +674,7 @@ function buildQuestionSpeech(question, index) {
 
 async function init() {
     try {
+        initStudentEasyMode(); // <-- THÊM DÒNG NÀY
         const params = new URLSearchParams(globalThis.location.search);
         const lessonId = params.get("id");
 

@@ -1863,3 +1863,71 @@ body {
   margin-bottom: 0.75rem;
   opacity: 0.5;
 }
+
+/* Easy mode styles for students to increase font size and readability */
+.student-easy-mode {
+  font-size: 1.15rem;
+}
+
+.student-easy-mode p,
+.student-easy-mode label,
+.student-easy-mode .text-muted,
+.student-easy-mode .form-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+.student-easy-mode h1 {
+  font-size: 2.5rem;
+}
+
+.student-easy-mode h2,
+.student-easy-mode .h4 {
+  font-size: 2rem;
+}
+
+.student-easy-mode h3,
+.student-easy-mode .h5,
+.student-easy-mode .h6 {
+  font-size: 1.5rem;
+}
+
+.student-easy-mode .btn {
+  font-size: 1.15rem;
+  min-height: 56px;
+  padding: 0.75rem 1.25rem;
+}
+
+.student-easy-mode .btn-primary {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.student-easy-mode #thirdPartyResultForm label {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.student-easy-mode #thirdPartyResultForm .form-control,
+.student-easy-mode #thirdPartyResultForm .form-select {
+  font-size: 1.15rem;
+  min-height: 58px;
+}
+
+.student-easy-mode #section-test .dashboard-card,
+.student-easy-mode #section-test .exam-card {
+  font-size: 1.15rem;
+}
+
+.student-easy-mode #section-test .btn {
+  font-size: 1.2rem;
+}
+
+.student-easy-mode .student-nav-pill {
+  font-size: 1.15rem;
+  padding: 0.75rem 1.25rem;
+}
+
+.student-easy-mode .fa-solid,
+.student-easy-mode .fas {
+  font-size: 1.2em;
+}

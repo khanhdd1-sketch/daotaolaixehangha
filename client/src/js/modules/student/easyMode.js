@@ -16,6 +16,18 @@ const PAGE_HELP = {
   "/simulation-exam.html": {
     title: "Thi mô phỏng dễ hiểu",
     text: "Xem video, khi thấy tình huống nguy hiểm thì bấm Ghi nhận nguy hiểm. Có thể nghe hướng dẫn trước khi làm."
+  },
+  "#section-practice": {
+    title: "Luyện tập dễ hiểu",
+    text: "Bạn có thể chọn loại thi, nhập điểm và gửi kết quả. Nếu có ảnh chụp màn hình kết quả thi, hãy tải ảnh lên trước khi gửi."
+  },
+  "#section-test": {
+    title: "Hướng dẫn làm bài thi",
+    text: "Có hai loại bài thi. Thi lý thuyết là trả lời câu hỏi về luật giao thông. Thi mô phỏng là xem video và nhận biết tình huống nguy hiểm. Hãy bấm vào nút màu cam để bắt đầu làm bài."
+  },
+  "#section-learn": {
+    title: "Học bài dễ hiểu",
+    text: "Hãy học theo thứ tự từ trên xuống dưới. Hoàn thành bài trước để mở khóa bài tiếp theo. Bấm Học ngay để bắt đầu."
   }
 };
 
@@ -40,6 +52,33 @@ export function applyEasyMode(enabled) {
       ? '<i class="fa-solid fa-person-cane"></i><span>Đang ở Chế độ dễ</span>'
       : '<i class="fa-solid fa-person-cane"></i><span>Chế độ dễ</span>';
   });
+  
+  // THÊM ĐOẠN NÀY
+  const coach = document.getElementById("easyModeCoach");
+  if (coach) {
+    coach.style.display = enabled ? "" : "none";
+  }
+  
+  const guide = document.getElementById("easyModeResultGuide");
+  if (guide) {
+    guide.style.display = enabled ? "" : "none";
+  }
+
+  
+  const testGuide = document.getElementById("easyModeTestGuide");
+  if (testGuide) {
+    testGuide.hidden = !enabled;
+  }
+
+  const learnGuide = document.getElementById("easyModeLearnGuide");
+  if (learnGuide) {
+    learnGuide.hidden = !enabled;
+  }
+  
+  const lessonIntro = document.getElementById("lessonEasyIntro");
+  if (lessonIntro) {
+    lessonIntro.hidden = !enabled;
+  }
 }
 
 export function speakText(text) {
@@ -82,6 +121,9 @@ function injectEasyModeCoach(help) {
   const coach = document.createElement("div");
   coach.id = "easyModeCoach";
   coach.className = "easy-mode-coach";
+  if (!getEasyMode()) {
+    coach.style.display = "none";
+  }
   coach.innerHTML = `
     <div class="easy-mode-coach-icon"><i class="fa-solid fa-volume-high"></i></div>
     <div>
@@ -109,6 +151,19 @@ function bindEasyModeEvents() {
     const speakButton = event.target.closest("[data-easy-speak]");
     if (speakButton) {
       speakText(speakButton.dataset.easySpeak || speakButton.closest(".question-card, .quiz-question, section")?.textContent);
+    }
+  });
+  document.addEventListener("focusin", (event) => {
+    if (!getEasyMode()) return;
+    const input = event.target;
+    if (
+      input.matches('input[type="radio"]')
+    ) {
+      const label = input.parentElement?.textContent;
+
+      if (label) {
+        speakText(label);
+      }
     }
   });
 }
