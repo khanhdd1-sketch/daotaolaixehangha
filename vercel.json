@@ -3,6 +3,8 @@
 
   "buildCommand": "node scripts/prepare-vercel.js",
 
+  "outputDirectory": "public",
+
   "functions": {
     "api/index.js": {
       "maxDuration": 300,
